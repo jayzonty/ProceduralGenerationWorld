@@ -7,6 +7,10 @@
 #include <iostream>
 #include <string>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Camera.hpp"
 #include "Shader.hpp"
 
 // ---------------
@@ -29,6 +33,12 @@ struct Vertex
 	GLfloat x, y, z;	// Position
 	GLubyte r, g, b;	// Color
 };
+
+// Camera
+Camera camera;
+
+// Previous x and y positions of the cursor
+double prevCursorX, prevCursorY;
 
 /// <summary>
 /// Main function.
@@ -121,6 +131,12 @@ int main()
 	// For now, tell OpenGL to use the whole screen
 	glViewport(0, 0, windowWidth, windowHeight);
 
+	// Initialize the previous cursor x and y values
+	glfwGetCursorPos(window, &prevCursorX, &prevCursorY);
+
+	camera.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+	camera.SetAspectRatio(static_cast<float>(windowWidth) / static_cast<float>(windowHeight));
+
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -132,6 +148,44 @@ int main()
 
 		// Use the vertex array object that we created
 		glBindVertexArray(vao);
+
+		double cursorX, cursorY;
+		glfwGetCursorPos(window, &cursorX, &cursorY);
+		double cursorXDelta = cursorX - prevCursorX;
+		double cursorYDelta = -(cursorY - prevCursorY);
+		prevCursorX = cursorX;
+		prevCursorY = cursorY;
+		camera.SetYaw(camera.GetYaw() + static_cast<float>(cursorXDelta));
+		camera.SetPitch(glm::clamp(camera.GetPitch() + static_cast<float>(cursorYDelta), -89.0f, 89.0f));
+
+		float movementZ = 0.0f;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			movementZ = 1.0f;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			movementZ = -1.0f;
+		}
+
+		float movementX = 0.0f;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			movementX = -1.0f;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			movementX = 1.0f;
+		}
+
+		glm::vec3 movement = camera.GetForwardVector() * movementZ + camera.GetRightVector() * movementX;
+		if (glm::length(movement) > 0.0f)
+		{
+			camera.SetPosition(camera.GetPosition() + movement * 0.1f);
+		}
+
+		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
+		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
 
 		// Draw the 3 vertices using triangle primitives
 		glDrawArrays(GL_TRIANGLES, 0, 3);

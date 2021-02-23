@@ -68,6 +68,22 @@ void ShaderProgram::Unuse()
 	glUseProgram(0);
 }
 
+// ================
+// --- Uniforms ---
+// ================
+
+/// <summary>
+/// Sets the uniform value with a matrix
+/// </summary>
+/// <param name="uniformName">Name of the uniform</param>
+/// <param name="transpose">Should the matrix be transformed?</param>
+/// <param name="value">Pointer to the values in the matrix</param>
+void ShaderProgram::SetUniformMatrix4fv(const std::string& uniformName, bool transpose, const float* value)
+{
+	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
+	glUniformMatrix4fv(uniformLocation, 1, transpose ? GL_TRUE : GL_FALSE, value);
+}
+
 /// <summary>
 /// Creates a shader object from the provided shader type and shader file
 /// </summary>

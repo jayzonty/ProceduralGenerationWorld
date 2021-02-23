@@ -41,6 +41,18 @@ public:
 	/// </summary>
 	void Unuse();
 
+	// ================
+	// --- Uniforms ---
+	// ================
+
+	/// <summary>
+	/// Sets the uniform value with a matrix
+	/// </summary>
+	/// <param name="uniformName">Name of the uniform</param>
+	/// <param name="transpose">Should the matrix be transformed?</param>
+	/// <param name="value">Pointer to the values in the matrix</param>
+	void SetUniformMatrix4fv(const std::string& uniformName, bool transpose, const float* value);
+
 private:
 
 	/// <summary>
