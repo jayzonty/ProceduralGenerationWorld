@@ -7,33 +7,11 @@
 #include <iostream>
 #include <string>
 
+#include "Shader.hpp"
+
 // ---------------
 // Function declarations
 // ---------------
-
-/// <summary>
-/// Creates a shader program based on the provided file paths for the vertex and fragment shaders.
-/// </summary>
-/// <param name="vertexShaderFilePath">Vertex shader file path</param>
-/// <param name="fragmentShaderFilePath">Fragment shader file path</param>
-/// <returns>OpenGL handle to the created shader program</returns>
-GLuint CreateShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
-
-/// <summary>
-/// Creates a shader based on the provided shader type and the path to the file containing the shader source.
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="shaderFilePath">Path to the file containing the shader source</param>
-/// <returns>OpenGL handle to the created shader</returns>
-GLuint CreateShaderFromFile(const GLuint& shaderType, const std::string& shaderFilePath);
-
-/// <summary>
-/// Creates a shader based on the provided shader type and the string containing the shader source.
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="shaderSource">Shader source string</param>
-/// <returns>OpenGL handle to the created shader</returns>
-GLuint CreateShaderFromSource(const GLuint& shaderType, const std::string& shaderSource);
 
 /// <summary>
 /// Function for handling the event when the size of the framebuffer changed.
@@ -136,7 +114,8 @@ int main()
 	glBindVertexArray(0);
 
 	// Create a shader program
-	GLuint program = CreateShaderProgram("main.vsh", "main.fsh");
+	ShaderProgram shaderProgram;
+	shaderProgram.InitFromFiles("main.vsh", "main.fsh");
 
 	// Tell OpenGL the dimensions of the region where stuff will be drawn.
 	// For now, tell OpenGL to use the whole screen
@@ -149,23 +128,19 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Use the shader program that we created
-		glUseProgram(program);
+		shaderProgram.Use();
 
 		// Use the vertex array object that we created
 		glBindVertexArray(vao);
-
-		// Sets the value for the "time" uniform that was declared in
-		// the shaders.
-		// glfwGetTime() is a GLFW function that returns to us the
-		// amount of time elapsed since the start of the application
-		GLint timeUniformLocation = glGetUniformLocation(program, "time");
-		glUniform1f(timeUniformLocation, glfwGetTime());
 
 		// Draw the 3 vertices using triangle primitives
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// "Unuse" the vertex array object
 		glBindVertexArray(0);
+
+		// Unuse the shader program
+		shaderProgram.Unuse();
 
 		// Tell GLFW to swap the screen buffer with the offscreen buffer
 		glfwSwapBuffers(window);
@@ -175,9 +150,6 @@ int main()
 	}
 
 	// --- Cleanup ---
-
-	// Make sure to delete the shader program
-	glDeleteProgram(program);
 
 	// Delete the VBO that contains our vertices
 	glDeleteBuffers(1, &vbo);
@@ -189,96 +161,6 @@ int main()
 	glfwTerminate();
 
 	return 0;
-}
-
-/// <summary>
-/// Creates a shader program based on the provided file paths for the vertex and fragment shaders.
-/// </summary>
-/// <param name="vertexShaderFilePath">Vertex shader file path</param>
-/// <param name="fragmentShaderFilePath">Fragment shader file path</param>
-/// <returns>OpenGL handle to the created shader program</returns>
-GLuint CreateShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath)
-{
-	GLuint vertexShader = CreateShaderFromFile(GL_VERTEX_SHADER, vertexShaderFilePath);
-	GLuint fragmentShader = CreateShaderFromFile(GL_FRAGMENT_SHADER, fragmentShaderFilePath);
-
-	GLuint program = glCreateProgram();
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-
-	glLinkProgram(program);
-
-	glDetachShader(program, vertexShader);
-	glDeleteShader(vertexShader);
-	glDetachShader(program, fragmentShader);
-	glDeleteShader(fragmentShader);
-
-	// Check shader program link status
-	GLint linkStatus;
-	glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-	if (linkStatus != GL_TRUE) {
-		char infoLog[512];
-		GLsizei infoLogLen = sizeof(infoLog);
-		glGetProgramInfoLog(program, infoLogLen, &infoLogLen, infoLog);
-		std::cerr << "program link error: " << infoLog << std::endl;
-	}
-
-	return program;
-}
-
-/// <summary>
-/// Creates a shader based on the provided shader type and the path to the file containing the shader source.
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="shaderFilePath">Path to the file containing the shader source</param>
-/// <returns>OpenGL handle to the created shader</returns>
-GLuint CreateShaderFromFile(const GLuint& shaderType, const std::string& shaderFilePath)
-{
-	std::ifstream shaderFile(shaderFilePath);
-	if (shaderFile.fail())
-	{
-		std::cerr << "Unable to open shader file: " << shaderFilePath << std::endl;
-		return 0;
-	}
-
-	std::string shaderSource;
-	std::string temp;
-	while (std::getline(shaderFile, temp))
-	{
-		shaderSource += temp + "\n";
-	}
-	shaderFile.close();
-
-	return CreateShaderFromSource(shaderType, shaderSource);
-}
-
-/// <summary>
-/// Creates a shader based on the provided shader type and the string containing the shader source.
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="shaderSource">Shader source string</param>
-/// <returns>OpenGL handle to the created shader</returns>
-GLuint CreateShaderFromSource(const GLuint& shaderType, const std::string& shaderSource)
-{
-	GLuint shader = glCreateShader(shaderType);
-
-	const char* shaderSourceCStr = shaderSource.c_str();
-	GLint shaderSourceLen = static_cast<GLint>(shaderSource.length());
-	glShaderSource(shader, 1, &shaderSourceCStr, &shaderSourceLen);
-	glCompileShader(shader);
-
-	// Check compilation status
-	GLint compileStatus;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
-	if (compileStatus == GL_FALSE)
-	{
-		char infoLog[512];
-		GLsizei infoLogLen = sizeof(infoLog);
-		glGetShaderInfoLog(shader, infoLogLen, &infoLogLen, infoLog);
-		std::cerr << "shader compilation error: " << infoLog << std::endl;
-	}
-
-	return shader;
 }
 
 /// <summary>
