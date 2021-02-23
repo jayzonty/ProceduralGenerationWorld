@@ -156,9 +156,16 @@ int main()
 	camera.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 	camera.SetAspectRatio(static_cast<float>(windowWidth) / static_cast<float>(windowHeight));
 
+	double prevTime = glfwGetTime();
+
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		// For now, just use a basic delta time calculation
+		double deltaTimeAsDouble = glfwGetTime() - prevTime;
+		prevTime = glfwGetTime();
+		float deltaTime = static_cast<float>(deltaTimeAsDouble);
+
 		// Clear the colors in our off-screen framebuffer
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -174,8 +181,8 @@ int main()
 		double cursorYDelta = -(cursorY - prevCursorY);
 		prevCursorX = cursorX;
 		prevCursorY = cursorY;
-		camera.SetYaw(camera.GetYaw() + static_cast<float>(cursorXDelta));
-		camera.SetPitch(glm::clamp(camera.GetPitch() + static_cast<float>(cursorYDelta), -89.0f, 89.0f));
+		camera.SetYaw(camera.GetYaw() + static_cast<float>(cursorXDelta) * 0.5f);
+		camera.SetPitch(glm::clamp(camera.GetPitch() + static_cast<float>(cursorYDelta) * 0.5f, -89.0f, 89.0f));
 
 		float movementZ = 0.0f;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -197,10 +204,11 @@ int main()
 			movementX = 1.0f;
 		}
 
+		float movementSpeed = 10.0f;
 		glm::vec3 movement = camera.GetForwardVector() * movementZ + camera.GetRightVector() * movementX;
 		if (glm::length(movement) > 0.0f)
 		{
-			camera.SetPosition(camera.GetPosition() + movement * 0.1f);
+			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
