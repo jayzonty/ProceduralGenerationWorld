@@ -26,6 +26,16 @@
 void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height);
 
 /// <summary>
+/// Function for handling when a key is pressed.
+/// </summary>
+/// <param name="window">Reference to the window</param>
+/// <param name="key">Key code</param>
+/// <param name="scanCode">Scan code</param>
+/// <param name="action">Action</param>
+/// <param name="mods">Modifiers</param>
+void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods);
+
+/// <summary>
 /// Struct containing data about a vertex
 /// </summary>
 struct Vertex
@@ -77,6 +87,15 @@ int main()
 
 	// Tell GLFW to use the OpenGL context that was assigned to the window that we just created
 	glfwMakeContextCurrent(window);
+
+	// Set the callback function for when the framebuffer size changed
+	glfwSetFramebufferSizeCallback(window, FramebufferSizeChangedCallback);
+
+	// Set the callback function for when a key was pressed
+	glfwSetKeyCallback(window, KeyCallback);
+
+	// Disable the cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Tell GLAD to load the OpenGL function pointers
 	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
@@ -211,6 +230,9 @@ int main()
 	// Delete the vertex array object
 	glDeleteVertexArrays(1, &vao);
 
+	// Re-enable the cursor
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
 	// Remember to tell GLFW to clean itself up before exiting the application
 	glfwTerminate();
 
@@ -228,4 +250,20 @@ void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height)
 	// Whenever the size of the framebuffer changed (due to window resizing, etc.),
 	// update the dimensions of the region to the new size
 	glViewport(0, 0, width, height);
+}
+
+/// <summary>
+/// Function for handling when a key is pressed.
+/// </summary>
+/// <param name="window">Reference to the window</param>
+/// <param name="key">Key code</param>
+/// <param name="scanCode">Scan code</param>
+/// <param name="action">Action</param>
+/// <param name="mods">Modifiers</param>
+void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods)
+{
+	if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+	{
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
 }
