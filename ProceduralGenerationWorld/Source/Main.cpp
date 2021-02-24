@@ -6,11 +6,13 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Camera.hpp"
+#include "Mesh.hpp"
 #include "Shader.hpp"
 
 // ---------------
@@ -34,15 +36,6 @@ void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height);
 /// <param name="action">Action</param>
 /// <param name="mods">Modifiers</param>
 void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods);
-
-/// <summary>
-/// Struct containing data about a vertex
-/// </summary>
-struct Vertex
-{
-	GLfloat x, y, z;	// Position
-	GLubyte r, g, b;	// Color
-};
 
 // Camera
 Camera camera;
@@ -104,47 +97,34 @@ int main()
 		return 1;
 	}
 
-	// --- Vertex specification ---
-
-	// Set up the data for each vertex of the triangle
-	Vertex vertices[3];
-	vertices[0].x = -0.5f;	vertices[0].y = -0.5f;	vertices[0].z = 0.0f;
-	vertices[0].r = 255;	vertices[0].g = 0;		vertices[0].b = 0;
-
-	vertices[1].x = 0.5f;	vertices[1].y = -0.5f;	vertices[1].z = 0.0f;
-	vertices[1].r = 0;		vertices[1].g = 255;	vertices[1].b = 0;
-
-	vertices[2].x = 0.0f;	vertices[2].y = 0.5f;	vertices[2].z = 0.0f;
-	vertices[2].r = 0;		vertices[2].g = 0;		vertices[2].b = 255;
-
-	// Create a vertex buffer object (VBO), and upload our vertices data to the VBO
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// Create a vertex array object that contains data on how to map vertex attributes
-	// (e.g., position, color) to vertex shader properties.
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	// Vertex attribute 0 - Position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
-	// Vertex attribute 1 - Color
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)(sizeof(GLfloat) * 3));
-
-	glBindVertexArray(0);
-
 	// Create a shader program
 	ShaderProgram shaderProgram;
 	shaderProgram.InitFromFiles("main.vsh", "main.fsh");
+
+	// Set up the data for the mesh
+	Mesh mesh;
+	mesh.SetShader(&shaderProgram);
+
+	std::vector<glm::vec3> vertexPositions;
+	vertexPositions.emplace_back(-1.0f, -1.0f, 0.0f);
+	vertexPositions.emplace_back(1.0f, -1.0f, 0.0f);
+	vertexPositions.emplace_back(0.0f, 1.0f, 0.0f);
+
+	std::vector<glm::vec4> vertexColors;
+	vertexColors.emplace_back(1.0f, 0.0f, 0.0f, 1.0f);
+	vertexColors.emplace_back(0.0f, 1.0f, 0.0f, 1.0f);
+	vertexColors.emplace_back(0.0f, 0.0f, 1.0f, 1.0f);
+
+	std::vector<GLuint> indices;
+	indices.emplace_back(0);
+	indices.emplace_back(1);
+	indices.emplace_back(2);
+
+	mesh.SetVertexPositions(vertexPositions);
+	mesh.SetVertexColors(vertexColors);
+	mesh.SetIndices(indices);
+
+	mesh.GenerateMesh();
 
 	// Tell OpenGL the dimensions of the region where stuff will be drawn.
 	// For now, tell OpenGL to use the whole screen
@@ -168,12 +148,6 @@ int main()
 
 		// Clear the colors in our off-screen framebuffer
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		// Use the shader program that we created
-		shaderProgram.Use();
-
-		// Use the vertex array object that we created
-		glBindVertexArray(vao);
 
 		double cursorX, cursorY;
 		glfwGetCursorPos(window, &cursorX, &cursorY);
@@ -211,11 +185,12 @@ int main()
 			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
+		shaderProgram.Use();
+
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
 
-		// Draw the 3 vertices using triangle primitives
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		mesh.Draw();
 
 		// "Unuse" the vertex array object
 		glBindVertexArray(0);
@@ -229,14 +204,6 @@ int main()
 		// Tell GLFW to process window events (e.g., input events, window closed events, etc.)
 		glfwPollEvents();
 	}
-
-	// --- Cleanup ---
-
-	// Delete the VBO that contains our vertices
-	glDeleteBuffers(1, &vbo);
-
-	// Delete the vertex array object
-	glDeleteVertexArrays(1, &vao);
 
 	// Re-enable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

@@ -148,10 +148,12 @@
     <ClCompile Include="..\Deps\Source\glad\glad.c" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Camera.hpp" />
+    <ClInclude Include="Headers\Mesh.hpp" />
     <ClInclude Include="Headers\Shader.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
