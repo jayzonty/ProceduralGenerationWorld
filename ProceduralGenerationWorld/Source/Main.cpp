@@ -17,6 +17,7 @@
 #include "Chunk.hpp"
 #include "Mesh.hpp"
 #include "Shader.hpp"
+#include "World.hpp"
 
 // ---------------
 // Function declarations
@@ -138,9 +139,8 @@ int main()
 	camera.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
 	camera.SetAspectRatio(static_cast<float>(windowWidth) / static_cast<float>(windowHeight));
 
-	FastNoiseLite noise;
+	World* world = new World();
 
-	std::vector<Chunk*> chunks;
 	int prevChunkX = 0, prevChunkZ = 0;
 	int chunkDistance = 4;
 
@@ -148,8 +148,7 @@ int main()
 	{
 		for (int z = prevChunkZ - chunkDistance; z <= prevChunkZ + chunkDistance; ++z)
 		{
-			chunks.push_back(new Chunk(x, z));
-			chunks.back()->GenerateChunk(noise);
+			world->GenerateChunkAt(x, z);
 		}
 	}
 
@@ -205,8 +204,8 @@ int main()
 			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
-		int currentChunkX = static_cast<int>(camera.GetPosition().x / 16);
-		int currentChunkZ = static_cast<int>(-camera.GetPosition().z / 16);
+		int currentChunkX = static_cast<int>(camera.GetPosition().x / Chunk::CHUNK_WIDTH);
+		int currentChunkZ = static_cast<int>(-camera.GetPosition().z / Chunk::CHUNK_DEPTH);
 
 		if ((currentChunkX != prevChunkX) || (currentChunkZ != prevChunkZ))
 		{
@@ -214,21 +213,9 @@ int main()
 			{
 				for (int z = currentChunkZ - chunkDistance; z <= currentChunkZ + chunkDistance; ++z)
 				{
-					bool exists = false;
-					for (size_t i = 0; i < chunks.size(); ++i)
+					if (world->GetChunkAt(x, z) == nullptr)
 					{
-						if ((chunks[i]->GetChunkIndexX() == x) && (chunks[i]->GetChunkIndexZ() == z))
-						{
-							exists = true;
-							break;
-						}
-					}
-
-					if (!exists)
-					{
-						Chunk* chunk = new Chunk(x, z);
-						chunk->GenerateChunk(noise);
-						chunks.push_back(chunk);
+						world->GenerateChunkAt(x, z);
 					}
 				}
 			}
@@ -242,11 +229,7 @@ int main()
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
 
-		mesh.Draw();
-		for (size_t i = 0; i < chunks.size(); ++i)
-		{
-			chunks[i]->Draw();
-		}
+		world->Draw();
 
 		// "Unuse" the vertex array object
 		glBindVertexArray(0);
@@ -261,11 +244,7 @@ int main()
 		glfwPollEvents();
 	}
 
-	for (size_t i = 0; i < chunks.size(); ++i)
-	{
-		delete chunks[i];
-	}
-	chunks.clear();
+	delete world;
 
 	// Re-enable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

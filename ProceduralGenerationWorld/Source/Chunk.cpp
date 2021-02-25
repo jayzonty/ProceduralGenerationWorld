@@ -17,6 +17,8 @@ Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	, m_chunkIndexX(chunkIndexX)
 	, m_chunkIndexZ(chunkIndexZ)
 {
+	int size = CHUNK_WIDTH * CHUNK_DEPTH * CHUNK_HEIGHT;
+	m_blocks.resize(size);
 }
 
 /// <summary>
@@ -45,27 +47,10 @@ int Chunk::GetChunkIndexZ() const
 }
 
 /// <summary>
-/// Generates the chunk
+/// Generates the mesh for this chunk
 /// </summary>
-void Chunk::GenerateChunk(FastNoiseLite& noise)
+void Chunk::GenerateMesh()
 {
-	m_blocks.resize(CHUNK_WIDTH * CHUNK_DEPTH * CHUNK_HEIGHT);
-	for (int x = 0; x < CHUNK_WIDTH; ++x)
-	{
-		for (int z = 0; z < CHUNK_DEPTH; ++z)
-		{
-			float height = noise.GetNoise((m_chunkIndexX * CHUNK_WIDTH + x) * 5.0f, (m_chunkIndexZ * CHUNK_DEPTH + z) * 5.0f);
-			height = (height + 1.0f) / 2.0f;
-			height = height * 5.0f;
-
-			size_t ceilHeight = static_cast<size_t>(glm::ceil(height));
-			for (size_t y = 0; y < ceilHeight; ++y)
-			{
-				GetBlockAt(x, y, z).SetBlockType(BlockType::Dirt);
-			}
-		}
-	}
-
 	float blockSize = 1.0f;
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec4> vertexColors;

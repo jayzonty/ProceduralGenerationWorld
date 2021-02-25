@@ -12,21 +12,6 @@ class Chunk
 {
 private:
 	/// <summary>
-	/// Chunk width constant
-	/// </summary>
-	const int CHUNK_WIDTH = 16;
-
-	/// <summary>
-	/// Chunk height constant
-	/// </summary>
-	const int CHUNK_HEIGHT = 256;
-
-	/// <summary>
-	/// Chunk depth constant
-	/// </summary>
-	const int CHUNK_DEPTH = 16;
-
-	/// <summary>
 	/// Chunk mesh
 	/// </summary>
 	Mesh m_mesh;
@@ -45,6 +30,23 @@ private:
 	/// Chunk z-index
 	/// </summary>
 	int m_chunkIndexZ;
+
+public:
+
+	/// <summary>
+	/// Chunk width constant
+	/// </summary>
+	static const int CHUNK_WIDTH = 16;
+
+	/// <summary>
+	/// Chunk height constant
+	/// </summary>
+	static const int CHUNK_HEIGHT = 256;
+
+	/// <summary>
+	/// Chunk depth constant
+	/// </summary>
+	static const int CHUNK_DEPTH = 16;
 
 public:
 
@@ -73,16 +75,15 @@ public:
 	int GetChunkIndexZ() const;
 
 	/// <summary>
-	/// Generates the chunk
+	/// Generates the mesh for this chunk
 	/// </summary>
-	void GenerateChunk(FastNoiseLite& noise);
+	void GenerateMesh();
 
 	/// <summary>
 	/// Draw the chunk
 	/// </summary>
 	void Draw();
 
-private:
 	/// <summary>
 	/// Gets the block at the specified location
 	/// </summary>

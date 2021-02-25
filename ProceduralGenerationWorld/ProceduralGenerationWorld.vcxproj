@@ -152,13 +152,17 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\AABB.hpp" />
     <ClInclude Include="Headers\Block.hpp" />
     <ClInclude Include="Headers\Camera.hpp" />
     <ClInclude Include="Headers\Chunk.hpp" />
     <ClInclude Include="Headers\Mesh.hpp" />
+    <ClInclude Include="Headers\Ray.hpp" />
     <ClInclude Include="Headers\Shader.hpp" />
+    <ClInclude Include="Headers\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
