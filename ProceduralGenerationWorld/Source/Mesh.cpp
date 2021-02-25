@@ -10,7 +10,6 @@ Mesh::Mesh()
 	: m_vbo(0)
 	, m_vao(0)
 	, m_ebo(0)
-	, m_shaderProgram(nullptr)
 	, m_positions()
 	, m_colors()
 	, m_indices()
@@ -71,7 +70,7 @@ void Mesh::GenerateMesh()
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
 	if (m_ebo == 0)
 	{
@@ -79,13 +78,15 @@ void Mesh::GenerateMesh()
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_indices.size(), m_indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_indices.size(), m_indices.data(), GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, x)));
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, r)));
+
+	glBindVertexArray(0);
 }
 
 /// <summary>
@@ -93,11 +94,6 @@ void Mesh::GenerateMesh()
 /// </summary>
 void Mesh::Draw()
 {
-	if (m_shaderProgram == nullptr)
-	{
-		return;
-	}
-
 	glBindVertexArray(m_vao);
 
 	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
@@ -128,13 +124,4 @@ void Mesh::SetVertexColors(const std::vector<glm::vec4>& colors)
 void Mesh::SetIndices(const std::vector<GLuint>& indices)
 {
 	m_indices = indices;
-}
-
-/// <summary>
-/// Sets the shader that this mesh will use
-/// </summary>
-/// <param name="shader"></param>
-void Mesh::SetShader(ShaderProgram* shaderProgram)
-{
-	m_shaderProgram = shaderProgram;
 }

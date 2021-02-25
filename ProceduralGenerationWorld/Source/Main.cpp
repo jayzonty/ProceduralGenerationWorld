@@ -11,7 +11,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <FastNoiseLite/FastNoiseLite.h>
+
 #include "Camera.hpp"
+#include "Chunk.hpp"
 #include "Mesh.hpp"
 #include "Shader.hpp"
 
@@ -103,7 +106,6 @@ int main()
 
 	// Set up the data for the mesh
 	Mesh mesh;
-	mesh.SetShader(&shaderProgram);
 
 	std::vector<glm::vec3> vertexPositions;
 	vertexPositions.emplace_back(-1.0f, -1.0f, 0.0f);
@@ -133,8 +135,26 @@ int main()
 	// Initialize the previous cursor x and y values
 	glfwGetCursorPos(window, &prevCursorX, &prevCursorY);
 
-	camera.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+	camera.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
 	camera.SetAspectRatio(static_cast<float>(windowWidth) / static_cast<float>(windowHeight));
+
+	FastNoiseLite noise;
+
+	std::vector<Chunk*> chunks;
+	int prevChunkX = 0, prevChunkZ = 0;
+	int chunkDistance = 4;
+
+	for (int x = prevChunkX - chunkDistance; x <= prevChunkX + chunkDistance; ++x)
+	{
+		for (int z = prevChunkZ - chunkDistance; z <= prevChunkZ + chunkDistance; ++z)
+		{
+			chunks.push_back(new Chunk(x, z));
+			chunks.back()->GenerateChunk(noise);
+		}
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	double prevTime = glfwGetTime();
 
@@ -147,7 +167,7 @@ int main()
 		float deltaTime = static_cast<float>(deltaTimeAsDouble);
 
 		// Clear the colors in our off-screen framebuffer
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		double cursorX, cursorY;
 		glfwGetCursorPos(window, &cursorX, &cursorY);
@@ -185,12 +205,48 @@ int main()
 			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
+		int currentChunkX = static_cast<int>(camera.GetPosition().x / 16);
+		int currentChunkZ = static_cast<int>(-camera.GetPosition().z / 16);
+
+		if ((currentChunkX != prevChunkX) || (currentChunkZ != prevChunkZ))
+		{
+			for (int x = currentChunkX - chunkDistance; x <= currentChunkX + chunkDistance; ++x)
+			{
+				for (int z = currentChunkZ - chunkDistance; z <= currentChunkZ + chunkDistance; ++z)
+				{
+					bool exists = false;
+					for (size_t i = 0; i < chunks.size(); ++i)
+					{
+						if ((chunks[i]->GetChunkIndexX() == x) && (chunks[i]->GetChunkIndexZ() == z))
+						{
+							exists = true;
+							break;
+						}
+					}
+
+					if (!exists)
+					{
+						Chunk* chunk = new Chunk(x, z);
+						chunk->GenerateChunk(noise);
+						chunks.push_back(chunk);
+					}
+				}
+			}
+
+			prevChunkX = currentChunkX;
+			prevChunkZ = currentChunkZ;
+		}
+
 		shaderProgram.Use();
 
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
 
 		mesh.Draw();
+		for (size_t i = 0; i < chunks.size(); ++i)
+		{
+			chunks[i]->Draw();
+		}
 
 		// "Unuse" the vertex array object
 		glBindVertexArray(0);
@@ -204,6 +260,12 @@ int main()
 		// Tell GLFW to process window events (e.g., input events, window closed events, etc.)
 		glfwPollEvents();
 	}
+
+	for (size_t i = 0; i < chunks.size(); ++i)
+	{
+		delete chunks[i];
+	}
+	chunks.clear();
 
 	// Re-enable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

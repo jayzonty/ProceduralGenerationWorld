@@ -29,11 +29,6 @@ private:
 	GLuint m_ebo;
 
 	/// <summary>
-	/// Shader program
-	/// </summary>
-	ShaderProgram* m_shaderProgram;
-
-	/// <summary>
 	/// Struct containing vertex data
 	/// </summary>
 	struct Vertex
@@ -102,11 +97,4 @@ public:
 	/// </summary>
 	/// <param name="indices">New list of vertex indices</param>
 	void SetIndices(const std::vector<GLuint>& indices);
-
-	/// <summary>
-	/// Sets the shader that this mesh will use
-	/// </summary>
-	/// <param name="shader"></param>
-	void SetShader(ShaderProgram* shader);
-
 };
