@@ -57,8 +57,8 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 			height = (height + 1.0f) / 2.0f;
 			height = height * 10.0f;
 
-			size_t ceilHeight = static_cast<size_t>(glm::ceil(height));
-			for (size_t y = 0; y < ceilHeight; ++y)
+			int ceilHeight = static_cast<int>(glm::ceil(height));
+			for (int y = 0; y < ceilHeight; ++y)
 			{
 				chunk->GetBlockAt(x, y, z).SetBlockType(BlockType::Dirt);
 			}

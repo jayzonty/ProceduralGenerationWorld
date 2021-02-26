@@ -91,6 +91,6 @@ public:
 	/// <param name="y">Y-coordinate</param>
 	/// <param name="z">Z-coordinate</param>
 	/// <returns></returns>
-	Block& GetBlockAt(size_t x, size_t y, size_t z);
+	Block& GetBlockAt(int x, int y, int z);
 
 };

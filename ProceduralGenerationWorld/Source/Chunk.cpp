@@ -233,8 +233,8 @@ void Chunk::Draw()
 /// <param name="y">Y-coordinate</param>
 /// <param name="z">Z-coordinate</param>
 /// <returns></returns>
-Block& Chunk::GetBlockAt(size_t x, size_t y, size_t z)
+Block& Chunk::GetBlockAt(int x, int y, int z)
 {
-	size_t index = (z * CHUNK_WIDTH + x) * CHUNK_HEIGHT + y;
+	int index = (z * CHUNK_WIDTH + x) * CHUNK_HEIGHT + y;
 	return m_blocks[index];
 }
