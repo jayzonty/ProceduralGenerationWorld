@@ -221,8 +221,8 @@ int main()
 			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
-		int currentChunkX = static_cast<int>(camera.GetPosition().x / Chunk::CHUNK_WIDTH);
-		int currentChunkZ = static_cast<int>(-camera.GetPosition().z / Chunk::CHUNK_DEPTH);
+		int currentChunkX = static_cast<int>(glm::floor(camera.GetPosition().x / Chunk::CHUNK_WIDTH));
+		int currentChunkZ = static_cast<int>(glm::floor(camera.GetPosition().z / Chunk::CHUNK_DEPTH));
 
 		if ((currentChunkX != prevChunkX) || (currentChunkZ != prevChunkZ))
 		{

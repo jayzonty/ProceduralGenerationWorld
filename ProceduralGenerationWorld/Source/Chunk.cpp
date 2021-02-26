@@ -55,7 +55,7 @@ void Chunk::GenerateMesh()
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec4> vertexColors;
 	std::vector<GLuint> indices;
-	glm::vec3 origin(m_chunkIndexX * CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndexZ * CHUNK_DEPTH * blockSize * -1.0f);
+	glm::vec3 origin(m_chunkIndexX * CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndexZ * CHUNK_DEPTH * blockSize * 1.0f);
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
 		for (int z = 0; z < CHUNK_DEPTH; ++z)
@@ -69,11 +69,11 @@ void Chunk::GenerateMesh()
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
+						
 						float color = 0.75f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
@@ -93,11 +93,11 @@ void Chunk::GenerateMesh()
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
+						
 						float color = 0.35f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
@@ -113,15 +113,15 @@ void Chunk::GenerateMesh()
 					}
 					
 					// Left face
-					if ((x == 0) || (GetBlockAt(x - 1, y, z).GetBlockType() == BlockType::Air))
+					if ((x == CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z).GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
+						
 						float color = 0.6f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
@@ -137,15 +137,15 @@ void Chunk::GenerateMesh()
 					}
 
 					// Right face
-					if ((x == CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z).GetBlockType() == BlockType::Air))
+					if ((x == 0) || (GetBlockAt(x - 1, y, z).GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						
 						float color = 0.6f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
@@ -161,15 +161,15 @@ void Chunk::GenerateMesh()
 					}
 
 					// Front face
-					if ((z == CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1).GetBlockType() == BlockType::Air))
+					if ((z == 0) || (GetBlockAt(x, y, z - 1).GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
+						
 						float color = 0.5f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
@@ -185,15 +185,15 @@ void Chunk::GenerateMesh()
 					}
 
 					// Back face
-					if ((z == 0) || (GetBlockAt(x, y, z - 1).GetBlockType() == BlockType::Air))
+					if ((z == CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1).GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * -blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * -blockSize));
-
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
+						
 						float color = 0.5f;
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
