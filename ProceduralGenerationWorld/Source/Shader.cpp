@@ -73,6 +73,30 @@ void ShaderProgram::Unuse()
 // ================
 
 /// <summary>
+/// Sets the uniform value with a single integer
+/// </summary>
+/// <param name="uniformName">Uniform name</param>
+/// <param name="val">Value</param>
+void ShaderProgram::SetUniform1i(const std::string& uniformName, const int& val)
+{
+	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
+	glUniform1i(uniformLocation, val);
+}
+
+/// <summary>
+/// Sets the uniform value with 3 floats
+/// </summary>
+/// <param name="uniformName">Uniform name</param>
+/// <param name="val1">First value</param>
+/// <param name="val2">Second value</param>
+/// <param name="val3">Third value</param>
+void ShaderProgram::SetUniform3f(const std::string& uniformName, const float& val1, const float& val2, const float& val3)
+{
+	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
+	glUniform3f(uniformLocation, val1, val2, val3);
+}
+
+/// <summary>
 /// Sets the uniform value with a matrix
 /// </summary>
 /// <param name="uniformName">Name of the uniform</param>

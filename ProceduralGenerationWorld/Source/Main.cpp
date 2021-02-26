@@ -4,7 +4,9 @@
 #include <GLFW/glfw3.h>
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -15,8 +17,10 @@
 
 #include "Camera.hpp"
 #include "Chunk.hpp"
+#include "Font.hpp"
 #include "Mesh.hpp"
 #include "Shader.hpp"
+#include "Text.hpp"
 #include "World.hpp"
 
 // ---------------
@@ -129,6 +133,19 @@ int main()
 
 	mesh.GenerateMesh();
 
+	Font font;
+	font.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
+	font.SetSize(14);
+	if (!font.IsLoaded())
+	{
+		std::cerr << "Failed to load font" << std::endl;
+	}
+
+	Text text;
+	text.SetFont(font);
+	text.SetColor(glm::vec4(255.0f));
+	text.SetLineSpacing(2.0f);
+
 	// Tell OpenGL the dimensions of the region where stuff will be drawn.
 	// For now, tell OpenGL to use the whole screen
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -230,6 +247,15 @@ int main()
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
 
 		world->Draw();
+
+		std::stringstream displayStringStream;
+		displayStringStream << "Chunk: " << currentChunkX << " (*) " << currentChunkZ << std::endl;
+		displayStringStream << "Position: " << std::fixed << std::setprecision(2) << camera.GetPosition().x << "  " << camera.GetPosition().y << "  " << camera.GetPosition().z;
+		text.SetString(displayStringStream.str());
+		int textWidth, textHeight;
+		text.ComputeSize(&textWidth, &textHeight);
+		text.SetPosition(0.0f, (windowHeight - textHeight) * 1.0f);
+		text.Draw(glm::ortho(0.0f, windowWidth * 1.0f, 0.0f, windowHeight * 1.0f));
 
 		// "Unuse" the vertex array object
 		glBindVertexArray(0);
