@@ -42,6 +42,11 @@ private:
 		/// Color
 		/// </summary>
 		GLfloat r, g, b, a;
+
+		/// <summary>
+		/// Texture coordinates
+		/// </summary>
+		GLfloat u, v;
 	};
 
 	/// <summary>
@@ -53,6 +58,11 @@ private:
 	/// List of vertex colors
 	/// </summary>
 	std::vector<glm::vec4> m_colors;
+
+	/// <summary>
+	/// List of UV coordinates
+	/// </summary>
+	std::vector<glm::vec2> m_uvCoordinates;
 
 	/// <summary>
 	/// List of indices
@@ -91,6 +101,12 @@ public:
 	/// </summary>
 	/// <param name="colors">New list of vertex colors</param>
 	void SetVertexColors(const std::vector<glm::vec4>& colors);
+
+	/// <summary>
+	/// Sets list of vertex UV coordinates
+	/// </summary>
+	/// <param name="uvCoordinates">New list of vertex UV coordinates</param>
+	void SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates);
 
 	/// <summary>
 	/// Sets list of vertex indices

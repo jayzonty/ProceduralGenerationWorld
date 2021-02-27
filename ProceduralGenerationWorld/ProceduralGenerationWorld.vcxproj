@@ -156,6 +156,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\Text.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="Headers\Ray.hpp" />
     <ClInclude Include="Headers\Shader.hpp" />
     <ClInclude Include="Headers\Text.hpp" />
+    <ClInclude Include="Headers\Texture.hpp" />
     <ClInclude Include="Headers\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

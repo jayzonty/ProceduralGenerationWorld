@@ -21,6 +21,7 @@
 #include "Font.hpp"
 #include "Shader.hpp"
 #include "Text.hpp"
+#include "Texture.hpp"
 #include "World.hpp"
 
 // ---------------
@@ -137,6 +138,9 @@ int main()
 	text.SetColor(glm::vec4(255.0f));
 	text.SetLineSpacing(2.0f);
 
+	Texture texture;
+	texture.CreateFromFile("Resources/Textures/Blocks.png");
+
 	// Tell OpenGL the dimensions of the region where stuff will be drawn.
 	// For now, tell OpenGL to use the whole screen
 	glViewport(0, 0, windowWidth, windowHeight);
@@ -252,6 +256,10 @@ int main()
 
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture.GetHandle());
+		shaderProgram.SetUniform1i("tex", 0);
 
 		world->Draw();
 

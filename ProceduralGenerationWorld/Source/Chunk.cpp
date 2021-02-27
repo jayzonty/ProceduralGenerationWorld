@@ -74,6 +74,7 @@ void Chunk::GenerateMesh()
 
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec4> vertexColors;
+	std::vector<glm::vec2> vertexUVs;
 	std::vector<GLuint> indices;
 	glm::vec3 origin(m_chunkIndexX * Constants::CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndexZ * Constants::CHUNK_DEPTH * blockSize * 1.0f);
 	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
@@ -100,6 +101,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 
+						vertexUVs.emplace_back(0.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(0.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 256.0f / 256.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -123,6 +129,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
+
+						vertexUVs.emplace_back(64.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(96.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(96.0f / 256.0f, 256.0f / 256.0f);
 
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
@@ -148,6 +159,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 
+						vertexUVs.emplace_back(32.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 256.0f / 256.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -171,6 +187,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
+
+						vertexUVs.emplace_back(32.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 256.0f / 256.0f);
 
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
@@ -196,6 +217,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 
+						vertexUVs.emplace_back(32.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 256.0f / 256.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -220,6 +246,11 @@ void Chunk::GenerateMesh()
 						vertexColors.emplace_back(color, color, color, 1.0f);
 						vertexColors.emplace_back(color, color, color, 1.0f);
 
+						vertexUVs.emplace_back(32.0f / 256.0f, 256.0f / 256.0f);
+						vertexUVs.emplace_back(32.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 224.0f / 256.0f);
+						vertexUVs.emplace_back(64.0f / 256.0f, 256.0f / 256.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -234,6 +265,7 @@ void Chunk::GenerateMesh()
 
 	m_mesh.SetVertexPositions(vertexPositions);
 	m_mesh.SetVertexColors(vertexColors);
+	m_mesh.SetVertexUVs(vertexUVs);
 	m_mesh.SetIndices(indices);
 	m_mesh.GenerateMesh();
 }
