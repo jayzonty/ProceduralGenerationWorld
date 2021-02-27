@@ -114,3 +114,25 @@ void World::Draw()
 		m_chunks[i]->Draw();
 	}
 }
+
+/// <summary>
+/// Casts a ray and gets the first non-air block hit
+/// </summary>
+/// <param name="ray">Ray</param>
+/// <param name="maxDistance">Maximum distance</param>
+/// <returns>First non-air block hit by the ray cast. If no blocks are hit, returns nullptr.</returns>
+Block* World::Raycast(const Ray& ray, float maxDistance)
+{
+	float step = Constants::BLOCK_SIZE;
+	for (float distance = 0.0f; distance <= maxDistance; distance += step)
+	{
+		glm::vec3 position = ray.origin + ray.direction * distance;
+		Block* block = GetBlockAtWorldPosition(position);
+		if (block->GetBlockType() != BlockType::Air)
+		{
+			return block;
+		}
+	}
+
+	return nullptr;
+}

@@ -252,10 +252,18 @@ int main()
 		Block* currentBlock = world->GetBlockAtWorldPosition(camera.GetPosition());
 		glm::ivec3 currentBlockPosition = currentBlock->GetPositionInWorld();
 
+		Ray ray(camera.GetPosition(), camera.GetForwardVector());
+		Block* raycastBlock = world->Raycast(ray, 5.0f);
+
 		std::stringstream displayStringStream;
 		displayStringStream << "Chunk: " << currentChunkX << " (*) " << currentChunkZ << std::endl;
 		displayStringStream << "Position: " << std::fixed << std::setprecision(2) << camera.GetPosition().x << "  " << camera.GetPosition().y << "  " << camera.GetPosition().z << std::endl;
 		displayStringStream << "Current block: " << currentBlockPosition.x << " " << currentBlockPosition.y << " " << currentBlockPosition.z << std::endl;
+		if (raycastBlock != nullptr)
+		{
+			glm::ivec3 raycastBlockPosition = raycastBlock->GetPositionInWorld();
+			displayStringStream << "Looking at block: " << raycastBlockPosition.x << " " << raycastBlockPosition.y << " " << raycastBlockPosition.z << std::endl;
+		}
 		text.SetString(displayStringStream.str());
 		int textWidth, textHeight;
 		text.ComputeSize(&textWidth, &textHeight);

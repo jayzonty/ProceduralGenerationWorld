@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Chunk.hpp"
+#include "Ray.hpp"
 
 #include <FastNoiseLite/FastNoiseLite.h>
 
@@ -67,4 +68,12 @@ public:
 	/// Draws the world
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// Casts a ray and gets the first non-air block hit
+	/// </summary>
+	/// <param name="ray">Ray</param>
+	/// <param name="maxDistance">Maximum distance</param>
+	/// <returns>First non-air block hit by the ray cast. If no blocks are hit, returns nullptr.</returns>
+	Block* Raycast(const Ray& ray, float maxDistance);
 };
