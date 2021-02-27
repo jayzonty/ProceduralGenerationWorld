@@ -19,7 +19,7 @@ private:
 	/// <summary>
 	/// Block data
 	/// </summary>
-	std::vector<Block> m_blocks;
+	std::vector<Block*> m_blocks;
 
 	/// <summary>
 	/// Chunk x-index
@@ -30,23 +30,6 @@ private:
 	/// Chunk z-index
 	/// </summary>
 	int m_chunkIndexZ;
-
-public:
-
-	/// <summary>
-	/// Chunk width constant
-	/// </summary>
-	static const int CHUNK_WIDTH = 16;
-
-	/// <summary>
-	/// Chunk height constant
-	/// </summary>
-	static const int CHUNK_HEIGHT = 256;
-
-	/// <summary>
-	/// Chunk depth constant
-	/// </summary>
-	static const int CHUNK_DEPTH = 16;
 
 public:
 
@@ -91,6 +74,6 @@ public:
 	/// <param name="y">Y-coordinate</param>
 	/// <param name="z">Z-coordinate</param>
 	/// <returns></returns>
-	Block& GetBlockAt(int x, int y, int z);
+	Block* GetBlockAt(int x, int y, int z);
 
 };

@@ -163,6 +163,7 @@
     <ClInclude Include="Headers\Block.hpp" />
     <ClInclude Include="Headers\Camera.hpp" />
     <ClInclude Include="Headers\Chunk.hpp" />
+    <ClInclude Include="Headers\Constants.hpp" />
     <ClInclude Include="Headers\Font.hpp" />
     <ClInclude Include="Headers\Mesh.hpp" />
     <ClInclude Include="Headers\Ray.hpp" />

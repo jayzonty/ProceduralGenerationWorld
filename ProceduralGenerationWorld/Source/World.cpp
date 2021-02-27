@@ -1,5 +1,7 @@
 #include "World.hpp"
 
+#include "Constants.hpp"
+
 /// <summary>
 /// Constructor
 /// </summary>
@@ -41,6 +43,38 @@ Chunk* World::GetChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 }
 
 /// <summary>
+/// Gets the block at the given world position
+/// </summary>
+/// <param name="worldPosition">World position</param>
+/// <returns>Block at the given world position</returns>
+Block* World::GetBlockAtWorldPosition(const glm::vec3& worldPosition)
+{
+	glm::ivec3 chunkIndex = WorldPositionToChunkIndex(worldPosition);
+	Chunk* chunk = GetChunkAt(chunkIndex.x, chunkIndex.z);
+
+	glm::vec3 worldPositionCopy = worldPosition / Constants::BLOCK_SIZE;
+	glm::ivec3 blockPosition(0);
+	blockPosition.x = (static_cast<int>(glm::floor(worldPositionCopy.x)) + (Constants::CHUNK_WIDTH * glm::abs(chunkIndex.x))) % Constants::CHUNK_WIDTH;
+	blockPosition.y = (static_cast<int>(glm::floor(worldPositionCopy.y)) + (Constants::CHUNK_HEIGHT * glm::abs(chunkIndex.y))) % Constants::CHUNK_HEIGHT;
+	blockPosition.z = (static_cast<int>(glm::floor(worldPositionCopy.z)) + (Constants::CHUNK_DEPTH * glm::abs(chunkIndex.z))) % Constants::CHUNK_DEPTH;
+
+	return chunk->GetBlockAt(blockPosition.x, blockPosition.y, blockPosition.z);
+}
+
+/// <summary>
+/// Converts the provided world position to chunk index
+/// </summary>
+/// <param name="worldPosition">World position</param>
+/// <returns>Chunk index of the provided world position</returns>
+glm::ivec3 World::WorldPositionToChunkIndex(const glm::vec3& worldPosition)
+{
+	glm::ivec3 ret(0);
+	ret.x = static_cast<int>(glm::floor(worldPosition.x / Constants::BLOCK_SIZE / Constants::CHUNK_WIDTH));
+	ret.z = static_cast<int>(glm::floor(worldPosition.z / Constants::BLOCK_SIZE / Constants::CHUNK_DEPTH));
+	return ret;
+}
+
+/// <summary>
 /// Generate chunk at the provided location indices
 /// </summary>
 /// <param name="chunkIndexX">Chunk x-index</param>
@@ -49,18 +83,18 @@ Chunk* World::GetChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 {
 	Chunk* chunk = new Chunk(chunkIndexX, chunkIndexZ);
-	for (int x = 0; x < Chunk::CHUNK_WIDTH; ++x)
+	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
 	{
-		for (int z = 0; z < Chunk::CHUNK_DEPTH; ++z)
+		for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
 		{
-			float height = m_noiseEngine.GetNoise((chunkIndexX * Chunk::CHUNK_WIDTH + x) * 1.0f, (chunkIndexZ * Chunk::CHUNK_DEPTH + z) * 1.0f);
+			float height = m_noiseEngine.GetNoise((chunkIndexX * Constants::CHUNK_WIDTH + x) * 1.0f, (chunkIndexZ * Constants::CHUNK_DEPTH + z) * 1.0f);
 			height = (height + 1.0f) / 2.0f;
 			height = height * 10.0f;
 
 			int ceilHeight = static_cast<int>(glm::ceil(height));
 			for (int y = 0; y < ceilHeight; ++y)
 			{
-				chunk->GetBlockAt(x, y, z).SetBlockType(BlockType::Dirt);
+				chunk->GetBlockAt(x, y, z)->SetBlockType(BlockType::Dirt);
 			}
 		}
 	}

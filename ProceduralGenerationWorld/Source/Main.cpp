@@ -17,6 +17,7 @@
 
 #include "Camera.hpp"
 #include "Chunk.hpp"
+#include "Constants.hpp"
 #include "Font.hpp"
 #include "Mesh.hpp"
 #include "Shader.hpp"
@@ -221,8 +222,8 @@ int main()
 			camera.SetPosition(camera.GetPosition() + movement * movementSpeed * deltaTime);
 		}
 
-		int currentChunkX = static_cast<int>(glm::floor(camera.GetPosition().x / Chunk::CHUNK_WIDTH));
-		int currentChunkZ = static_cast<int>(glm::floor(camera.GetPosition().z / Chunk::CHUNK_DEPTH));
+		int currentChunkX = static_cast<int>(glm::floor(camera.GetPosition().x / Constants::BLOCK_SIZE / Constants::CHUNK_WIDTH));
+		int currentChunkZ = static_cast<int>(glm::floor(camera.GetPosition().z / Constants::BLOCK_SIZE / Constants::CHUNK_DEPTH));
 
 		if ((currentChunkX != prevChunkX) || (currentChunkZ != prevChunkZ))
 		{
@@ -248,9 +249,13 @@ int main()
 
 		world->Draw();
 
+		Block* currentBlock = world->GetBlockAtWorldPosition(camera.GetPosition());
+		glm::ivec3 currentBlockPosition = currentBlock->GetPositionInWorld();
+
 		std::stringstream displayStringStream;
 		displayStringStream << "Chunk: " << currentChunkX << " (*) " << currentChunkZ << std::endl;
-		displayStringStream << "Position: " << std::fixed << std::setprecision(2) << camera.GetPosition().x << "  " << camera.GetPosition().y << "  " << camera.GetPosition().z;
+		displayStringStream << "Position: " << std::fixed << std::setprecision(2) << camera.GetPosition().x << "  " << camera.GetPosition().y << "  " << camera.GetPosition().z << std::endl;
+		displayStringStream << "Current block: " << currentBlockPosition.x << " " << currentBlockPosition.y << " " << currentBlockPosition.z << std::endl;
 		text.SetString(displayStringStream.str());
 		int textWidth, textHeight;
 		text.ComputeSize(&textWidth, &textHeight);

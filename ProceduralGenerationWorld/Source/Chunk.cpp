@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Constants.hpp"
+
 /// <summary>
 /// Constructor
 /// </summary>
@@ -17,8 +19,20 @@ Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	, m_chunkIndexX(chunkIndexX)
 	, m_chunkIndexZ(chunkIndexZ)
 {
-	int size = CHUNK_WIDTH * CHUNK_DEPTH * CHUNK_HEIGHT;
+	int size = Constants::CHUNK_WIDTH * Constants::CHUNK_DEPTH * Constants::CHUNK_HEIGHT;
 	m_blocks.resize(size);
+
+	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
+	{
+		for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
+		{
+			for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
+			{
+				int index = (z * Constants::CHUNK_WIDTH + x) * Constants::CHUNK_HEIGHT + y;
+				m_blocks[index] = new Block(glm::ivec3(m_chunkIndexX, 0, m_chunkIndexZ), glm::ivec3(x, y, z));
+			}
+		}
+	}
 }
 
 /// <summary>
@@ -26,6 +40,11 @@ Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 /// </summary>
 Chunk::~Chunk()
 {
+	for (size_t i = 0; i < m_blocks.size(); ++i)
+	{
+		delete m_blocks[i];
+	}
+	m_blocks.clear();
 }
 
 /// <summary>
@@ -51,21 +70,22 @@ int Chunk::GetChunkIndexZ() const
 /// </summary>
 void Chunk::GenerateMesh()
 {
-	float blockSize = 1.0f;
+	float blockSize = Constants::BLOCK_SIZE;
+
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec4> vertexColors;
 	std::vector<GLuint> indices;
-	glm::vec3 origin(m_chunkIndexX * CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndexZ * CHUNK_DEPTH * blockSize * 1.0f);
-	for (int x = 0; x < CHUNK_WIDTH; ++x)
+	glm::vec3 origin(m_chunkIndexX * Constants::CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndexZ * Constants::CHUNK_DEPTH * blockSize * 1.0f);
+	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
 	{
-		for (int z = 0; z < CHUNK_DEPTH; ++z)
+		for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
 		{
-			for (int y = 0; y < CHUNK_HEIGHT; ++y)
+			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
 			{
-				if (GetBlockAt(x, y, z).GetBlockType() == BlockType::Dirt)
+				if (GetBlockAt(x, y, z)->GetBlockType() == BlockType::Dirt)
 				{
 					// Top face
-					if ((y == CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z).GetBlockType() == BlockType::Air))
+					if ((y == Constants::CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -89,7 +109,7 @@ void Chunk::GenerateMesh()
 					}
 
 					// Bottom face
-					if ((y == 0) || (GetBlockAt(x, y - 1, z).GetBlockType() == BlockType::Air))
+					if ((y == 0) || (GetBlockAt(x, y - 1, z)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -113,7 +133,7 @@ void Chunk::GenerateMesh()
 					}
 					
 					// Left face
-					if ((x == CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z).GetBlockType() == BlockType::Air))
+					if ((x == Constants::CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -137,7 +157,7 @@ void Chunk::GenerateMesh()
 					}
 
 					// Right face
-					if ((x == 0) || (GetBlockAt(x - 1, y, z).GetBlockType() == BlockType::Air))
+					if ((x == 0) || (GetBlockAt(x - 1, y, z)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -161,7 +181,7 @@ void Chunk::GenerateMesh()
 					}
 
 					// Front face
-					if ((z == 0) || (GetBlockAt(x, y, z - 1).GetBlockType() == BlockType::Air))
+					if ((z == 0) || (GetBlockAt(x, y, z - 1)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -185,7 +205,7 @@ void Chunk::GenerateMesh()
 					}
 
 					// Back face
-					if ((z == CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1).GetBlockType() == BlockType::Air))
+					if ((z == Constants::CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1)->GetBlockType() == BlockType::Air))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -233,8 +253,8 @@ void Chunk::Draw()
 /// <param name="y">Y-coordinate</param>
 /// <param name="z">Z-coordinate</param>
 /// <returns></returns>
-Block& Chunk::GetBlockAt(int x, int y, int z)
+Block* Chunk::GetBlockAt(int x, int y, int z)
 {
-	int index = (z * CHUNK_WIDTH + x) * CHUNK_HEIGHT + y;
+	int index = (z * Constants::CHUNK_WIDTH + x) * Constants::CHUNK_HEIGHT + y;
 	return m_blocks[index];
 }

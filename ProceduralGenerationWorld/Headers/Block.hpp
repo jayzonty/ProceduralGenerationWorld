@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 /// <summary>
 /// Block type enum
 /// </summary>
@@ -20,12 +22,24 @@ private:
 	/// </summary>
 	BlockType m_type;
 
+	/// <summary>
+	/// Chunk index of the chunk this block belongs to
+	/// </summary>
+	glm::ivec3 m_chunkIndex;
+
+	/// <summary>
+	/// Position of this block within the chunk
+	/// </summary>
+	glm::ivec3 m_positionInChunk;
+
 public:
 
 	/// <summary>
 	/// Constructor
+	/// <param name="chunkIndex">Chunk index of the chunk this block belongs to</param>
+	/// <param name="positionInChunk">Position of this block within the chunk</param>
 	/// </summary>
-	Block();
+	Block(const glm::ivec3& chunkIndex, const glm::ivec3& positionInChunk);
 
 	/// <summary>
 	/// Destructor
@@ -43,5 +57,17 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	BlockType GetBlockType() const;
+
+	/// <summary>
+	/// Gets the position of this block within the chunk
+	/// </summary>
+	/// <returns>Position of this block within the chunk</returns>
+	glm::ivec3 GetPositionInChunk() const;
+
+	/// <summary>
+	/// Gets the position of this block in the world
+	/// </summary>
+	/// <returns>Position of this block in the world</returns>
+	glm::ivec3 GetPositionInWorld() const;
 
 };
