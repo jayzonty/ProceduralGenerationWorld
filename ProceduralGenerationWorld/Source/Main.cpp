@@ -19,7 +19,6 @@
 #include "Chunk.hpp"
 #include "Constants.hpp"
 #include "Font.hpp"
-#include "Mesh.hpp"
 #include "Shader.hpp"
 #include "Text.hpp"
 #include "World.hpp"
@@ -124,30 +123,6 @@ int main()
 	// Create a shader program
 	ShaderProgram shaderProgram;
 	shaderProgram.InitFromFiles("main.vsh", "main.fsh");
-
-	// Set up the data for the mesh
-	Mesh mesh;
-
-	std::vector<glm::vec3> vertexPositions;
-	vertexPositions.emplace_back(-1.0f, -1.0f, 0.0f);
-	vertexPositions.emplace_back(1.0f, -1.0f, 0.0f);
-	vertexPositions.emplace_back(0.0f, 1.0f, 0.0f);
-
-	std::vector<glm::vec4> vertexColors;
-	vertexColors.emplace_back(1.0f, 0.0f, 0.0f, 1.0f);
-	vertexColors.emplace_back(0.0f, 1.0f, 0.0f, 1.0f);
-	vertexColors.emplace_back(0.0f, 0.0f, 1.0f, 1.0f);
-
-	std::vector<GLuint> indices;
-	indices.emplace_back(0);
-	indices.emplace_back(1);
-	indices.emplace_back(2);
-
-	mesh.SetVertexPositions(vertexPositions);
-	mesh.SetVertexColors(vertexColors);
-	mesh.SetIndices(indices);
-
-	mesh.GenerateMesh();
 
 	Font font;
 	font.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
