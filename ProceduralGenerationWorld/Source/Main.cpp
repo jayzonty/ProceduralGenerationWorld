@@ -46,11 +46,23 @@ void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height);
 /// <param name="mods">Modifiers</param>
 void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods);
 
+/// <summary>
+/// Function for handling when a mouse button is pressed.
+/// </summary>
+/// <param name="window">Reference to the window</param>
+/// <param name="button">Mouse button</param>
+/// <param name="action">Action</param>
+/// <param name="mods">Modifiers</param>
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
 // Camera
 Camera camera;
 
 // Previous x and y positions of the cursor
 double prevCursorX, prevCursorY;
+
+// Flag determining whether to remove the block in front or not
+bool removeBlockFlag = false;
 
 /// <summary>
 /// Main function.
@@ -95,6 +107,9 @@ int main()
 
 	// Set the callback function for when a key was pressed
 	glfwSetKeyCallback(window, KeyCallback);
+
+	// Register callback function for when a mouse button was pressed
+	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 
 	// Disable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -242,6 +257,22 @@ int main()
 			prevChunkZ = currentChunkZ;
 		}
 
+		Ray ray(camera.GetPosition(), camera.GetForwardVector());
+		Block* raycastBlock = world->Raycast(ray, 5.0f);
+
+		if (removeBlockFlag)
+		{
+			if (raycastBlock != nullptr)
+			{
+				raycastBlock->SetBlockType(BlockType::Air);
+
+				Chunk* chunk = world->GetChunkAtWorldPosition(camera.GetPosition());
+				chunk->GenerateMesh();
+			}
+
+			removeBlockFlag = false;
+		}
+
 		shaderProgram.Use();
 
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
@@ -251,9 +282,6 @@ int main()
 
 		Block* currentBlock = world->GetBlockAtWorldPosition(camera.GetPosition());
 		glm::ivec3 currentBlockPosition = currentBlock->GetPositionInWorld();
-
-		Ray ray(camera.GetPosition(), camera.GetForwardVector());
-		Block* raycastBlock = world->Raycast(ray, 5.0f);
 
 		std::stringstream displayStringStream;
 		displayStringStream << "Chunk: " << currentChunkX << " (*) " << currentChunkZ << std::endl;
@@ -320,5 +348,20 @@ void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods
 	if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
+/// <summary>
+/// Function for handling when a mouse button is pressed.
+/// </summary>
+/// <param name="window">Reference to the window</param>
+/// <param name="button">Mouse button</param>
+/// <param name="action">Action</param>
+/// <param name="mods">Modifiers</param>
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if ((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS))
+	{
+		removeBlockFlag = true;
 	}
 }

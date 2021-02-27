@@ -43,6 +43,13 @@ public:
 	Chunk* GetChunkAt(const int& chunkIndexX, const int& chunkIndexZ);
 
 	/// <summary>
+	/// Gets the chunk at the given world position
+	/// </summary>
+	/// <param name="worldPosition">World position</param>
+	/// <returns>Chunk at the given world position</returns>
+	Chunk* GetChunkAtWorldPosition(const glm::vec3& worldPosition);
+
+	/// <summary>
 	/// Gets the block at the given world position
 	/// </summary>
 	/// <param name="worldPosition">World position</param>
