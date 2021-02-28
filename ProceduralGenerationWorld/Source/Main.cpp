@@ -19,7 +19,7 @@
 #include "Chunk.hpp"
 #include "Constants.hpp"
 #include "Font.hpp"
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 #include "Text.hpp"
 #include "Texture.hpp"
 #include "World.hpp"

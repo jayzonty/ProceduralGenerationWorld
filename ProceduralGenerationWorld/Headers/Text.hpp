@@ -8,7 +8,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 #include "Font.hpp"
 
 #include <vector>

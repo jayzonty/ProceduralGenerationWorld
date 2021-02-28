@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 
 /// <summary>
 /// Mesh class
