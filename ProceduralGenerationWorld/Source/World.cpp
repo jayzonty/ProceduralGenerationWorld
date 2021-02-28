@@ -105,7 +105,9 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 			int ceilHeight = static_cast<int>(glm::ceil(height));
 			for (int y = 0; y < ceilHeight; ++y)
 			{
-				chunk->GetBlockAt(x, y, z)->SetBlockType(BlockType::Dirt);
+				Block* block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
+				block->SetBlockType(BlockType::Dirt);
+				chunk->SetBlockAt(x, y, z, block);
 			}
 		}
 	}
@@ -139,7 +141,7 @@ Block* World::Raycast(const Ray& ray, float maxDistance)
 	{
 		glm::vec3 position = ray.origin + ray.direction * distance;
 		Block* block = GetBlockAtWorldPosition(position);
-		if (block->GetBlockType() != BlockType::Air)
+		if (block != nullptr)
 		{
 			return block;
 		}

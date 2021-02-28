@@ -243,9 +243,9 @@ int main()
 		{
 			if (raycastBlock != nullptr)
 			{
-				raycastBlock->SetBlockType(BlockType::Air);
-
-				Chunk* chunk = world->GetChunkAtWorldPosition(camera.GetPosition());
+				glm::ivec3 blockPositionInChunk = raycastBlock->GetPositionInChunk();
+				Chunk* chunk = world->GetChunkAtWorldPosition(raycastBlock->GetPositionInWorld());
+				chunk->SetBlockAt(blockPositionInChunk.x, blockPositionInChunk.y, blockPositionInChunk.z, nullptr);
 				chunk->GenerateMesh();
 			}
 
@@ -263,13 +263,17 @@ int main()
 
 		world->Draw();
 
-		Block* currentBlock = world->GetBlockAtWorldPosition(camera.GetPosition());
-		glm::ivec3 currentBlockPosition = currentBlock->GetPositionInWorld();
-
 		std::stringstream displayStringStream;
 		displayStringStream << "Chunk: " << currentChunkX << " (*) " << currentChunkZ << std::endl;
 		displayStringStream << "Position: " << std::fixed << std::setprecision(2) << camera.GetPosition().x << "  " << camera.GetPosition().y << "  " << camera.GetPosition().z << std::endl;
-		displayStringStream << "Current block: " << currentBlockPosition.x << " " << currentBlockPosition.y << " " << currentBlockPosition.z << std::endl;
+
+		Block* currentBlock = world->GetBlockAtWorldPosition(camera.GetPosition());
+		if (currentBlock != nullptr)
+		{
+			glm::ivec3 currentBlockPosition = currentBlock->GetPositionInWorld();
+			displayStringStream << "Current block: " << currentBlockPosition.x << " " << currentBlockPosition.y << " " << currentBlockPosition.z << std::endl;
+		}
+		
 		if (raycastBlock != nullptr)
 		{
 			glm::ivec3 raycastBlockPosition = raycastBlock->GetPositionInWorld();
