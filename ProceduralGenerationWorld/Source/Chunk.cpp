@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Constants.hpp"
+#include "MeshBuilder.hpp"
 
 /// <summary>
 /// Constructor
@@ -285,11 +286,12 @@ void Chunk::GenerateMesh()
 		}
 	}
 
-	m_mesh.SetVertexPositions(vertexPositions);
-	m_mesh.SetVertexColors(vertexColors);
-	m_mesh.SetVertexUVs(vertexUVs);
-	m_mesh.SetIndices(indices);
-	m_mesh.GenerateMesh();
+	MeshBuilder meshBuilder;
+	meshBuilder.SetVertexPositions(vertexPositions);
+	meshBuilder.SetVertexColors(vertexColors);
+	meshBuilder.SetVertexUVs(vertexUVs);
+	meshBuilder.SetIndices(indices);
+	meshBuilder.BuildMesh(m_mesh);
 }
 
 /// <summary>

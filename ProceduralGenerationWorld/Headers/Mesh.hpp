@@ -13,6 +13,8 @@
 class Mesh
 {
 private:
+	friend class MeshBuilder;
+
 	/// <summary>
 	/// VBO handle
 	/// </summary>
@@ -29,45 +31,9 @@ private:
 	GLuint m_ebo;
 
 	/// <summary>
-	/// Struct containing vertex data
+	/// Number of indices
 	/// </summary>
-	struct Vertex
-	{
-		/// <summary>
-		/// Position
-		/// </summary>
-		GLfloat x, y, z;
-
-		/// <summary>
-		/// Color
-		/// </summary>
-		GLfloat r, g, b, a;
-
-		/// <summary>
-		/// Texture coordinates
-		/// </summary>
-		GLfloat u, v;
-	};
-
-	/// <summary>
-	/// List of vertex positions
-	/// </summary>
-	std::vector<glm::vec3> m_positions;
-
-	/// <summary>
-	/// List of vertex colors
-	/// </summary>
-	std::vector<glm::vec4> m_colors;
-
-	/// <summary>
-	/// List of UV coordinates
-	/// </summary>
-	std::vector<glm::vec2> m_uvCoordinates;
-
-	/// <summary>
-	/// List of indices
-	/// </summary>
-	std::vector<GLuint> m_indices;
+	int m_numIndices;
 
 public:
 	/// <summary>
@@ -81,36 +47,7 @@ public:
 	~Mesh();
 
 	/// <summary>
-	/// Generates the mesh
-	/// </summary>
-	void GenerateMesh();
-
-	/// <summary>
 	/// Draws the mesh
 	/// </summary>
 	void Draw();
-
-	/// <summary>
-	/// Sets list of vertex positions
-	/// </summary>
-	/// <param name="positions">New list of vertex positions</param>
-	void SetVertexPositions(const std::vector<glm::vec3>& positions);
-
-	/// <summary>
-	/// Sets list of vertex colors
-	/// </summary>
-	/// <param name="colors">New list of vertex colors</param>
-	void SetVertexColors(const std::vector<glm::vec4>& colors);
-
-	/// <summary>
-	/// Sets list of vertex UV coordinates
-	/// </summary>
-	/// <param name="uvCoordinates">New list of vertex UV coordinates</param>
-	void SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates);
-
-	/// <summary>
-	/// Sets list of vertex indices
-	/// </summary>
-	/// <param name="indices">New list of vertex indices</param>
-	void SetIndices(const std::vector<GLuint>& indices);
 };
