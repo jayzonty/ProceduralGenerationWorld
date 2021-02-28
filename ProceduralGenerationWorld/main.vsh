@@ -7,12 +7,21 @@ layout(location = 2) in vec2 vertexUV;
 uniform mat4 projMatrix;
 uniform mat4 viewMatrix;
 
+uniform float fogDensity;
+uniform float fogGradient;
+
 out vec4 outColor;
 out vec2 outUV;
+out float visibility;
 
 void main()
 {
-	gl_Position = projMatrix * viewMatrix * vec4(vertexPosition, 1.0);
+	vec4 viewSpacePosition = viewMatrix * vec4(vertexPosition, 1.0);
+	gl_Position = projMatrix * viewSpacePosition;
 	outColor = vertexColor;
 	outUV = vertexUV;
+	
+	float distance = length(viewSpacePosition.xyz);
+	visibility = exp(-pow(distance * fogDensity, fogGradient));
+	visibility = clamp(visibility, 0.0, 1.0);
 }

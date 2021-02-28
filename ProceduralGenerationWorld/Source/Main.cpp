@@ -154,7 +154,7 @@ int main()
 	World* world = new World();
 
 	int prevChunkX = 0, prevChunkZ = 0;
-	int chunkDistance = 4;
+	int chunkDistance = 8;
 
 	for (int x = prevChunkX - chunkDistance; x <= prevChunkX + chunkDistance; ++x)
 	{
@@ -166,6 +166,9 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	glm::vec4 skyColor(0.678f, 0.847f, 0.902f, 1.0f);
+	glClearColor(skyColor.r, skyColor.g, skyColor.b, skyColor.a);
 
 	double prevTime = glfwGetTime();
 
@@ -256,6 +259,10 @@ int main()
 
 		shaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 		shaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
+
+		shaderProgram.SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+		shaderProgram.SetUniform1f("fogGradient", 1.5f);
+		shaderProgram.SetUniform1f("fogDensity", 0.01f);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture.GetHandle());

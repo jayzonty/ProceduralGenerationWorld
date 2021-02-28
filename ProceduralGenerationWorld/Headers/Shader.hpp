@@ -53,6 +53,13 @@ public:
 	void SetUniform1i(const std::string& uniformName, const int& val);
 
 	/// <summary>
+	/// Sets the uniform value with a single float
+	/// </summary>
+	/// <param name="uniformName">Uniform name</param>
+	/// <param name="val">Value</param>
+	void SetUniform1f(const std::string& uniformName, const float& val);
+
+	/// <summary>
 	/// Sets the uniform value with 3 floats
 	/// </summary>
 	/// <param name="uniformName">Uniform name</param>
@@ -60,6 +67,16 @@ public:
 	/// <param name="val2">Second value</param>
 	/// <param name="val3">Third value</param>
 	void SetUniform3f(const std::string& uniformName, const float& val1, const float& val2, const float& val3);
+
+	/// <summary>
+	/// Sets the uniform value with 4 floats
+	/// </summary>
+	/// <param name="uniformName">Uniform name</param>
+	/// <param name="val1">First value</param>
+	/// <param name="val2">Second value</param>
+	/// <param name="val3">Third value</param>
+	/// <param name="val4">Fourth value</param
+	void SetUniform4f(const std::string& uniformName, const float& val1, const float& val2, const float& val3, const float& val4);
 
 	/// <summary>
 	/// Sets the uniform value with a matrix
