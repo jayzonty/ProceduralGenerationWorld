@@ -106,7 +106,15 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 			for (int y = 0; y < ceilHeight; ++y)
 			{
 				Block* block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
-				block->SetBlockType(BlockType::Dirt);
+				if (y < 5)
+				{
+					block->SetBlockType(BlockType::Stone);
+				}
+				else
+				{
+					block->SetBlockType(BlockType::Dirt);
+				}
+				
 				chunk->SetBlockAt(x, y, z, block);
 			}
 		}

@@ -99,6 +99,11 @@ void Chunk::GenerateMesh()
 						uvRects[1] = glm::vec4(64.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize);
 						uvRects[2] = uvRects[3] = uvRects[4] = uvRects[5] = glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize);
 					}
+					else if (currentBlock->GetBlockType() == BlockType::Stone)
+					{
+						float uvSize = 32.0f / 256.0f;
+						uvRects[0] = uvRects[1] = uvRects[2] = uvRects[3] = uvRects[4] = uvRects[5] = glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize);
+					}
 
 					// Vertex order: lower-left, lower-right, upper-right, upper-left
 					

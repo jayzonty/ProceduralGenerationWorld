@@ -8,7 +8,8 @@
 enum class BlockType
 {
 	Air,
-	Dirt
+	Dirt,
+	Stone
 };
 
 /// <summary>
