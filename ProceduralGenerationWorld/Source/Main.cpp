@@ -19,6 +19,7 @@
 #include "Chunk.hpp"
 #include "Constants.hpp"
 #include "Font.hpp"
+#include "Input.hpp"
 #include "ShaderProgram.hpp"
 #include "Text.hpp"
 #include "Texture.hpp"
@@ -36,33 +37,8 @@
 /// <param name="height">New height</param>
 void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height);
 
-/// <summary>
-/// Function for handling when a key is pressed.
-/// </summary>
-/// <param name="window">Reference to the window</param>
-/// <param name="key">Key code</param>
-/// <param name="scanCode">Scan code</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
-void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods);
-
-/// <summary>
-/// Function for handling when a mouse button is pressed.
-/// </summary>
-/// <param name="window">Reference to the window</param>
-/// <param name="button">Mouse button</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-
 // Camera
 Camera camera;
-
-// Previous x and y positions of the cursor
-double prevCursorX, prevCursorY;
-
-// Flag determining whether to remove the block in front or not
-bool removeBlockFlag = false;
 
 /// <summary>
 /// Main function.
@@ -105,11 +81,20 @@ int main()
 	// Set the callback function for when the framebuffer size changed
 	glfwSetFramebufferSizeCallback(window, FramebufferSizeChangedCallback);
 
+	// Initialize input manager
+	Input::Initialize();
+
 	// Set the callback function for when a key was pressed
-	glfwSetKeyCallback(window, KeyCallback);
+	glfwSetKeyCallback(window, Input::KeyCallback);
 
 	// Register callback function for when a mouse button was pressed
-	glfwSetMouseButtonCallback(window, MouseButtonCallback);
+	glfwSetMouseButtonCallback(window, Input::MouseButtonCallback);
+
+	// Register callback function for when the mouse cursor's position changed
+	glfwSetCursorPosCallback(window, Input::CursorCallback);
+
+	// Register callback function for when the mouse cursor entered/left the window
+	glfwSetCursorEnterCallback(window, Input::CursorEnterCallback);
 
 	// Disable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -145,6 +130,9 @@ int main()
 	// For now, tell OpenGL to use the whole screen
 	glViewport(0, 0, windowWidth, windowHeight);
 
+	// Previous x and y positions of the cursor
+	double prevCursorX, prevCursorY;
+
 	// Initialize the previous cursor x and y values
 	glfwGetCursorPos(window, &prevCursorX, &prevCursorY);
 
@@ -175,6 +163,11 @@ int main()
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		if (Input::IsPressed(Input::Key::ESCAPE))
+		{
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+		}
+
 		// For now, just use a basic delta time calculation
 		double deltaTimeAsDouble = glfwGetTime() - prevTime;
 		prevTime = glfwGetTime();
@@ -183,31 +176,32 @@ int main()
 		// Clear the colors in our off-screen framebuffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		double cursorX, cursorY;
-		glfwGetCursorPos(window, &cursorX, &cursorY);
-		double cursorXDelta = cursorX - prevCursorX;
-		double cursorYDelta = -(cursorY - prevCursorY);
+		int cursorX, cursorY;
+		Input::GetMousePosition(&cursorX, &cursorY);
+		int cursorXDelta = cursorX - prevCursorX;
+		int cursorYDelta = -(cursorY - prevCursorY);
 		prevCursorX = cursorX;
 		prevCursorY = cursorY;
+
 		camera.SetYaw(camera.GetYaw() + static_cast<float>(cursorXDelta) * 0.5f);
 		camera.SetPitch(glm::clamp(camera.GetPitch() + static_cast<float>(cursorYDelta) * 0.5f, -89.0f, 89.0f));
 
 		float movementZ = 0.0f;
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		if (Input::IsDown(Input::Key::W))
 		{
 			movementZ = 1.0f;
 		}
-		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		else if (Input::IsDown(Input::Key::S))
 		{
 			movementZ = -1.0f;
 		}
 
 		float movementX = 0.0f;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (Input::IsDown(Input::Key::A))
 		{
 			movementX = -1.0f;
 		}
-		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		else if (Input::IsDown(Input::Key::D))
 		{
 			movementX = 1.0f;
 		}
@@ -242,7 +236,7 @@ int main()
 		Ray ray(camera.GetPosition(), camera.GetForwardVector());
 		Block* raycastBlock = world->Raycast(ray, 5.0f);
 
-		if (removeBlockFlag)
+		if (Input::IsPressed(Input::Button::LEFT_MOUSE))
 		{
 			if (raycastBlock != nullptr)
 			{
@@ -251,8 +245,6 @@ int main()
 				chunk->SetBlockAt(blockPositionInChunk.x, blockPositionInChunk.y, blockPositionInChunk.z, nullptr);
 				chunk->GenerateMesh();
 			}
-
-			removeBlockFlag = false;
 		}
 
 		shaderProgram.Use();
@@ -301,6 +293,9 @@ int main()
 		// Tell GLFW to swap the screen buffer with the offscreen buffer
 		glfwSwapBuffers(window);
 
+		// Update input manager state before polling the new state
+		Input::Prepare();
+
 		// Tell GLFW to process window events (e.g., input events, window closed events, etc.)
 		glfwPollEvents();
 	}
@@ -309,6 +304,9 @@ int main()
 
 	// Re-enable the cursor
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	// Cleanup resources used by the input manager
+	Input::Cleanup();
 
 	// Remember to tell GLFW to clean itself up before exiting the application
 	glfwTerminate();
@@ -327,35 +325,4 @@ void FramebufferSizeChangedCallback(GLFWwindow* window, int width, int height)
 	// Whenever the size of the framebuffer changed (due to window resizing, etc.),
 	// update the dimensions of the region to the new size
 	glViewport(0, 0, width, height);
-}
-
-/// <summary>
-/// Function for handling when a key is pressed.
-/// </summary>
-/// <param name="window">Reference to the window</param>
-/// <param name="key">Key code</param>
-/// <param name="scanCode">Scan code</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
-void KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods)
-{
-	if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
-	{
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-	}
-}
-
-/// <summary>
-/// Function for handling when a mouse button is pressed.
-/// </summary>
-/// <param name="window">Reference to the window</param>
-/// <param name="button">Mouse button</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	if ((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS))
-	{
-		removeBlockFlag = true;
-	}
 }

@@ -152,6 +152,7 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Chunk.cpp" />
     <ClCompile Include="Source\Font.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Headers\Chunk.hpp" />
     <ClInclude Include="Headers\Constants.hpp" />
     <ClInclude Include="Headers\Font.hpp" />
+    <ClInclude Include="Headers\Input.hpp" />
     <ClInclude Include="Headers\Mesh.hpp" />
     <ClInclude Include="Headers\MeshBuilder.hpp" />
     <ClInclude Include="Headers\Ray.hpp" />
