@@ -73,6 +73,16 @@ private:
 	int m_mousePositionY;
 
 	/// <summary>
+	/// Mouse cursor's change in x-position
+	/// </summary>
+	int m_mouseDeltaX;
+
+	/// <summary>
+	/// Mouse cursor's change in y-position
+	/// </summary>
+	int m_mouseDeltaY;
+
+	/// <summary>
 	/// Constructor
 	/// </summary>
 	Input();
@@ -122,6 +132,26 @@ public:
 	/// </summary>
 	/// <returns>Mouse cursor's y-position</returns>
 	static int GetMouseY();
+
+	/// <summary>
+	/// Gets the change in mouse cursor's position between the
+	/// previous frame and the current frame
+	/// </summary>
+	/// <param name="mouseDeltaX">Pointer to the variable where the change in x-position will be stored</param>
+	/// <param name="mouseDeltaY">Pointer to the variable where the change in y-position will be stored</param>
+	static void GetMouseDelta(int* mouseDeltaX, int* mouseDeltaY);
+
+	/// <summary>
+	/// Gets the change in mouse cursor's x-position
+	/// </summary>
+	/// <returns>Amount of change in x-position</returns>
+	static int GetMouseDeltaX();
+
+	/// <summary>
+	/// Gets the change in mouse cursor's y-position
+	/// </summary>
+	/// <returns>Amount of change in y-position</returns>
+	static int GetMouseDeltaY();
 	
 	/// <summary>
 	/// Initializes the input manager

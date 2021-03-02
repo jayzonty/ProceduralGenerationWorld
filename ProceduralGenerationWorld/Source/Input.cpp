@@ -14,6 +14,8 @@ Input::Input()
 	, m_heldKeys()
 	, m_mousePositionX(0)
 	, m_mousePositionY(0)
+	, m_mouseDeltaX(0)
+	, m_mouseDeltaY(0)
 {
 }
 
@@ -123,6 +125,36 @@ int Input::GetMouseY()
 }
 
 /// <summary>
+/// Gets the change in mouse cursor's position between the
+/// previous frame and the current frame
+/// </summary>
+/// <param name="mouseDeltaX">Pointer to the variable where the change in x-position will be stored</param>
+/// <param name="mouseDeltaY">Pointer to the variable where the change in y-position will be stored</param>
+void Input::GetMouseDelta(int* mouseDeltaX, int* mouseDeltaY)
+{
+	*mouseDeltaX = m_instance->m_mouseDeltaX;
+	*mouseDeltaY = m_instance->m_mouseDeltaY;
+}
+
+/// <summary>
+/// Gets the change in mouse cursor's x-position
+/// </summary>
+/// <returns>Amount of change in x-position</returns>
+int Input::GetMouseDeltaX()
+{
+	return m_instance->m_mouseDeltaX;
+}
+
+/// <summary>
+/// Gets the change in mouse cursor's y-position
+/// </summary>
+/// <returns>Amount of change in y-position</returns>
+int Input::GetMouseDeltaY()
+{
+	return m_instance->m_mouseDeltaY;
+}
+
+/// <summary>
 /// Initializes the input manager
 /// </summary>
 void Input::Initialize()
@@ -154,6 +186,9 @@ void Input::Prepare()
 
 	m_instance->m_pressedKeys.clear();
 	m_instance->m_releasedKeys.clear();
+
+	m_instance->m_mouseDeltaX = 0;
+	m_instance->m_mouseDeltaY = 0;
 }
 
 /// <summary>
@@ -229,8 +264,16 @@ void Input::CursorCallback(GLFWwindow* window, double xPos, double yPos)
 		return;
 	}
 
-	m_instance->m_mousePositionX = static_cast<int>(floor(xPos));
-	m_instance->m_mousePositionY = static_cast<int>(floor(yPos));
+	int currentMouseX = static_cast<int>(floor(xPos));
+	int currentMouseY = static_cast<int>(floor(yPos));
+
+	// At this point, m_mousePositionX and m_mousePositionY contains the
+	// cursor position of the previous frame
+	m_instance->m_mouseDeltaX = currentMouseX - m_instance->m_mousePositionX;
+	m_instance->m_mouseDeltaY = currentMouseY - m_instance->m_mousePositionY;
+
+	m_instance->m_mousePositionX = currentMouseX;
+	m_instance->m_mousePositionY = currentMouseY;
 }
 
 /// <summary>

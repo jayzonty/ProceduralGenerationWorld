@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Deps\Source\glad\glad.c" />
+    <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Block.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Chunk.cpp" />
     <ClCompile Include="Source\Font.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\MainScene.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\ShaderProgram.cpp" />
@@ -163,15 +165,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\AABB.hpp" />
+    <ClInclude Include="Headers\Application.hpp" />
     <ClInclude Include="Headers\Block.hpp" />
     <ClInclude Include="Headers\Camera.hpp" />
     <ClInclude Include="Headers\Chunk.hpp" />
     <ClInclude Include="Headers\Constants.hpp" />
     <ClInclude Include="Headers\Font.hpp" />
     <ClInclude Include="Headers\Input.hpp" />
+    <ClInclude Include="Headers\MainScene.hpp" />
     <ClInclude Include="Headers\Mesh.hpp" />
     <ClInclude Include="Headers\MeshBuilder.hpp" />
     <ClInclude Include="Headers\Ray.hpp" />
+    <ClInclude Include="Headers\SceneBase.hpp" />
     <ClInclude Include="Headers\ShaderProgram.hpp" />
     <ClInclude Include="Headers\Text.hpp" />
     <ClInclude Include="Headers\Texture.hpp" />
