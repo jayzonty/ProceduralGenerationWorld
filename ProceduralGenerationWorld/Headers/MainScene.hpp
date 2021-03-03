@@ -26,6 +26,12 @@ private:
 	/// </summary>
 	Text m_debugInfoTextDisplay;
 
+	// TODO: Make the crosshair an actual sprite
+	/// <summary>
+	/// Text display for the crosshair
+	/// </summary>
+	Text m_crossHairTextDisplay;
+
 	/// <summary>
 	/// Shader used to render the scene
 	/// </summary>

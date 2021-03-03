@@ -17,6 +17,7 @@ MainScene::MainScene()
 	: SceneBase()
 	, m_debugInfoTextFont()
 	, m_debugInfoTextDisplay()
+	, m_crossHairTextDisplay()
 	, m_sceneShaderProgram()
 	, m_blocksTexture()
 	, m_camera()
@@ -64,6 +65,13 @@ void MainScene::Start()
 	m_debugInfoTextDisplay.SetFont(m_debugInfoTextFont);
 	m_debugInfoTextDisplay.SetColor(glm::vec4(255.0f));
 	m_debugInfoTextDisplay.SetLineSpacing(2.0f);
+
+	m_crossHairTextDisplay.SetFont(m_debugInfoTextFont);
+	m_crossHairTextDisplay.SetColor(glm::vec4(255.0f));
+	m_crossHairTextDisplay.SetString("+");
+	int crosshairTextWidth, crosshairTextHeight;
+	m_crossHairTextDisplay.ComputeSize(&crosshairTextWidth, &crosshairTextHeight);
+	m_crossHairTextDisplay.SetPosition(400.0f - crosshairTextWidth / 2, 300.0f - crosshairTextHeight / 2);
 
 	// Create blocks texture
 	m_blocksTexture.CreateFromFile("Resources/Textures/Blocks.png");
@@ -216,6 +224,8 @@ void MainScene::Draw()
 	m_debugInfoTextDisplay.ComputeSize(&textWidth, &textHeight);
 	m_debugInfoTextDisplay.SetPosition(0.0f, (windowHeight - textHeight) * 1.0f);
 	m_debugInfoTextDisplay.Draw(glm::ortho(0.0f, windowWidth * 1.0f, 0.0f, windowHeight * 1.0f));
+
+	m_crossHairTextDisplay.Draw(glm::ortho(0.0f, windowWidth * 1.0f, 0.0f, windowHeight * 1.0f));
 
 	m_sceneShaderProgram.Unuse();
 }
