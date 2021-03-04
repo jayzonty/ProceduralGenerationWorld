@@ -81,6 +81,7 @@ void Chunk::GenerateMesh()
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec4> vertexColors;
 	std::vector<glm::vec2> vertexUVs;
+	std::vector<glm::vec3> vertexNormals;
 	std::vector<GLuint> indices;
 	glm::vec3 origin(m_chunkIndex.x * Constants::CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndex.z * Constants::CHUNK_DEPTH * blockSize * 1.0f);
 	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
@@ -129,6 +130,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[0].x + uvRects[0].z, uvRects[0].y + uvRects[0].w);
 						vertexUVs.emplace_back(uvRects[0].x, uvRects[0].y + uvRects[0].w);
 
+						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -157,6 +163,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[1].x + uvRects[1].z, uvRects[1].y);
 						vertexUVs.emplace_back(uvRects[1].x + uvRects[1].z, uvRects[1].y + uvRects[1].w);
 						vertexUVs.emplace_back(uvRects[1].x, uvRects[1].y + uvRects[1].w);
+
+						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
+						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
 
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
@@ -187,6 +198,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[2].x + uvRects[2].z, uvRects[2].y + uvRects[2].w);
 						vertexUVs.emplace_back(uvRects[2].x, uvRects[2].y + uvRects[2].w);
 
+						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -215,6 +231,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[3].x + uvRects[3].z, uvRects[3].y);
 						vertexUVs.emplace_back(uvRects[3].x + uvRects[3].z, uvRects[3].y + uvRects[3].w);
 						vertexUVs.emplace_back(uvRects[3].x, uvRects[3].y + uvRects[3].w);
+
+						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
+						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
 
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
@@ -245,6 +266,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[4].x + uvRects[4].z, uvRects[4].y + uvRects[4].w);
 						vertexUVs.emplace_back(uvRects[4].x, uvRects[4].y + uvRects[4].w);
 
+						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -274,6 +300,11 @@ void Chunk::GenerateMesh()
 						vertexUVs.emplace_back(uvRects[5].x + uvRects[5].z, uvRects[5].y + uvRects[5].w);
 						vertexUVs.emplace_back(uvRects[5].x, uvRects[5].y + uvRects[5].w);
 
+						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
+						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
+
 						indices.push_back(indexStart);
 						indices.push_back(indexStart + 1);
 						indices.push_back(indexStart + 2);
@@ -290,6 +321,7 @@ void Chunk::GenerateMesh()
 	meshBuilder.SetVertexPositions(vertexPositions);
 	meshBuilder.SetVertexColors(vertexColors);
 	meshBuilder.SetVertexUVs(vertexUVs);
+	meshBuilder.SetVertexNormals(vertexNormals);
 	meshBuilder.SetIndices(indices);
 	meshBuilder.BuildMesh(m_mesh);
 }

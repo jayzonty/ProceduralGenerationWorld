@@ -31,6 +31,11 @@ private:
 		/// Texture coordinates
 		/// </summary>
 		GLfloat u, v;
+
+		/// <summary>
+		/// Normal
+		/// </summary>
+		GLfloat nx, ny, nz;
 	};
 
 	/// <summary>
@@ -47,6 +52,11 @@ private:
 	/// List of UV coordinates
 	/// </summary>
 	std::vector<glm::vec2> m_uvCoordinates;
+
+	/// <summary>
+	/// List of vertex normals
+	/// </summary>
+	std::vector<glm::vec3> m_normals;
 
 	/// <summary>
 	/// List of indices
@@ -81,6 +91,12 @@ public:
 	/// </summary>
 	/// <param name="uvCoordinates">New list of vertex UV coordinates</param>
 	void SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates);
+
+	/// <summary>
+	/// Sets list of vertex normal vectors
+	/// </summary>
+	/// <param name="normals">New list of vertex normal vectors</param>
+	void SetVertexNormals(const std::vector<glm::vec3>& normals);
 
 	/// <summary>
 	/// Sets list of vertex indices

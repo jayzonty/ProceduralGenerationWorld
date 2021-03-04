@@ -51,7 +51,7 @@ void MainScene::Start()
 	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
 
 	// Initialize the scene shader
-	m_sceneShaderProgram.InitFromFiles("main.vsh", "main.fsh");
+	m_sceneShaderProgram.InitFromFiles("main_lighting.vsh", "main_lighting.fsh");
 
 	// Initialize the font to be used for the debug info text
 	m_debugInfoTextFont.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
@@ -185,6 +185,20 @@ void MainScene::Draw()
 
 	m_sceneShaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
 	m_sceneShaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
+
+	glm::vec3 lightDirection(0.0f, -1.0f, 0.0f);
+
+	glm::vec3 lightAmbient(0.1f, 0.1f, 0.1f);
+	glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
+
+	glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
+	glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
+
+	m_sceneShaderProgram.SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
+	m_sceneShaderProgram.SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
+	m_sceneShaderProgram.SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
+	m_sceneShaderProgram.SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
+	m_sceneShaderProgram.SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
 
 	m_sceneShaderProgram.SetUniform4f("skyColor", m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
 	m_sceneShaderProgram.SetUniform1f("fogGradient", 1.5f);

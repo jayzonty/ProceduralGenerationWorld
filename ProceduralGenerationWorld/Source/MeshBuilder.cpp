@@ -7,6 +7,7 @@ MeshBuilder::MeshBuilder()
 	: m_positions()
 	, m_colors()
 	, m_uvCoordinates()
+	, m_normals()
 	, m_indices()
 {
 }
@@ -49,6 +50,9 @@ void MeshBuilder::BuildMesh(Mesh& mesh)
 		vertices.back().a = m_colors[i].w;
 		vertices.back().u = m_uvCoordinates[i].x;
 		vertices.back().v = m_uvCoordinates[i].y;
+		vertices.back().nx = m_normals[i].x;
+		vertices.back().ny = m_normals[i].y;
+		vertices.back().nz = m_normals[i].z;
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);
@@ -72,6 +76,9 @@ void MeshBuilder::BuildMesh(Mesh& mesh)
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, u)));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, nx)));
 
 	glBindVertexArray(0);
 }
@@ -101,6 +108,15 @@ void MeshBuilder::SetVertexColors(const std::vector<glm::vec4>& colors)
 void MeshBuilder::SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates)
 {
 	m_uvCoordinates = uvCoordinates;
+}
+
+/// <summary>
+/// Sets list of vertex normal vectors
+/// </summary>
+/// <param name="normals">New list of vertex normal vectors</param>
+void MeshBuilder::SetVertexNormals(const std::vector<glm::vec3>& normals)
+{
+	m_normals = normals;
 }
 
 /// <summary>
