@@ -72,6 +72,22 @@ public:
 	Chunk* GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ);
 
 	/// <summary>
+	/// Load chunks around the area defined by the center chunk index
+	/// and the radius in chunks
+	/// </summary>
+	/// <param name="centerChunkIndex">Center chunk index</param>
+	/// <param name="radius">Radius in chunks</param>
+	void LoadChunksWithinArea(const glm::ivec3& centerChunkIndex, const int& radius);
+
+	/// <summary>
+	/// Unload chunks outside the area defined by the center chunk index
+	/// and the radius in chunks
+	/// </summary>
+	/// <param name="centerChunkIndex">Center chunk index</param>
+	/// <param name="radius">Radius in chunks</param>
+	void UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const int& radius);
+
+	/// <summary>
 	/// Draws the world
 	/// </summary>
 	void Draw();

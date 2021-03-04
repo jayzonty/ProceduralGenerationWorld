@@ -84,13 +84,7 @@ void MainScene::Start()
 	m_world = new World();
 
 	// Generate initial chunks
-	for (int x = m_prevChunkIndices.x - m_chunkRenderDistance; x <= m_prevChunkIndices.x + m_chunkRenderDistance; ++x)
-	{
-		for (int z = m_prevChunkIndices.z - m_chunkRenderDistance; z <= m_prevChunkIndices.z + m_chunkRenderDistance; ++z)
-		{
-			m_world->GenerateChunkAt(x, z);
-		}
-	}
+	m_world->LoadChunksWithinArea(m_prevChunkIndices, m_chunkRenderDistance);
 }
 
 /// <summary>
@@ -144,16 +138,8 @@ void MainScene::Update(float deltaTime)
 
 	if ((currentChunkX != m_prevChunkIndices.x) || (currentChunkZ != m_prevChunkIndices.z))
 	{
-		for (int x = currentChunkX - m_chunkRenderDistance; x <= currentChunkX + m_chunkRenderDistance; ++x)
-		{
-			for (int z = currentChunkZ - m_chunkRenderDistance; z <= currentChunkZ + m_chunkRenderDistance; ++z)
-			{
-				if (m_world->GetChunkAt(x, z) == nullptr)
-				{
-					m_world->GenerateChunkAt(x, z);
-				}
-			}
-		}
+		m_world->LoadChunksWithinArea(glm::ivec3(currentChunkX, 0, currentChunkZ), m_chunkRenderDistance);
+		m_world->UnloadChunksOutsideArea(glm::ivec3(currentChunkX, 0, currentChunkZ), m_chunkRenderDistance);
 
 		m_prevChunkIndices.x = currentChunkX;
 		m_prevChunkIndices.z = currentChunkZ;

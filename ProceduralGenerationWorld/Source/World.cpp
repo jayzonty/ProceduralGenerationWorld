@@ -93,36 +93,90 @@ glm::ivec3 World::WorldPositionToChunkIndex(const glm::vec3& worldPosition)
 /// <returns>Generated chunk</returns>
 Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 {
-	Chunk* chunk = new Chunk(chunkIndexX, chunkIndexZ);
-	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
+	Chunk* chunk = GetChunkAt(chunkIndexX, chunkIndexZ);
+	if (chunk == nullptr)
 	{
-		for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
+		chunk = new Chunk(chunkIndexX, chunkIndexZ);
+		for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
 		{
-			float height = m_noiseEngine.GetNoise((chunkIndexX * Constants::CHUNK_WIDTH + x) * 1.0f, (chunkIndexZ * Constants::CHUNK_DEPTH + z) * 1.0f);
-			height = (height + 1.0f) / 2.0f;
-			height = height * 10.0f;
-
-			int ceilHeight = static_cast<int>(glm::ceil(height));
-			for (int y = 0; y < ceilHeight; ++y)
+			for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
 			{
-				Block* block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
-				if (y < 5)
+				float height = m_noiseEngine.GetNoise((chunkIndexX * Constants::CHUNK_WIDTH + x) * 1.0f, (chunkIndexZ * Constants::CHUNK_DEPTH + z) * 1.0f);
+				height = (height + 1.0f) / 2.0f;
+				height = height * 10.0f;
+
+				int ceilHeight = static_cast<int>(glm::ceil(height));
+				for (int y = 0; y < ceilHeight; ++y)
 				{
-					block->SetBlockType(BlockType::Stone);
+					Block* block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
+					if (y < 5)
+					{
+						block->SetBlockType(BlockType::Stone);
+					}
+					else
+					{
+						block->SetBlockType(BlockType::Dirt);
+					}
+
+					chunk->SetBlockAt(x, y, z, block);
 				}
-				else
-				{
-					block->SetBlockType(BlockType::Dirt);
-				}
-				
-				chunk->SetBlockAt(x, y, z, block);
+			}
+		}
+		chunk->GenerateMesh();
+		m_chunks.push_back(chunk);
+	}
+
+	return chunk;
+}
+
+/// <summary>
+/// Load chunks around the area defined by the center chunk index
+/// and the radius in chunks
+/// </summary>
+/// <param name="centerChunkIndex">Center chunk index</param>
+/// <param name="radius">Radius in chunks</param>
+void World::LoadChunksWithinArea(const glm::ivec3& centerChunkIndex, const int& radius)
+{
+	for (int x = centerChunkIndex.x - radius; x <= centerChunkIndex.x + radius; ++x)
+	{
+		for (int z = centerChunkIndex.z - radius; z <= centerChunkIndex.z + radius; ++z)
+		{
+			if (GetChunkAt(x, z) == nullptr)
+			{
+				GenerateChunkAt(x, z);
 			}
 		}
 	}
-	chunk->GenerateMesh();
-	m_chunks.push_back(chunk);
+}
 
-	return chunk;
+/// <summary>
+/// Unload chunks outside the area defined by the center chunk index
+/// and the radius in chunks
+/// </summary>
+/// <param name="centerChunkIndex">Center chunk index</param>
+/// <param name="radius">Radius in chunks</param>
+void World::UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const int& radius)
+{
+	for (size_t i = 0; i < m_chunks.size(); ++i)
+	{
+		int chunkIndexX = m_chunks[i]->GetChunkIndexX();
+		int chunkIndexZ = m_chunks[i]->GetChunkIndexZ();
+
+		int minX = centerChunkIndex.x - radius;
+		int maxX = centerChunkIndex.x + radius;
+
+		int minZ = centerChunkIndex.z - radius;
+		int maxZ = centerChunkIndex.z + radius;
+
+		if ((chunkIndexX < minX) || (chunkIndexX > maxX) || (chunkIndexZ < minZ) || (chunkIndexZ > maxZ))
+		{
+			delete m_chunks[i];
+
+			m_chunks[i] = m_chunks.back();
+			m_chunks.pop_back();
+			--i;
+		}
+	}
 }
 
 /// <summary>
