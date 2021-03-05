@@ -101,8 +101,22 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 		{
 			for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
 			{
-				float height = m_noiseEngine.GetNoise((chunkIndexX * Constants::CHUNK_WIDTH + x) * 1.0f, (chunkIndexZ * Constants::CHUNK_DEPTH + z) * 1.0f);
-				height = (height + 1.0f) / 2.0f;
+				float frequency1 = 0.5f;
+				float frequency2 = 0.25f;
+				float frequency3 = 0.1f;
+
+				int blockX = chunkIndexX * Constants::CHUNK_WIDTH + x;
+				int blockZ = chunkIndexZ * Constants::CHUNK_DEPTH + z;
+
+				float octave1 = m_noiseEngine.GetNoise(blockX * frequency1, blockZ * frequency1);
+				octave1 = (octave1 + 1.0f) / 2.0f;
+				float octave2 = 0.5f * m_noiseEngine.GetNoise(blockX * frequency2, blockZ * frequency2);
+				octave2 = (octave2 + 1.0f) / 2.0f;
+				float octave3 = 0.25f * m_noiseEngine.GetNoise(blockX * frequency3, blockZ * frequency3);
+				octave3 = (octave3 + 1.0f) / 2.0f;
+
+				float height = octave1 + octave2 + octave3;
+				height = glm::pow(height, 1.55f);	// For introducing valleys
 				height = height * 10.0f;
 
 				int ceilHeight = static_cast<int>(glm::ceil(height));
