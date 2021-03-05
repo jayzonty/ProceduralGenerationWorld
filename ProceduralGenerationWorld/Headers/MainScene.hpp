@@ -3,7 +3,6 @@
 #include "Camera.hpp"
 #include "Font.hpp"
 #include "SceneBase.hpp"
-#include "ShaderProgram.hpp"
 #include "Text.hpp"
 #include "Texture.hpp"
 #include "World.hpp"
@@ -31,11 +30,6 @@ private:
 	/// Text display for the crosshair
 	/// </summary>
 	Text m_crossHairTextDisplay;
-
-	/// <summary>
-	/// Shader used to render the scene
-	/// </summary>
-	ShaderProgram m_sceneShaderProgram;
 
 	/// <summary>
 	/// Texture atlas containing textures for each block

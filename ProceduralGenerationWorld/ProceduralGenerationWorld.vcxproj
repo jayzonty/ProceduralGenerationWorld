@@ -158,6 +158,7 @@
     <ClCompile Include="Source\MainScene.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
+    <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\ShaderProgram.cpp" />
     <ClCompile Include="Source\Text.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Headers\Mesh.hpp" />
     <ClInclude Include="Headers\MeshBuilder.hpp" />
     <ClInclude Include="Headers\Ray.hpp" />
+    <ClInclude Include="Headers\ResourceManager.hpp" />
     <ClInclude Include="Headers\SceneBase.hpp" />
     <ClInclude Include="Headers\ShaderProgram.hpp" />
     <ClInclude Include="Headers\Text.hpp" />

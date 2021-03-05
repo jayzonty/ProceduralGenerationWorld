@@ -2,6 +2,8 @@
 
 #include "Constants.hpp"
 #include "Input.hpp"
+#include "ResourceManager.hpp"
+#include "ShaderProgram.hpp"
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -18,7 +20,6 @@ MainScene::MainScene()
 	, m_debugInfoTextFont()
 	, m_debugInfoTextDisplay()
 	, m_crossHairTextDisplay()
-	, m_sceneShaderProgram()
 	, m_blocksTexture()
 	, m_camera()
 	, m_world(nullptr)
@@ -51,7 +52,7 @@ void MainScene::Start()
 	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
 
 	// Initialize the scene shader
-	m_sceneShaderProgram.InitFromFiles("main_lighting.vsh", "main_lighting.fsh");
+	ResourceManager::GetInstance().CreateShader("main_lighting.vsh", "main_lighting.fsh", "main");
 
 	// Initialize the font to be used for the debug info text
 	m_debugInfoTextFont.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
@@ -167,10 +168,11 @@ void MainScene::Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_sceneShaderProgram.Use();
+	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
+	mainShader->Use();
 
-	m_sceneShaderProgram.SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
-	m_sceneShaderProgram.SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
+	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
+	mainShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
 
 	glm::vec3 lightDirection(0.0f, -1.0f, 0.0f);
 
@@ -180,19 +182,19 @@ void MainScene::Draw()
 	glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
 	glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
 
-	m_sceneShaderProgram.SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
-	m_sceneShaderProgram.SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
-	m_sceneShaderProgram.SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
-	m_sceneShaderProgram.SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
-	m_sceneShaderProgram.SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
+	mainShader->SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
+	mainShader->SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
+	mainShader->SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
+	mainShader->SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
+	mainShader->SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
 
-	m_sceneShaderProgram.SetUniform4f("skyColor", m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
-	m_sceneShaderProgram.SetUniform1f("fogGradient", 1.5f);
-	m_sceneShaderProgram.SetUniform1f("fogDensity", 0.01f);
+	mainShader->SetUniform4f("skyColor", m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
+	mainShader->SetUniform1f("fogGradient", 1.5f);
+	mainShader->SetUniform1f("fogDensity", 0.01f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_blocksTexture.GetHandle());
-	m_sceneShaderProgram.SetUniform1i("tex", 0);
+	mainShader->SetUniform1i("tex", 0);
 
 	m_world->Draw();
 
@@ -227,5 +229,5 @@ void MainScene::Draw()
 
 	m_crossHairTextDisplay.Draw(glm::ortho(0.0f, windowWidth * 1.0f, 0.0f, windowHeight * 1.0f));
 
-	m_sceneShaderProgram.Unuse();
+	ResourceManager::GetInstance().GetShader("main")->Unuse();
 }
