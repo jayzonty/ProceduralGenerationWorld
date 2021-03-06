@@ -4,6 +4,8 @@
 	/// Constructor
 	/// </summary>
 ResourceManager::ResourceManager()
+	: m_shaders()
+	, m_textures()
 {
 }
 
@@ -17,6 +19,12 @@ ResourceManager::~ResourceManager()
 		delete it->second;
 	}
 	m_shaders.clear();
+
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
+	{
+		delete it->second;
+	}
+	m_textures.clear();
 }
 
 /// <summary>
@@ -75,6 +83,56 @@ ShaderProgram* ResourceManager::GetShader(const std::string& key)
 	if (m_shaders.find(key) != m_shaders.end())
 	{
 		return m_shaders[key];
+	}
+
+	return nullptr;
+}
+
+/// <summary>
+	/// Creates a texture from the provided file path, and stores it
+	/// as a texture resource identified by the provided string key.
+	/// If the key already exists in the resource manager, texture creation fails.
+	/// </summary>
+	/// <param name="textureFilePath">File path to the texture file</param>
+	/// <param name="key">Key identifier for the created texture</param>
+	/// <returns>Reference to the created texture. Returns nullptr if the texture creation failed.</returns>
+Texture* ResourceManager::CreateTexture(const std::string& textureFilePath, const std::string& key)
+{
+	if (m_textures.find(key) != m_textures.end())
+	{
+		return nullptr;
+	}
+
+	Texture* texture = new Texture();
+	texture->CreateFromFile(textureFilePath);
+	m_textures[key] = texture;
+
+	return texture;
+}
+
+/// <summary>
+/// Deletes the texture identified by the provided key from the resource manager
+/// </summary>
+/// <param name="key">Key idnetifying the texture to delete</param>
+void ResourceManager::DeleteTexture(const std::string& key)
+{
+	if (m_textures.find(key) != m_textures.end())
+	{
+		delete m_textures[key];
+		m_textures.erase(key);
+	}
+}
+
+/// <summary>
+/// Gets the texture associated with the provided key.
+/// </summary>
+/// <param name="key">Key identifying the texture we are trying to get</param>
+/// <returns>Returns the reference to the texture identified by the provided key. Returns nullptr if it does not exist.</returns>
+Texture* ResourceManager::GetTexture(const std::string& key)
+{
+	if (m_textures.find(key) != m_textures.end())
+	{
+		return m_textures[key];
 	}
 
 	return nullptr;

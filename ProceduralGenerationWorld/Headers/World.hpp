@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.hpp"
 #include "Chunk.hpp"
 #include "Ray.hpp"
 
@@ -89,8 +90,9 @@ public:
 
 	/// <summary>
 	/// Draws the world
+	/// <param name="camera">Camera</param>
 	/// </summary>
-	void Draw();
+	void Draw(const Camera& camera);
 
 	/// <summary>
 	/// Casts a ray and gets the first non-air block hit

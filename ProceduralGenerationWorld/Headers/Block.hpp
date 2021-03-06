@@ -8,6 +8,7 @@
 enum class BlockType
 {
 	Air,
+	Water,
 	Dirt,
 	Stone
 };

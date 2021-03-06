@@ -32,11 +32,6 @@ private:
 	Text m_crossHairTextDisplay;
 
 	/// <summary>
-	/// Texture atlas containing textures for each block
-	/// </summary>
-	Texture m_blocksTexture;
-
-	/// <summary>
 	/// Camera
 	/// </summary>
 	Camera m_camera;

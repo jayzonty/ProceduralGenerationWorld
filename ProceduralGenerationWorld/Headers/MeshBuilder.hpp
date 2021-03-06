@@ -75,6 +75,11 @@ public:
 	~MeshBuilder();
 
 	/// <summary>
+	/// Clear all stored data
+	/// </summary>
+	void Clear();
+
+	/// <summary>
 	/// Sets list of vertex positions
 	/// </summary>
 	/// <param name="positions">New list of vertex positions</param>

@@ -20,7 +20,6 @@ MainScene::MainScene()
 	, m_debugInfoTextFont()
 	, m_debugInfoTextDisplay()
 	, m_crossHairTextDisplay()
-	, m_blocksTexture()
 	, m_camera()
 	, m_world(nullptr)
 	, m_prevChunkIndices()
@@ -53,6 +52,7 @@ void MainScene::Start()
 
 	// Initialize the scene shader
 	ResourceManager::GetInstance().CreateShader("main_lighting.vsh", "main_lighting.fsh", "main");
+	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Water.vsh", "Resources/Shaders/Water.fsh", "water");
 
 	// Initialize the font to be used for the debug info text
 	m_debugInfoTextFont.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
@@ -75,7 +75,7 @@ void MainScene::Start()
 	m_crossHairTextDisplay.SetPosition(400.0f - crosshairTextWidth / 2, 300.0f - crosshairTextHeight / 2);
 
 	// Create blocks texture
-	m_blocksTexture.CreateFromFile("Resources/Textures/Blocks.png");
+	ResourceManager::GetInstance().CreateTexture("Resources/Textures/Blocks.png", "blocks");
 
 	// Setup camera
 	m_camera.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
@@ -168,35 +168,7 @@ void MainScene::Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
-	mainShader->Use();
-
-	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
-	mainShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
-
-	glm::vec3 lightDirection(0.0f, -1.0f, 0.0f);
-
-	glm::vec3 lightAmbient(0.1f, 0.1f, 0.1f);
-	glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
-
-	glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
-	glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
-
-	mainShader->SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
-	mainShader->SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
-	mainShader->SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
-	mainShader->SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
-	mainShader->SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
-
-	mainShader->SetUniform4f("skyColor", m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
-	mainShader->SetUniform1f("fogGradient", 1.5f);
-	mainShader->SetUniform1f("fogDensity", 0.01f);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_blocksTexture.GetHandle());
-	mainShader->SetUniform1i("tex", 0);
-
-	m_world->Draw();
+	m_world->Draw(m_camera);
 
 	int currentChunkX = static_cast<int>(glm::floor(m_camera.GetPosition().x / Constants::BLOCK_SIZE / Constants::CHUNK_WIDTH));
 	int currentChunkZ = static_cast<int>(glm::floor(m_camera.GetPosition().z / Constants::BLOCK_SIZE / Constants::CHUNK_DEPTH));

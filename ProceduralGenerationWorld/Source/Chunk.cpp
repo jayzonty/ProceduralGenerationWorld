@@ -2,12 +2,14 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <vector>
 
 #include "Constants.hpp"
 #include "MeshBuilder.hpp"
+#include "ResourceManager.hpp"
 
 /// <summary>
 /// Constructor
@@ -16,6 +18,7 @@
 /// <param name="chunkIndexY">Chunk y-index</param>
 Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	: m_mesh()
+	, m_waterMesh()
 	, m_blocks()
 	, m_chunkIndex(chunkIndexX, 0, chunkIndexZ)
 {
@@ -91,7 +94,7 @@ void Chunk::GenerateMesh()
 			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
 			{
 				Block* currentBlock = GetBlockAt(x, y, z);
-				if (currentBlock != nullptr)
+				if (currentBlock != nullptr && currentBlock->GetBlockType() != BlockType::Water)
 				{
 					glm::vec4 uvRects[6]; // Top, Bottom, Left, Right, Front, Back
 					if (currentBlock->GetBlockType() == BlockType::Dirt)
@@ -110,7 +113,7 @@ void Chunk::GenerateMesh()
 					// Vertex order: lower-left, lower-right, upper-right, upper-left
 					
 					// Top face
-					if ((y == Constants::CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z) == nullptr))
+					if ((y == Constants::CHUNK_HEIGHT - 1) || ((GetBlockAt(x, y + 1, z) == nullptr) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockType::Water)))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -324,14 +327,99 @@ void Chunk::GenerateMesh()
 	meshBuilder.SetVertexNormals(vertexNormals);
 	meshBuilder.SetIndices(indices);
 	meshBuilder.BuildMesh(m_mesh);
+
+	vertexPositions.clear();
+	indices.clear();
+
+	// Generate water mesh
+	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
+	{
+		for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
+		{
+			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
+			{
+				Block* currentBlock = GetBlockAt(x, y, z);
+				if ((currentBlock != nullptr) && (currentBlock->GetBlockType() == BlockType::Water))
+				{
+					if ((y == Constants::CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z) == nullptr))
+					{
+						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
+
+						float yOffset = -0.1f;
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize));
+						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, z * blockSize));
+						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, z * blockSize));
+
+						indices.push_back(indexStart);
+						indices.push_back(indexStart + 1);
+						indices.push_back(indexStart + 2);
+						indices.push_back(indexStart + 2);
+						indices.push_back(indexStart + 3);
+						indices.push_back(indexStart);
+					}
+				}
+			}
+		}
+	}
+
+	meshBuilder.Clear();
+	meshBuilder.SetVertexPositions(vertexPositions);
+	meshBuilder.SetIndices(indices);
+	meshBuilder.BuildMesh(m_waterMesh);
 }
 
 /// <summary>
 /// Draw the chunk
+/// <param name="camera">Camera</param>
 /// </summary>
-void Chunk::Draw()
+void Chunk::Draw(const Camera& camera)
 {
+	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
+	mainShader->Use();
+
+	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
+	mainShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
+
+	glm::vec3 lightDirection(0.0f, -1.0f, 0.0f);
+
+	glm::vec3 lightAmbient(0.1f, 0.1f, 0.1f);
+	glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
+
+	glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
+	glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
+
+	mainShader->SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
+	mainShader->SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
+	mainShader->SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
+	mainShader->SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
+	mainShader->SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
+
+	glm::vec4 skyColor = glm::vec4(0.678f, 0.847f, 0.902f, 1.0f);
+	mainShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+	mainShader->SetUniform1f("fogGradient", 1.5f);
+	mainShader->SetUniform1f("fogDensity", 0.01f);
+
+	Texture* blocksTexture = ResourceManager::GetInstance().GetTexture("blocks");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, blocksTexture->GetHandle());
+	mainShader->SetUniform1i("tex", 0);
+
 	m_mesh.Draw();
+
+	mainShader->Unuse();
+
+	glm::vec4 waterColor(0.0f, 0.0f, 0.75f, 1.0f);
+	ShaderProgram* waterShader = ResourceManager::GetInstance().GetShader("water");
+	waterShader->Use();
+	waterShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
+	waterShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
+	waterShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+	waterShader->SetUniform1f("fogGradient", 1.5f);
+	waterShader->SetUniform1f("fogDensity", 0.01f);
+	waterShader->SetUniform4f("waterColor", waterColor.r, waterColor.g, waterColor.b, waterColor.a);
+	m_waterMesh.Draw();
+	waterShader->Unuse();
 }
 
 /// <summary>

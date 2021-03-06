@@ -20,6 +20,18 @@ MeshBuilder::~MeshBuilder()
 }
 
 /// <summary>
+/// Clear all stored data
+/// </summary>
+void MeshBuilder::Clear()
+{
+	m_positions.clear();
+	m_colors.clear();
+	m_uvCoordinates.clear();
+	m_normals.clear();
+	m_indices.clear();
+}
+
+/// <summary>
 /// Builds the mesh using prior provided information,
 /// and stores the result to the provided mesh reference.
 /// </summary>
@@ -41,18 +53,31 @@ void MeshBuilder::BuildMesh(Mesh& mesh)
 	for (size_t i = 0; i < m_positions.size(); ++i)
 	{
 		vertices.emplace_back();
+
 		vertices.back().x = m_positions[i].x;
 		vertices.back().y = m_positions[i].y;
 		vertices.back().z = m_positions[i].z;
-		vertices.back().r = m_colors[i].x;
-		vertices.back().g = m_colors[i].y;
-		vertices.back().b = m_colors[i].z;
-		vertices.back().a = m_colors[i].w;
-		vertices.back().u = m_uvCoordinates[i].x;
-		vertices.back().v = m_uvCoordinates[i].y;
-		vertices.back().nx = m_normals[i].x;
-		vertices.back().ny = m_normals[i].y;
-		vertices.back().nz = m_normals[i].z;
+
+		if (i < m_colors.size())
+		{
+			vertices.back().r = m_colors[i].r;
+			vertices.back().g = m_colors[i].g;
+			vertices.back().b = m_colors[i].b;
+			vertices.back().a = m_colors[i].a;
+		}
+		
+		if (i < m_uvCoordinates.size())
+		{
+			vertices.back().u = m_uvCoordinates[i].x;
+			vertices.back().v = m_uvCoordinates[i].y;
+		}
+		
+		if (i < m_normals.size())
+		{
+			vertices.back().nx = m_normals[i].x;
+			vertices.back().ny = m_normals[i].y;
+			vertices.back().nz = m_normals[i].z;
+		}
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);

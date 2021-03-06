@@ -134,6 +134,18 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 
 					chunk->SetBlockAt(x, y, z, block);
 				}
+
+				int waterHeight = 10;
+				for (int y = waterHeight; y >= 0; --y)
+				{
+					Block* block = chunk->GetBlockAt(x, y, z);
+					if (block == nullptr)
+					{
+						block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
+						block->SetBlockType(BlockType::Water);
+						chunk->SetBlockAt(x, y, z, block);
+					}
+				}
 			}
 		}
 		chunk->GenerateMesh();
@@ -195,12 +207,13 @@ void World::UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const in
 
 /// <summary>
 /// Draws the world
+/// <param name="camera">Camera</param>
 /// </summary>
-void World::Draw()
+void World::Draw(const Camera& camera)
 {
 	for (size_t i = 0; i < m_chunks.size(); ++i)
 	{
-		m_chunks[i]->Draw();
+		m_chunks[i]->Draw(camera);
 	}
 }
 

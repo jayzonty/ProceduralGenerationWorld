@@ -3,6 +3,7 @@
 #include <FastNoiseLite/FastNoiseLite.h>
 
 #include "Block.hpp"
+#include "Camera.hpp"
 #include "Mesh.hpp"
 
 /// <summary>
@@ -15,6 +16,11 @@ private:
 	/// Chunk mesh
 	/// </summary>
 	Mesh m_mesh;
+
+	/// <summary>
+	/// Water mesh
+	/// </summary>
+	Mesh m_waterMesh;
 
 	/// <summary>
 	/// Block data
@@ -71,8 +77,9 @@ public:
 
 	/// <summary>
 	/// Draw the chunk
+	/// <param name="camera">Camera</param>
 	/// </summary>
-	void Draw();
+	void Draw(const Camera& camera);
 
 	/// <summary>
 	/// Gets the block at the specified location
