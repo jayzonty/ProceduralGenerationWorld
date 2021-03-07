@@ -129,6 +129,7 @@ void MainScene::Update(float deltaTime)
 
 	float movementSpeed = 10.0f;
 	glm::vec3 movement = m_camera.GetForwardVector() * movementZ + m_camera.GetRightVector() * movementX;
+	movement = glm::normalize(movement);
 	if (glm::length(movement) > 0.0f)
 	{
 		m_camera.SetPosition(m_camera.GetPosition() + movement * movementSpeed * deltaTime);
