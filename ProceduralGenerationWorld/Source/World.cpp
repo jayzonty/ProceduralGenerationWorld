@@ -125,11 +125,11 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 					Block* block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
 					if (y < 5)
 					{
-						block->SetBlockType(BlockType::Stone);
+						block->SetBlockType(BlockTypeEnum::STONE);
 					}
 					else
 					{
-						block->SetBlockType(BlockType::Dirt);
+						block->SetBlockType(BlockTypeEnum::DIRT);
 					}
 
 					chunk->SetBlockAt(x, y, z, block);
@@ -142,7 +142,7 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 					if (block == nullptr)
 					{
 						block = new Block(chunk->GetChunkIndices(), glm::ivec3(x, y, z));
-						block->SetBlockType(BlockType::Water);
+						block->SetBlockType(BlockTypeEnum::WATER);
 						chunk->SetBlockAt(x, y, z, block);
 					}
 				}

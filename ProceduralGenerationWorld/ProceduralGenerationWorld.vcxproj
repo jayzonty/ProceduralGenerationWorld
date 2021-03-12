@@ -152,6 +152,8 @@
     <ClCompile Include="Source\Block.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Chunk.cpp" />
+    <ClCompile Include="Source\EntityTemplates\BlockTemplate.cpp" />
+    <ClCompile Include="Source\EntityTemplates\BlockTemplateManager.cpp" />
     <ClCompile Include="Source\Font.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -171,6 +173,10 @@
     <ClInclude Include="Headers\Camera.hpp" />
     <ClInclude Include="Headers\Chunk.hpp" />
     <ClInclude Include="Headers\Constants.hpp" />
+    <ClInclude Include="Headers\EntityTemplates\BlockTemplate.hpp" />
+    <ClInclude Include="Headers\EntityTemplates\BlockTemplateManager.hpp" />
+    <ClInclude Include="Headers\Enums\BlockFaceEnum.hpp" />
+    <ClInclude Include="Headers\Enums\BlockTypeEnum.hpp" />
     <ClInclude Include="Headers\Font.hpp" />
     <ClInclude Include="Headers\Input.hpp" />
     <ClInclude Include="Headers\MainScene.hpp" />

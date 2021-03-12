@@ -1,17 +1,8 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "Enums/BlockTypeEnum.hpp"
 
-/// <summary>
-/// Block type enum
-/// </summary>
-enum class BlockType
-{
-	Air,
-	Water,
-	Dirt,
-	Stone
-};
+#include <glm/glm.hpp>
 
 /// <summary>
 /// Block class
@@ -22,7 +13,7 @@ private:
 	/// <summary>
 	/// Block type
 	/// </summary>
-	BlockType m_type;
+	BlockTypeEnum m_type;
 
 	/// <summary>
 	/// Chunk index of the chunk this block belongs to
@@ -52,13 +43,13 @@ public:
 	/// Sets the block type
 	/// </summary>
 	/// <param name="type">New block type</param>
-	void SetBlockType(BlockType type);
+	void SetBlockType(BlockTypeEnum type);
 
 	/// <summary>
 	/// Gets this block's type
 	/// </summary>
 	/// <returns></returns>
-	BlockType GetBlockType() const;
+	BlockTypeEnum GetBlockType() const;
 
 	/// <summary>
 	/// Gets the position of this block within the chunk

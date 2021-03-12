@@ -6,7 +6,7 @@
 /// Constructor
 /// </summary>
 Block::Block(const glm::ivec3& chunkIndex, const glm::ivec3& positionInChunk)
-	: m_type(BlockType::Air)
+	: m_type(BlockTypeEnum::AIR)
 	, m_chunkIndex(chunkIndex)
 	, m_positionInChunk(positionInChunk)
 {
@@ -23,7 +23,7 @@ Block::~Block()
 /// Sets the block type
 /// </summary>
 /// <param name="type">New block type</param>
-void Block::SetBlockType(BlockType type)
+void Block::SetBlockType(BlockTypeEnum type)
 {
 	m_type = type;
 }
@@ -32,7 +32,7 @@ void Block::SetBlockType(BlockType type)
 /// Gets this block's type
 /// </summary>
 /// <returns></returns>
-BlockType Block::GetBlockType() const
+BlockTypeEnum Block::GetBlockType() const
 {
 	return m_type;
 }

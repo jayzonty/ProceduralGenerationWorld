@@ -5,6 +5,9 @@
 #include "ResourceManager.hpp"
 #include "ShaderProgram.hpp"
 
+#include "Enums/BlockTypeEnum.hpp"
+#include "EntityTemplates/BlockTemplateManager.hpp"
+
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -53,6 +56,29 @@ void MainScene::Start()
 	// Initialize the scene shader
 	ResourceManager::GetInstance().CreateShader("main_lighting.vsh", "main_lighting.fsh", "main");
 	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Water.vsh", "Resources/Shaders/Water.fsh", "water");
+
+	// --- Initialize block templates ---
+	float uvSize = 32.0f / 256.0f;
+	{
+		BlockTemplate dirtBlockTemplate;
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::TOP, glm::vec4(0.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::BOTTOM, glm::vec4(64.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::LEFT, glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::RIGHT, glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::FRONT, glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		dirtBlockTemplate.SetFaceUVRect(BlockFaceEnum::BACK, glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize));
+		BlockTemplateManager::GetInstance().AddBlockTemplate(BlockTypeEnum::DIRT, dirtBlockTemplate);
+	}
+	{
+		BlockTemplate stoneBlockTemplate;
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::TOP, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::BOTTOM, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::LEFT, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::RIGHT, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::FRONT, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::BACK, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
+		BlockTemplateManager::GetInstance().AddBlockTemplate(BlockTypeEnum::STONE, stoneBlockTemplate);
+	}
 
 	// Initialize the font to be used for the debug info text
 	m_debugInfoTextFont.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");

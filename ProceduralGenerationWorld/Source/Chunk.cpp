@@ -11,6 +11,10 @@
 #include "MeshBuilder.hpp"
 #include "ResourceManager.hpp"
 
+#include "Enums/BlockTypeEnum.hpp"
+#include "EntityTemplates/BlockTemplate.hpp"
+#include "EntityTemplates/BlockTemplateManager.hpp"
+
 /// <summary>
 /// Constructor
 /// </summary>
@@ -94,26 +98,24 @@ void Chunk::GenerateMesh()
 			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
 			{
 				Block* currentBlock = GetBlockAt(x, y, z);
-				if (currentBlock != nullptr && currentBlock->GetBlockType() != BlockType::Water)
+				if (currentBlock != nullptr && currentBlock->GetBlockType() != BlockTypeEnum::WATER)
 				{
-					glm::vec4 uvRects[6]; // Top, Bottom, Left, Right, Front, Back
-					if (currentBlock->GetBlockType() == BlockType::Dirt)
+					const BlockTemplate* blockTemplate = BlockTemplateManager::GetInstance().GetBlockTemplate(currentBlock->GetBlockType());
+
+					glm::vec4 uvRects[] =
 					{
-						float uvSize = 32.0f / 256.0f;
-						uvRects[0] = glm::vec4(0.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize);
-						uvRects[1] = glm::vec4(64.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize);
-						uvRects[2] = uvRects[3] = uvRects[4] = uvRects[5] = glm::vec4(32.0f / 256.0f, 224.0f / 256.0f, uvSize, uvSize);
-					}
-					else if (currentBlock->GetBlockType() == BlockType::Stone)
-					{
-						float uvSize = 32.0f / 256.0f;
-						uvRects[0] = uvRects[1] = uvRects[2] = uvRects[3] = uvRects[4] = uvRects[5] = glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize);
-					}
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::TOP),
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::BOTTOM),
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::LEFT),
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::RIGHT),
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::FRONT),
+						blockTemplate->GetFaceUVRect(BlockFaceEnum::BACK),
+					};
 
 					// Vertex order: lower-left, lower-right, upper-right, upper-left
 					
 					// Top face
-					if ((y == Constants::CHUNK_HEIGHT - 1) || ((GetBlockAt(x, y + 1, z) == nullptr) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockType::Water)))
+					if ((y == Constants::CHUNK_HEIGHT - 1) || ((GetBlockAt(x, y + 1, z) == nullptr) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockTypeEnum::WATER)))
 					{
 						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
 
@@ -339,7 +341,7 @@ void Chunk::GenerateMesh()
 			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
 			{
 				Block* currentBlock = GetBlockAt(x, y, z);
-				if ((currentBlock != nullptr) && (currentBlock->GetBlockType() == BlockType::Water))
+				if ((currentBlock != nullptr) && (currentBlock->GetBlockType() == BlockTypeEnum::WATER))
 				{
 					if ((y == Constants::CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z) == nullptr))
 					{
