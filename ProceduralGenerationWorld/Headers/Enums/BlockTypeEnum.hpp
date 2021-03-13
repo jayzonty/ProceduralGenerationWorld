@@ -8,5 +8,6 @@ enum class BlockTypeEnum
 	AIR,
 	WATER,
 	DIRT,
-	STONE
+	STONE,
+	SAND
 };

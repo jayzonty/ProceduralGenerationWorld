@@ -127,6 +127,10 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 					{
 						block->SetBlockType(BlockTypeEnum::STONE);
 					}
+					else if ((y > 8) && (y < 12))
+					{
+						block->SetBlockType(BlockTypeEnum::SAND);
+					}
 					else
 					{
 						block->SetBlockType(BlockTypeEnum::DIRT);

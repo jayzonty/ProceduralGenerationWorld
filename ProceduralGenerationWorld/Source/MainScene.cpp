@@ -79,6 +79,16 @@ void MainScene::Start()
 		stoneBlockTemplate.SetFaceUVRect(BlockFaceEnum::BACK, glm::vec4(0.0f / 256.0f, 192.0f / 256.0f, uvSize, uvSize));
 		BlockTemplateManager::GetInstance().AddBlockTemplate(BlockTypeEnum::STONE, stoneBlockTemplate);
 	}
+	{
+		BlockTemplate sandBlockTemplate;
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::TOP, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::BOTTOM, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::LEFT, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::RIGHT, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::FRONT, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		sandBlockTemplate.SetFaceUVRect(BlockFaceEnum::BACK, glm::vec4(0.0f / 256.0f, 160.0f / 256.0f, uvSize, uvSize));
+		BlockTemplateManager::GetInstance().AddBlockTemplate(BlockTypeEnum::SAND, sandBlockTemplate);
+	}
 
 	// Initialize the font to be used for the debug info text
 	m_debugInfoTextFont.Load("Resources/Fonts/SourceCodePro/SourceCodePro-Regular.ttf");
