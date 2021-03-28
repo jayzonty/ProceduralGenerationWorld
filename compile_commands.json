@@ -1,0 +1,92 @@
+[
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/cc  -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -o CMakeFiles/ProceduralGenerationWorld.dir/Deps/Source/glad/glad.c.o   -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Source/glad/glad.c",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Source/glad/glad.c"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/EntityTemplates/BlockTemplate.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/EntityTemplates/BlockTemplate.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/EntityTemplates/BlockTemplate.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/EntityTemplates/BlockTemplateManager.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/EntityTemplates/BlockTemplateManager.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/EntityTemplates/BlockTemplateManager.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Application.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Application.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Application.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Block.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Block.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Block.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Camera.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Camera.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Camera.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Chunk.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Chunk.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Chunk.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Font.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Font.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Font.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Input.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Input.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Input.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/MainScene.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/MainScene.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/MainScene.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Mesh.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Mesh.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Mesh.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/MeshBuilder.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/MeshBuilder.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/MeshBuilder.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/ResourceManager.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/ResourceManager.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/ResourceManager.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/ShaderProgram.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/ShaderProgram.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/ShaderProgram.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Text.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Text.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Text.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Texture.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Texture.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Texture.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/World.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/World.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/World.cpp"
+},
+{
+  "directory": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++   -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/local/include/freetype2 -I/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Headers    -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Main.cpp.o -c /home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Main.cpp",
+  "file": "/home/jayzon/Dev/Projects/ProceduralGenerationWorld/Source/Main.cpp"
+}
+]

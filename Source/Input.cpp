@@ -1,5 +1,7 @@
 #include "Input.hpp"
 
+#include <cmath>
+
 /// <summary>
 /// Static instance for this singleton class
 /// </summary>
