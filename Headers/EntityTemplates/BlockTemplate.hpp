@@ -1,59 +1,57 @@
 #pragma once
 
-#include <Enums/BlockFaceEnum.hpp>
+#include "Enums/BlockFaceEnum.hpp"
 
 #include <glm/glm.hpp>
 
 #include <map>
 
-/// <summary>
-/// Block template class
-/// </summary>
+/**
+ * Block template class
+ */
 class BlockTemplate
 {
 private:
-	/// <summary>
-	/// Mapping between the block face and its corresponding UV rect
-	/// </summary>
+	/**
+	 * Mapping between the block face and its corresponding UV rect
+	 */
 	std::map<BlockFaceEnum, glm::vec4> m_faceUVRects;
 
 public:
-
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	BlockTemplate();
 
-	/// <summary>
-	/// Copy constructor
-	/// </summary>
-	/// <param name="other">Block template to copy from</param>
+	/**
+	 * Copy constructor
+	 * @param[in] other Block template to copy from
+	 */
 	BlockTemplate(const BlockTemplate& other);
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~BlockTemplate();
 
-	/// <summary>
-	/// Set the UV rect for the specified face
-	/// </summary>
-	/// <param name="face">Face</param>
-	/// <param name="faceUVRect">UV Rect</param>
+	/**
+	 * @brief Set the UV rect for the specified face
+	 * @param[in] face Face
+	 * @param[in] faceUVRect UV Rect
+	 */
 	void SetFaceUVRect(const BlockFaceEnum& face, const glm::vec4& faceUVRect);
 
-	/// <summary>
-	/// Gets the UV rect for the specified face
-	/// </summary>
-	/// <param name="face">Face</param>
-	/// <returns>UV rect for the specified face</returns>
+	/**
+	 * @brief Gets the UV rect for the specified face
+	 * @param[in] face Face
+	 * @return UV rect for the specified face
+	 */
 	const glm::vec4& GetFaceUVRect(const BlockFaceEnum& face) const;
 
-	/// <summary>
-	/// Copy operator
-	/// </summary>
-	/// <param name="other">Block template to copy from</param>
-	/// <returns>Reference to the current instance</returns>
+	/**
+	 * @brief Copy operator
+	 * @param[in] other Block template to copy from
+	 * @return Reference to the current instance
+	 */
 	BlockTemplate& operator=(const BlockTemplate& other);
-
 };

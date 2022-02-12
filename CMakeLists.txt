@@ -8,7 +8,7 @@ find_package(glfw3 REQUIRED)
 find_package(Freetype REQUIRED)
 
 # C++ standard
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Generate compile_commands.json for YouCompleteMe (YCM)
@@ -19,9 +19,33 @@ include_directories(Deps/Include ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} H
 
 # Set SOURCES to contain all the source files
 set(SOURCES
-
     # GLAD
     Deps/Source/glad/glad.c
+
+    Source/Engine/ECS/Systems/MouseButtonEventSystem.cpp
+    Source/Engine/ECS/Systems/DragEventSystem.cpp
+    Source/Engine/ECS/Systems/LineRendererSystem.cpp
+    Source/Engine/ECS/Systems/ShapeRendererSystem.cpp
+    Source/Engine/ECS/Systems/TextRendererSystem.cpp
+
+    Source/Engine/Font/Font.cpp
+    Source/Engine/WindowManager.cpp
+
+    Source/Engine/Graphics/Renderer.cpp
+    Source/Engine/Graphics/ShaderProgram.cpp
+    
+    Source/Engine/UI/Button.cpp
+    Source/Engine/UI/ValueSpinner.cpp
+    Source/Engine/UI/Spinner.cpp
+    Source/Engine/UI/Text.cpp
+
+    Source/Engine/BaseApplication.cpp
+    Source/Engine/Clock.cpp
+    Source/Engine/Input.cpp
+    Source/Engine/Random.cpp
+    Source/Engine/SceneGraph.cpp
+    Source/Engine/TextureManager.cpp
+    Source/Engine/Window.cpp
 
     Source/EntityTemplates/BlockTemplate.cpp
     Source/EntityTemplates/BlockTemplateManager.cpp
@@ -30,15 +54,10 @@ set(SOURCES
     Source/Block.cpp
     Source/Camera.cpp
     Source/Chunk.cpp
-    Source/Font.cpp
-    Source/Input.cpp
     Source/MainScene.cpp
     Source/Mesh.cpp
     Source/MeshBuilder.cpp
     Source/ResourceManager.cpp
-    Source/ShaderProgram.cpp
-    Source/Text.cpp
-    Source/Texture.cpp
     Source/World.cpp
 
     Source/Main.cpp

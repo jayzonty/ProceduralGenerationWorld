@@ -2,36 +2,36 @@
 
 #include <glm/glm.hpp>
 
-/// <summary>
-/// Ray class
-/// </summary>
-class Ray
+/**
+ * Struct containing data about a ray
+ */
+struct Ray
 {
 public:
-	/// <summary>
-	/// Ray origin
-	/// </summary>
+	/**
+	 * Ray origin
+	 */
 	glm::vec3 origin;
 
-	/// <summary>
-	/// Ray direction
-	/// </summary>
+	/**
+	 * Ray direction
+	 */
 	glm::vec3 direction;
 
-	/// <summary>
-	/// Constructor
-	/// </summary>
-	/// <param name="newOrigin">Origin</param>
-	/// <param name="newDirection">Direction</param>
+	/**
+	 * @brief Constructor
+	 * @param[in] newOrigin New origin
+	 * @param[in] newDirection New direction
+	 */
 	Ray(const glm::vec3& newOrigin, const glm::vec3& newDirection)
 		: origin(newOrigin)
 		, direction(newDirection)
 	{
 	}
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~Ray()
 	{
 	}

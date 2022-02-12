@@ -8,97 +8,97 @@
 
 #include <vector>
 
-/// <summary>
-/// World data class
-/// </summary>
+/**
+ * World data class
+ */
 class World
 {
 private:
-	/// <summary>
-	/// List of chunks
-	/// </summary>
+	/**
+	 * List of chunks
+	 */
 	std::vector<Chunk*> m_chunks;
 
-	/// <summary>
-	/// Noise generator
-	/// </summary>
+	/**
+	 * Noise generator
+	 */
 	FastNoiseLite m_noiseEngine;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	World();
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~World();
 
-	/// <summary>
-	/// Get chunk at the provided location indices
-	/// </summary>
-	/// <param name="chunkIndexX">Chunk x-index</param>
-	/// <param name="chunkIndexZ">Chunk z-index</param>
-	/// <returns>Chunk at the provided location. Returns nullptr if the chunk has not been generated yet.</returns>
+	/**
+	 * @brief Get chunk at the provided location indices
+	 * @param[in] chunkIndexX Chunk x-index
+	 * @param[in] chunkIndexZ Chunk z-index
+	 * @return Chunk at the provided location. Returns nullptr if the chunk has not been generated yet
+	 */
 	Chunk* GetChunkAt(const int& chunkIndexX, const int& chunkIndexZ);
 
-	/// <summary>
-	/// Gets the chunk at the given world position
-	/// </summary>
-	/// <param name="worldPosition">World position</param>
-	/// <returns>Chunk at the given world position</returns>
+	/**
+	 * @brief Gets the chunk at the given world position
+	 * @param[in] worldPosition World position
+	 * @return Chunk at the given world position
+	 */
 	Chunk* GetChunkAtWorldPosition(const glm::vec3& worldPosition);
 
-	/// <summary>
-	/// Gets the block at the given world position
-	/// </summary>
-	/// <param name="worldPosition">World position</param>
-	/// <returns>Block at the given world position</returns>
+	/**
+	 * @brief Gets the block at the given world position
+	 * @param[in] worldPosition World position
+	 * @return Block at the given world position
+	 */
 	Block* GetBlockAtWorldPosition(const glm::vec3& worldPosition);
 
-	/// <summary>
-	/// Converts the provided world position to chunk index
-	/// </summary>
-	/// <param name="worldPosition">World position</param>
-	/// <returns>Chunk index of the provided world position</returns>
+	/**
+	 * @brief Converts the provided world position to chunk index
+	 * @param[in] worldPosition World position
+	 * @return Chunk index of the provided world position
+	 */
 	glm::ivec3 WorldPositionToChunkIndex(const glm::vec3& worldPosition);
 
-	/// <summary>
-	/// Generate chunk at the provided location indices
-	/// </summary>
-	/// <param name="chunkIndexX">Chunk x-index</param>
-	/// <param name="chunkIndexZ">Chunk z-index</param>
-	/// <returns>Generated chunk</returns>
+	/**
+	 * @brief Generate chunk at the provided location indices
+	 * @param[in] chunkIndexX Chunk x-index
+	 * @param[in] chunkIndexZ Chunk z-index
+	 * @return Generated chunk
+	 */
 	Chunk* GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ);
 
-	/// <summary>
-	/// Load chunks around the area defined by the center chunk index
-	/// and the radius in chunks
-	/// </summary>
-	/// <param name="centerChunkIndex">Center chunk index</param>
-	/// <param name="radius">Radius in chunks</param>
+	/**
+	 * @brief Load chunks around the area defined by the center chunk index
+	 * and the radius in chunks
+	 * @param[in] centerChunkIndex Center chunk index
+	 * @param[in] radius Radius in chunks
+	 */
 	void LoadChunksWithinArea(const glm::ivec3& centerChunkIndex, const int& radius);
 
-	/// <summary>
-	/// Unload chunks outside the area defined by the center chunk index
-	/// and the radius in chunks
-	/// </summary>
-	/// <param name="centerChunkIndex">Center chunk index</param>
-	/// <param name="radius">Radius in chunks</param>
+	/**
+	 * @brief Unload chunks outside the area defined by the center chunk index
+	 * and the radius in chunks
+	 * @param[in] centerChunkIndex Center chunk index
+	 * @param[in] radius Radius in chunks
+	 */
 	void UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const int& radius);
 
-	/// <summary>
-	/// Draws the world
-	/// <param name="camera">Camera</param>
-	/// </summary>
+	/**
+	 * @brief Draws the world
+	 * @param[in] camera Camera
+	 */
 	void Draw(const Camera& camera);
 
-	/// <summary>
-	/// Casts a ray and gets the first non-air block hit
-	/// </summary>
-	/// <param name="ray">Ray</param>
-	/// <param name="maxDistance">Maximum distance</param>
-	/// <returns>First non-air block hit by the ray cast. If no blocks are hit, returns nullptr.</returns>
+	/**
+	 * @brief Casts a ray and gets the first non-air block hit
+	 * @param[in] ray Ray
+	 * @param[in] maxDistance Maximum distance
+	 * @return First non-air block hit by the ray cast. If no blocks are hit, returns nullptr.
+	 */
 	Block* Raycast(const Ray& ray, float maxDistance);
 };

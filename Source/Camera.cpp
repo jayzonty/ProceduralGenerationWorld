@@ -2,9 +2,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 Camera::Camera()
 	: m_fov(90.0f)
 	, m_aspectRatio(1.0f)
@@ -19,173 +19,173 @@ Camera::Camera()
 	UpdateVectors();
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Camera::~Camera()
 {
 }
 
-/// <summary>
-/// Sets the camera's field of view
-/// </summary>
-/// <param name="fov">New field of view in degrees</param>
+/**
+ * @brief Sets the camera's field of view
+ * @param[in] fov New field of view in degrees
+ */
 void Camera::SetFieldOfView(const float& fov)
 {
 	m_fov = fov;
 }
 
-/// <summary>
-/// Gets the camera's field of view
-/// </summary>
-/// <returns>Field of view in degrees</returns>
+/**
+ * @brief Gets the camera's field of view
+ * @return Field of view in degrees
+ */
 float Camera::GetFieldOfView() const
 {
 	return m_fov;
 }
 
-/// <summary>
-/// Sets the camera's aspect ratio
-/// </summary>
-/// <param name="aspectRatio">New aspect ratio</param>
+/**
+ * @brief Sets the camera's aspect ratio
+ * @param[in] aspectRatio New aspect ratio
+ */
 void Camera::SetAspectRatio(const float& aspectRatio)
 {
 	m_aspectRatio = aspectRatio;
 }
 
-/// <summary>
-/// Gets the camera's aspect ratio
-/// </summary>
-/// <returns>Aspect ratio</returns>
+/**
+ * @brief Gets the camera's aspect ratio
+ * @return Aspect ratio
+ */
 float Camera::GetAspectRatio() const
 {
 	return m_aspectRatio;
 }
 
-/// <summary>
-/// Sets the camera's position
-/// </summary>
-/// <param name="position">New position</param>
+/**
+ * @brief Sets the camera's position
+ * @param[in] position New position
+ */
 void Camera::SetPosition(const glm::vec3& position)
 {
 	m_position = position;
 }
 
-/// <summary>
-/// Gets the camera's position
-/// </summary>
-/// <returns>Camera's position</returns>
+/**
+ * @brief Gets the camera's position
+ * @return Camera's position
+ */
 glm::vec3 Camera::GetPosition() const
 {
 	return m_position;
 }
 
-/// <summary>
-/// Sets the camera's yaw
-/// </summary>
-/// <param name="yaw">New yaw value</param>
+/**
+ * @brief Sets the camera's yaw
+ * @param[in] yaw New yaw value
+ */
 void Camera::SetYaw(float yaw)
 {
 	m_yaw = yaw;
 	UpdateVectors();
 }
 
-/// <summary>
-/// Gets the camera's yaw
-/// </summary>
-/// <returns>Camera yaw</returns>
+/**
+ * @brief Gets the camera's yaw
+ * @return Camera yaw in degrees
+ */
 float Camera::GetYaw() const
 {
 	return m_yaw;
 }
 
-/// <summary>
-/// Sets the camera's pitch
-/// </summary>
-/// <param name="pitch">New pitch value</param>
+/**
+ * @brief Sets the camera's pitch
+ * @param[in] pitch New pitch value in degrees
+ */
 void Camera::SetPitch(float pitch)
 {
 	m_pitch = pitch;
 	UpdateVectors();
 }
 
-/// <summary>
-/// Gets the camera's pitch
-/// </summary>
-/// <returns>Camera pitch</returns>
+/**
+ * @brief Gets the camera's pitch
+ * @return Camera pitch in degrees
+ */
 float Camera::GetPitch() const
 {
 	return m_pitch;
 }
 
-/// <summary>
-/// Gets the forward vector
-/// </summary>
-/// <returns>Camera's forward vector</returns>
+/**
+ * @brief Gets the forward vector
+ * @return Camera's forward vector
+ */
 glm::vec3 Camera::GetForwardVector() const
 {
 	return m_forward;
 }
 
-/// <summary>
-/// Gets the right vector
-/// </summary>
-/// <returns>Camera's right vector</returns>
+/**
+ * @brief Gets the right vector
+ * @return Camera's right vector
+ */
 glm::vec3 Camera::GetRightVector() const
 {
 	return m_right;
 }
 
-/// <summary>
-/// Gets the up vector
-/// </summary>
-/// <returns></returns>
+/**
+ * @brief Gets the up vector
+ * @return Camera's up vector
+ */
 glm::vec3 Camera::GetUpVector() const
 {
 	return m_up;
 }
 
-/// <summary>
-/// Sets the world's up vector
-/// </summary>
-/// <param name="worldUp">World up vector</param>
+/**
+ * @brief Sets the world's up vector
+ * @param[in] worldUp World's up vector
+ */
 void Camera::SetWorldUpVector(const glm::vec3& worldUp)
 {
 	m_worldUp = worldUp;
 	UpdateVectors();
 }
 
-/// <summary>
-/// Gets the world's up vector
-/// </summary>
-/// <returns>World up vector</returns>
+/**
+ * @brief Gets the world's up vector
+ * @return World up vector
+ */
 glm::vec3 Camera::GetWorldUpVector() const
 {
 	return m_worldUp;
 }
 
-/// <summary>
-/// Gets the view matrix
-/// </summary>
-/// <returns>View matrix</returns>
+/**
+ * @brief Gets the view matrix
+ * @return View matrix
+ */
 glm::mat4 Camera::GetViewMatrix() const
 {
 	return glm::lookAt(m_position, m_position + m_forward, m_up);
 }
 
-/// <summary>
-/// Gets the projection matrix
-/// </summary>
-/// <returns>Projection matrix</returns>
+/**
+ * @brief Gets the projection matrix
+ * @return Projection matrix
+ */
 glm::mat4 Camera::GetProjectionMatrix() const
 {
 	// TODO: Make the near and far values adjustable
 	return glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.1f, 100.0f);
 }
 
-/// <summary>
-/// Updates the forward, right, and up vectors
-/// </summary>
+/**
+ * @brief Updates the forward, right, and up vectors
+ */
 void Camera::UpdateVectors()
 {
 	m_forward.x = glm::cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));

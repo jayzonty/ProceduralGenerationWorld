@@ -1,44 +1,44 @@
 #include "EntityTemplates/BlockTemplateManager.hpp"
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 BlockTemplateManager::BlockTemplateManager()
 	: m_templates()
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 BlockTemplateManager::~BlockTemplateManager()
 {
 }
 
-/// <summary>
-/// Gets the singleton instance for the BlockTemplateManager
-/// </summary>
-/// <returns>Singleton instance of this class</returns>
+/**
+ * @brief Gets the singleton instance for the BlockTemplateManager
+ * @return Singleton instance of this class
+ */
 BlockTemplateManager& BlockTemplateManager::GetInstance()
 {
 	static BlockTemplateManager instance;
 	return instance;
 }
 
-/// <summary>
-	/// Add the block template for the specified block type
-	/// </summary>
-	/// <param name="blockType">Block type</param>
-	/// <param name="blockTemplate">Block template</param>
+/**
+ * @brief Add the block template for the specified block type
+ * @param[in] blockType Block type
+ * @param[in] blockTemplate Block template
+ */
 void BlockTemplateManager::AddBlockTemplate(const BlockTypeEnum& blockType, const BlockTemplate& blockTemplate)
 {
 	m_templates[blockType] = blockTemplate;
 }
 
-/// <summary>
-/// Gets the block template for the specified block type
-/// </summary>
-/// <returns>Block template for the specified block type. Returns nullptr if the block type does not have a template</returns>
+/**
+ * @brief Gets the block template for the specified block type
+ * @return Block template for the specified block type. Returns nullptr if the block type does not have a template
+ */
 const BlockTemplate* BlockTemplateManager::GetBlockTemplate(const BlockTypeEnum& blockType)
 {
 	if (m_templates.find(blockType) != m_templates.end())

@@ -2,23 +2,23 @@
 
 namespace Constants
 {
-	/// <summary>
-	/// Chunk width
-	/// </summary>
+	/**
+	 * Chunk width
+	 */
 	const int CHUNK_WIDTH = 16;
 
-	/// <summary>
-	/// Chunk height
-	/// </summary>
+	/**
+	 * Chunk height
+	 */
 	const int CHUNK_HEIGHT = 256;
 
-	/// <summary>
-	/// Chunk depth
-	/// </summary>
+	/**
+	 * Chunk depth
+	 */
 	const int CHUNK_DEPTH = 16;
 
-	/// <summary>
-	/// Block size
-	/// </summary>
+	/**
+	 * Block size
+	 */
 	const float BLOCK_SIZE = 1.0f;
 }

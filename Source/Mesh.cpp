@@ -3,9 +3,9 @@
 #include <cstddef>
 #include <iostream>
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 Mesh::Mesh()
 	: m_vbo(0)
 	, m_vao(0)
@@ -14,9 +14,9 @@ Mesh::Mesh()
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Mesh::~Mesh()
 {
 	if (m_vbo != 0)
@@ -38,9 +38,9 @@ Mesh::~Mesh()
 	}
 }
 
-/// <summary>
-/// Draws the mesh
-/// </summary>
+/**
+ * @brief Draws the mesh
+ */
 void Mesh::Draw()
 {
 	glBindVertexArray(m_vao);
