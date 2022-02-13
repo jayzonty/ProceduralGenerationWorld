@@ -13,9 +13,9 @@ class Chunk
 {
 private:
 	/**
-	 * Chunk mesh
+	 * Terrain mesh
 	 */
-	Mesh m_mesh;
+	Mesh m_terrainMesh;
 
 	/**
 	 * Water mesh
@@ -75,10 +75,16 @@ public:
 	void GenerateMesh();
 
 	/**
-	 * @brief Draw the chunk
-	 * @param[in] camera Camera
+	 * @brief Gets the mesh for the terrain
+	 * @return Terrain mesh
 	 */
-	void Draw(const Camera& camera);
+	Mesh* GetTerrainMesh();
+
+	/**
+	 * @brief Gets the mesh for water-type blocks
+	 * @return Mesh for water-type blocks
+	 */
+	Mesh* GetWaterMesh();
 
 	/**
 	 * @brief Gets the block at the specified location
