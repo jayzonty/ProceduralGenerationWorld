@@ -49,7 +49,6 @@ void MainScene::Init()
 
 	// Set sky color
 	m_skyColor = glm::vec4(0.678f, 0.847f, 0.902f, 1.0f);
-	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
 
 	// Initialize the scene shader
 	ResourceManager::GetInstance().CreateShader("main_lighting.vsh", "main_lighting.fsh", "main");
@@ -182,6 +181,7 @@ void MainScene::FixedUpdate(const float &timestep)
  */
 void MainScene::Draw()
 {
+	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_world->Draw(m_camera);

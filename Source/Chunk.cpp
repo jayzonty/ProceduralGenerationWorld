@@ -141,37 +141,49 @@ void Chunk::GenerateMesh()
 					const BlockTemplate* blockTemplate = BlockTemplateManager::GetInstance().GetBlockTemplate(currentBlock->GetBlockType());
 
 					// Top face
-					if ((y == Constants::CHUNK_HEIGHT - 1) || ((GetBlockAt(x, y + 1, z) == nullptr) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockTypeEnum::WATER)))
+					if ((y == Constants::CHUNK_HEIGHT - 1) 
+						|| (GetBlockAt(x, y + 1, z) == nullptr) 
+						|| (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::TOP, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Bottom face
-					if ((y == 0) || (GetBlockAt(x, y - 1, z) == nullptr))
+					if ((y == 0) 
+						|| (GetBlockAt(x, y - 1, z) == nullptr)
+						|| (GetBlockAt(x, y - 1, z)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::BOTTOM, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 					
 					// Left face
-					if ((x == Constants::CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z) == nullptr))
+					if ((x == Constants::CHUNK_WIDTH - 1)
+						|| (GetBlockAt(x + 1, y, z) == nullptr)
+						|| (GetBlockAt(x + 1, y, z)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::LEFT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Right face
-					if ((x == 0) || (GetBlockAt(x - 1, y, z) == nullptr))
+					if ((x == 0)
+						|| (GetBlockAt(x - 1, y, z) == nullptr)
+						|| (GetBlockAt(x - 1, y, z)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::RIGHT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Front face
-					if ((z == 0) || (GetBlockAt(x, y, z - 1) == nullptr))
+					if ((z == 0) 
+						|| (GetBlockAt(x, y, z - 1) == nullptr)
+						|| (GetBlockAt(x, y, z - 1)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::FRONT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Back face
-					if ((z == Constants::CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1) == nullptr))
+					if ((z == Constants::CHUNK_DEPTH - 1)
+						|| (GetBlockAt(x, y, z + 1) == nullptr)
+						|| (GetBlockAt(x, y, z + 1)->GetBlockType() == BlockTypeEnum::WATER))
 					{
 						AddFaceVerticesToMesh(BlockFaceEnum::BACK, blockTemplate, blockOrigin, m_terrainMesh);
 					}
