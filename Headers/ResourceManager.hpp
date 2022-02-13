@@ -68,11 +68,6 @@ public:
 	void DeleteShader(const std::string& key);
 
 	/**
-	 * @brief Deletes all loaded shaders
-	 */
-	void DeleteAllShaders();
-
-	/**
 	 * @brief Gets the shader associated with the provided key.
 	 * @param[in] key Key identifying the shader we are trying to get
 	 * @return Returns the reference to the shader identified by the provided key. Returns nullptr if it does not exist
@@ -93,11 +88,6 @@ public:
 	 * @param[in] key Key idnetifying the texture to delete
 	 */
 	void DeleteTexture(const std::string& key);
-
-	/**
-	 * @brief Deletes all loaded textures
-	 */
-	void DeleteAllTextures();
 
 	/**
 	 * @brief Gets the texture associated with the provided key.

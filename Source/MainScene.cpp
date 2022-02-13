@@ -250,9 +250,4 @@ void MainScene::Draw()
  */
 void MainScene::Cleanup()
 {
-	delete m_world;
-	m_world = nullptr;
-
-	ResourceManager::GetInstance().DeleteAllShaders();
-	ResourceManager::GetInstance().DeleteAllTextures();
 }

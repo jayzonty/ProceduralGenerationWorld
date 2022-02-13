@@ -136,6 +136,13 @@ bool BaseApplication::Init()
  */
 void BaseApplication::Cleanup()
 {
+    if (m_activeScene != nullptr)
+    {
+        m_activeScene->Cleanup();
+        delete m_activeScene;
+        m_activeScene = nullptr;
+    }
+
     Window* mainWindow = WindowManager::GetMainWindow();
     mainWindow->Cleanup();
     glfwTerminate();

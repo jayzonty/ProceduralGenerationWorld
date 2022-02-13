@@ -73,18 +73,6 @@ void ResourceManager::DeleteShader(const std::string& key)
 }
 
 /**
- * @brief Deletes all loaded shaders
- */
-void ResourceManager::DeleteAllShaders()
-{
-	for (auto &it : m_shaders)
-	{
-		delete it.second;
-	}
-	m_shaders.clear();
-}
-
-/**
  * @brief Gets the shader associated with the provided key.
  * @param[in] key Key identifying the shader we are trying to get
  * @return Returns the reference to the shader identified by the provided key. Returns nullptr if it does not exist
@@ -127,18 +115,6 @@ void ResourceManager::DeleteTexture(const std::string& key)
 	{
 		m_textures.erase(key);
 	}
-}
-
-/**
- * @brief Deletes all loaded textures
- */
-void ResourceManager::DeleteAllTextures()
-{
-	for (auto &it : m_textures)
-	{
-		delete it.second;
-	}
-	m_textures.clear();
 }
 
 /**
