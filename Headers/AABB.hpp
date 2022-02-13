@@ -2,45 +2,45 @@
 
 #include <glm/glm.hpp>
 
-/// <summary>
-/// Axis-aligned bounding box class
-/// </summary>
+/**
+ * Axis-aligned bounding box class
+ */
 class AABB
 {
 public:
-	/// <summary>
-	/// Minimum point
-	/// </summary>
+	/**
+	 * Minimum point
+	 */
 	glm::vec3 min;
 
-	/// <summary>
-	/// Maximum point
-	/// </summary>
+	/**
+	 * Maximum point
+	 */
 	glm::vec3 max;
 
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	AABB()
 		: min(0.0f)
 		, max(0.0f)
 	{
 	}
 
-	/// <summary>
-	/// Constructor
-	/// </summary>
-	/// <param name="minPoint">Minimum point</param>
-	/// <param name="maxPoint">Maximum point</param>
+	/**
+	 * @brief Constructor
+	 * @param[in] minPoint Minimum point
+	 * @param[in] maxPoint Maximum point
+	 */
 	AABB(const glm::vec3& minPoint, const glm::vec3& maxPoint)
 		: min(minPoint)
 		, max(maxPoint)
 	{
 	}
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~AABB()
 	{
 	}

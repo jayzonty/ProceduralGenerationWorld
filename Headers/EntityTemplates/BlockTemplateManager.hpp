@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Enums/BlockTypeEnum.hpp>
+#include "Enums/BlockTypeEnum.hpp"
 
 #include "BlockTemplate.hpp"
 
@@ -9,14 +9,14 @@
 class BlockTemplateManager
 {
 private:
-	/// <summary>
-	/// Mapping of block type and its corresponding block template
-	/// </summary>
+	/**
+	 * Mapping of block type and its corresponding block template
+	 */
 	std::map<BlockTypeEnum, BlockTemplate> m_templates;
 
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	BlockTemplateManager();
 
 	/* Delete copy constructor */
@@ -26,28 +26,28 @@ private:
 	BlockTemplateManager& operator=(const BlockTemplateManager&) = delete;
 
 public:
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~BlockTemplateManager();
 
-	/// <summary>
-	/// Gets the singleton instance for the BlockTemplateManager
-	/// </summary>
-	/// <returns>Singleton instance of this class</returns>
+	/**
+	 * @brief Gets the singleton instance for the BlockTemplateManager
+	 * @return Singleton instance of this class
+	 */
 	static BlockTemplateManager& GetInstance();
 
-	/// <summary>
-	/// Add the block template for the specified block type
-	/// </summary>
-	/// <param name="blockType">Block type</param>
-	/// <param name="blockTemplate">Block template</param>
+	/**
+	 * @brief Add the block template for the specified block type
+	 * @param[in] blockType Block type
+	 * @param[in] blockTemplate Block template
+	 */
 	void AddBlockTemplate(const BlockTypeEnum& blockType, const BlockTemplate& blockTemplate);
 
-	/// <summary>
-	/// Gets the block template for the specified block type
-	/// </summary>
-	/// <returns>Block template for the specified block type. Returns nullptr if the block type does not have a template</returns>
+	/**
+	 * @brief Gets the block template for the specified block type
+	 * @return Block template for the specified block type. Returns nullptr if the block type does not have a template
+	 */
 	const BlockTemplate* GetBlockTemplate(const BlockTypeEnum& blockType);
 
 };

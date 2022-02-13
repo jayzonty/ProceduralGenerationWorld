@@ -3,9 +3,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 Texture::Texture()
 	: m_textureHandle(0)
 	, m_width(0)
@@ -13,9 +13,9 @@ Texture::Texture()
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Texture::~Texture()
 {
 	if (m_textureHandle != 0)
@@ -25,10 +25,10 @@ Texture::~Texture()
 	}
 }
 
-/// <summary>
-/// Create a texture based on the iamge in the provided file path
-/// </summary>
-/// <param name="textureFilePath">Image file path</param>
+/**
+ * @brief Create a texture based on the iamge in the provided file path
+ * @param[in] textureFilePath Image file path
+ */
 void Texture::CreateFromFile(const std::string& textureFilePath)
 {
 	if (m_textureHandle == 0)
@@ -61,10 +61,10 @@ void Texture::CreateFromFile(const std::string& textureFilePath)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-/// <summary>
-/// Gets the GL texture handle for this texture
-/// </summary>
-/// <returns>GL texture handle</returns>
+/**
+ * @brief Gets the GL texture handle for this texture
+ * @return GL texture handle
+ */
 GLuint Texture::GetHandle() const
 {
 	return m_textureHandle;

@@ -1,8 +1,8 @@
 #pragma once
 
-/// <summary>
-/// Block type enum
-/// </summary>
+/**
+ * Block type enum
+ */
 enum class BlockTypeEnum
 {
 	AIR,

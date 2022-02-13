@@ -2,9 +2,11 @@
 
 #include "Constants.hpp"
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ * @param[in] chunkIndex Chunk index of the chunk this block belongs to
+ * @param[in] positionInChunk Position of this block within the chunk
+ */
 Block::Block(const glm::ivec3& chunkIndex, const glm::ivec3& positionInChunk)
 	: m_type(BlockTypeEnum::AIR)
 	, m_chunkIndex(chunkIndex)
@@ -12,44 +14,44 @@ Block::Block(const glm::ivec3& chunkIndex, const glm::ivec3& positionInChunk)
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Block::~Block()
 {
 }
 
-/// <summary>
-/// Sets the block type
-/// </summary>
-/// <param name="type">New block type</param>
+/**
+ * @brief Sets the block type
+ * @param[in] type New block type
+ */
 void Block::SetBlockType(BlockTypeEnum type)
 {
 	m_type = type;
 }
 
-/// <summary>
-/// Gets this block's type
-/// </summary>
-/// <returns></returns>
+/**
+ * @brief Gets this block's type
+ * @return Block type
+ */
 BlockTypeEnum Block::GetBlockType() const
 {
 	return m_type;
 }
 
-/// <summary>
-/// Gets the position of this block within the chunk
-/// </summary>
-/// <returns>Position of this block within the chunk</returns>
+/**
+ * @brief Gets the position of this block within the chunk
+ * @return Position of this block within the chunk
+ */
 glm::ivec3 Block::GetPositionInChunk() const
 {
 	return m_positionInChunk;
 }
 
-/// <summary>
-/// Gets the position of this block in the world
-/// </summary>
-/// <returns>Position of this block in the world</returns>
+/**
+ * @brief Gets the position of this block in the world
+ * @return Position of this block in the world
+ */
 glm::ivec3 Block::GetPositionInWorld() const
 {
 	glm::ivec3 ret;

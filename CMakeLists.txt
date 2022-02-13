@@ -19,7 +19,6 @@ include_directories(Deps/Include ${GLFW_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} H
 
 # Set SOURCES to contain all the source files
 set(SOURCES
-
     # GLAD
     Deps/Source/glad/glad.c
 
@@ -27,18 +26,19 @@ set(SOURCES
     Source/EntityTemplates/BlockTemplateManager.cpp
 
     Source/Application.cpp
+    Source/BaseApplication.cpp
     Source/Block.cpp
     Source/Camera.cpp
     Source/Chunk.cpp
-    Source/Font.cpp
     Source/Input.cpp
     Source/MainScene.cpp
     Source/Mesh.cpp
     Source/MeshBuilder.cpp
     Source/ResourceManager.cpp
     Source/ShaderProgram.cpp
-    Source/Text.cpp
     Source/Texture.cpp
+    Source/Window.cpp
+    Source/WindowManager.cpp
     Source/World.cpp
 
     Source/Main.cpp

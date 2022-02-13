@@ -3,28 +3,27 @@
 #include <fstream>
 #include <iostream>
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 ShaderProgram::ShaderProgram()
 	: m_program(0)
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 ShaderProgram::~ShaderProgram()
 {
 	glDeleteProgram(m_program);
 }
 
-/// <summary>
-/// Initialize the shader program from the provided
-/// vertex and fragment shader file paths.
-/// </summary>
-/// <param name="vertexShaderFilePath">Vertex shader file path</param>
-/// <param name="fragmentShaderFilePath">Fragment shader file path</param>
+/**
+ * @brief Initializes the shader program from the provided vertex and fragment shader file paths.
+ * @param[in] vertexShaderFilePath Vertex shader file path
+ * @param[in] fragmentShaderFilePath Fragment shader file path
+ */
 void ShaderProgram::InitFromFiles(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath)
 {
 	GLuint vertexShader = CreateShaderFromFile(GL_VERTEX_SHADER, vertexShaderFilePath);
@@ -44,25 +43,26 @@ void ShaderProgram::InitFromFiles(const std::string& vertexShaderFilePath, const
 	// Check shader program link status
 	GLint linkStatus;
 	glGetProgramiv(m_program, GL_LINK_STATUS, &linkStatus);
-	if (linkStatus != GL_TRUE) {
+	if (linkStatus != GL_TRUE)
+    {
 		char infoLog[512];
 		GLsizei infoLogLen = sizeof(infoLog);
 		glGetProgramInfoLog(m_program, infoLogLen, &infoLogLen, infoLog);
-		std::cerr << "program link error: " << infoLog << std::endl;
+		std::cerr << "[ShaderProgram] Program link error: " << infoLog << std::endl;
 	}
 }
 
-/// <summary>
-/// Use the shader
-/// </summary>
+/**
+ * @brief Use the shader
+ */
 void ShaderProgram::Use()
 {
 	glUseProgram(m_program);
 }
 
-/// <summary>
-/// Unuse the shader
-/// </summary>
+/**
+ * @brief Unuses the shader
+ */
 void ShaderProgram::Unuse()
 {
 	glUseProgram(0);
@@ -72,79 +72,79 @@ void ShaderProgram::Unuse()
 // --- Uniforms ---
 // ================
 
-/// <summary>
-/// Sets the uniform value with a single integer
-/// </summary>
-/// <param name="uniformName">Uniform name</param>
-/// <param name="val">Value</param>
+/**
+ * @brief Sets the uniform value with a single integer
+ * @param[in] uniformName Uniform name
+ * @param[in] val Value
+ */
 void ShaderProgram::SetUniform1i(const std::string& uniformName, const int& val)
 {
 	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
 	glUniform1i(uniformLocation, val);
 }
 
-/// <summary>
-/// Sets the uniform value with a single float
-/// </summary>
-/// <param name="uniformName">Uniform name</param>
-/// <param name="val">Value</param>
+/**
+ * @brief Sets the uniform value with a single float
+ * @param[in] uniformName Uniform name
+ * @param[in] val Value
+ */
 void ShaderProgram::SetUniform1f(const std::string& uniformName, const float& val)
 {
 	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
 	glUniform1f(uniformLocation, val);
 }
 
-/// <summary>
-/// Sets the uniform value with 3 floats
-/// </summary>
-/// <param name="uniformName">Uniform name</param>
-/// <param name="val1">First value</param>
-/// <param name="val2">Second value</param>
-/// <param name="val3">Third value</param>
+/**
+ * @brief Sets the uniform value with 3 floats
+ * @param[in] uniformName Uniform name
+ * @param[in] val1 First value
+ * @param[in] val2 Second value
+ * @param[in] val3 Third value
+ */
 void ShaderProgram::SetUniform3f(const std::string& uniformName, const float& val1, const float& val2, const float& val3)
 {
 	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
 	glUniform3f(uniformLocation, val1, val2, val3);
 }
 
-/// <summary>
-/// Sets the uniform value with 4 floats
-/// </summary>
-/// <param name="uniformName">Uniform name</param>
-/// <param name="val1">First value</param>
-/// <param name="val2">Second value</param>
-/// <param name="val3">Third value</param>
-/// <param name="val4">Fourth value</param
+/**
+ * @brief Sets the uniform value with 4 floats
+ * @param[in] uniformName Uniform name
+ * @param[in] val1 First value
+ * @param[in] val2 Second value
+ * @param[in] val3 Third value
+ * @param[in] val4 Fourth value
+ */
 void ShaderProgram::SetUniform4f(const std::string& uniformName, const float& val1, const float& val2, const float& val3, const float& val4)
 {
 	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
 	glUniform4f(uniformLocation, val1, val2, val3, val4);
 }
 
-/// <summary>
-/// Sets the uniform value with a matrix
-/// </summary>
-/// <param name="uniformName">Name of the uniform</param>
-/// <param name="transpose">Should the matrix be transformed?</param>
-/// <param name="value">Pointer to the values in the matrix</param>
+/**
+ * @brief Sets the uniform value with a matrix
+ * @param[in] uniformName Name of the uniform
+ * @param[in] transpose Flag specifying whether the matrix should be transposed or not.
+ * @param[in] value Pointer to the values in the matrix
+ */
 void ShaderProgram::SetUniformMatrix4fv(const std::string& uniformName, bool transpose, const float* value)
 {
 	GLint uniformLocation = glGetUniformLocation(m_program, uniformName.c_str());
 	glUniformMatrix4fv(uniformLocation, 1, transpose ? GL_TRUE : GL_FALSE, value);
 }
 
-/// <summary>
-/// Creates a shader object from the provided shader type and shader file
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="filePath">Shader file path</param>
-/// <returns>Shader object handle</returns>
+/**
+ * @brief Creates a shader object from the provided shader type and shader file
+ * @param[in] shaderType Shader type
+ * @param[in] filePath Shader file path
+ * @return Shader object handle
+ */
 GLuint ShaderProgram::CreateShaderFromFile(const GLuint& shaderType, const std::string& filePath)
 {
 	std::ifstream shaderFile(filePath);
 	if (shaderFile.fail())
 	{
-		std::cerr << "Unable to open shader file: " << filePath << std::endl;
+		std::cerr << "[ShaderProgram] Unable to open shader file: " << filePath << std::endl;
 		return 0;
 	}
 
@@ -159,12 +159,12 @@ GLuint ShaderProgram::CreateShaderFromFile(const GLuint& shaderType, const std::
 	return CreateShaderFromSource(shaderType, shaderSource);
 }
 
-/// <summary>
-/// Creates a shader object from the provided shader type and source
-/// </summary>
-/// <param name="shaderType">Shader type</param>
-/// <param name="source">Shader source</param>
-/// <returns>Shader object handle</returns>
+/**
+ * @brief Creates a shader object from the provided shader type and source
+ * @param[in] shaderType Shader type
+ * @param[in] source Shader source
+ * @return Shader object handle
+ */
 GLuint ShaderProgram::CreateShaderFromSource(const GLuint& shaderType, const std::string& source)
 {
 	GLuint shader = glCreateShader(shaderType);
@@ -182,7 +182,7 @@ GLuint ShaderProgram::CreateShaderFromSource(const GLuint& shaderType, const std
 		char infoLog[512];
 		GLsizei infoLogLen = sizeof(infoLog);
 		glGetShaderInfoLog(shader, infoLogLen, &infoLogLen, infoLog);
-		std::cerr << "shader compilation error: " << infoLog << std::endl;
+		std::cerr << "[ShaderProgram] Shader compilation error: " << infoLog << std::endl;
 	}
 
 	return shader;

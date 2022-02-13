@@ -7,101 +7,99 @@
 class ShaderProgram
 {
 private:
-	/// <summary>
-	/// Shader program handle
-	/// </summary>
+    /**
+     * Shader program handle
+     */
 	GLuint m_program;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+    /**
+     * @brief Constructor
+     */
 	ShaderProgram();
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+    /**
+     * @brief Destructor
+     */
 	~ShaderProgram();
 
-	/// <summary>
-	/// Initializes the shader program from the provided
-	/// vertex and fragment shader file paths.
-	/// </summary>
-	/// <param name="vertexShaderFilePath">Vertex shader file path</param>
-	/// <param name="fragmentShaderFilePath">Fragment shader file path</param>
+    /**
+     * @brief Initializes the shader program from the provided vertex and fragment shader file paths.
+     * @param[in] vertexShaderFilePath Vertex shader file path
+     * @param[in] fragmentShaderFilePath Fragment shader file path
+     */
 	void InitFromFiles(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
-	/// <summary>
-	/// Uses the shader
-	/// </summary>
+    /**
+     * @brief Use the shader
+     */
 	void Use();
 
-	/// <summary>
-	/// Unuses the shader
-	/// </summary>
+    /**
+     * @brief Unuses the shader
+     */
 	void Unuse();
 
 	// ================
 	// --- Uniforms ---
 	// ================
 
-	/// <summary>
-	/// Sets the uniform value with a single integer
-	/// </summary>
-	/// <param name="uniformName">Uniform name</param>
-	/// <param name="val">Value</param>
+    /**
+     * @brief Sets the uniform value with a single integer
+     * @param[in] uniformName Uniform name
+     * @param[in] val Value
+     */
 	void SetUniform1i(const std::string& uniformName, const int& val);
 
-	/// <summary>
-	/// Sets the uniform value with a single float
-	/// </summary>
-	/// <param name="uniformName">Uniform name</param>
-	/// <param name="val">Value</param>
+    /**
+     * @brief Sets the uniform value with a single float
+     * @param[in] uniformName Uniform name
+     * @param[in] val Value
+     */
 	void SetUniform1f(const std::string& uniformName, const float& val);
 
-	/// <summary>
-	/// Sets the uniform value with 3 floats
-	/// </summary>
-	/// <param name="uniformName">Uniform name</param>
-	/// <param name="val1">First value</param>
-	/// <param name="val2">Second value</param>
-	/// <param name="val3">Third value</param>
+    /**
+     * @brief Sets the uniform value with 3 floats
+     * @param[in] uniformName Uniform name
+     * @param[in] val1 First value
+     * @param[in] val2 Second value
+     * @param[in] val3 Third value
+     */
 	void SetUniform3f(const std::string& uniformName, const float& val1, const float& val2, const float& val3);
 
-	/// <summary>
-	/// Sets the uniform value with 4 floats
-	/// </summary>
-	/// <param name="uniformName">Uniform name</param>
-	/// <param name="val1">First value</param>
-	/// <param name="val2">Second value</param>
-	/// <param name="val3">Third value</param>
-	/// <param name="val4">Fourth value</param
+    /**
+     * @brief Sets the uniform value with 4 floats
+     * @param[in] uniformName Uniform name
+     * @param[in] val1 First value
+     * @param[in] val2 Second value
+     * @param[in] val3 Third value
+     * @param[in] val4 Fourth value
+     */
 	void SetUniform4f(const std::string& uniformName, const float& val1, const float& val2, const float& val3, const float& val4);
 
-	/// <summary>
-	/// Sets the uniform value with a matrix
-	/// </summary>
-	/// <param name="uniformName">Name of the uniform</param>
-	/// <param name="transpose">Should the matrix be transformed?</param>
-	/// <param name="value">Pointer to the values in the matrix</param>
+    /**
+     * @brief Sets the uniform value with a matrix
+     * @param[in] uniformName Name of the uniform
+     * @param[in] transpose Flag specifying whether the matrix should be transposed or not.
+     * @param[in] value Pointer to the values in the matrix
+     */
 	void SetUniformMatrix4fv(const std::string& uniformName, bool transpose, const float* value);
 
 private:
 
-	/// <summary>
-	/// Creates a shader object from the provided shader type and shader file
-	/// </summary>
-	/// <param name="shaderType">Shader type</param>
-	/// <param name="filePath">Shader file path</param>
-	/// <returns>Shader object handle</returns>
+    /**
+     * @brief Creates a shader object from the provided shader type and shader file
+     * @param[in] shaderType Shader type
+     * @param[in] filePath Shader file path
+     * @return Shader object handle
+     */
 	GLuint CreateShaderFromFile(const GLuint& shaderType, const std::string& filePath);
 
-	/// <summary>
-	/// Creates a shader object from the provided shader type and source
-	/// </summary>
-	/// <param name="shaderType">Shader type</param>
-	/// <param name="source">Shader source</param>
-	/// <returns>Shader object handle</returns>
+    /**
+     * @brief Creates a shader object from the provided shader type and source
+     * @param[in] shaderType Shader type
+     * @param[in] source Shader source
+     * @return Shader object handle
+     */
 	GLuint CreateShaderFromSource(const GLuint& shaderType, const std::string& source);
-
 };

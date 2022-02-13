@@ -1,54 +1,54 @@
 #include "EntityTemplates/BlockTemplate.hpp"
 
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 BlockTemplate::BlockTemplate()
 	: m_faceUVRects()
 {
 }
 
-/// <summary>
-/// Copy constructor
-/// </summary>
-/// <param name="other">Block template to copy from</param>
+/**
+ * @brief Copy constructor
+ * @param[in] other Block template to copy from
+ */
 BlockTemplate::BlockTemplate(const BlockTemplate& other)
 {
 	m_faceUVRects = other.m_faceUVRects;
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * Destructor
+ */
 BlockTemplate::~BlockTemplate()
 {
 }
 
-/// <summary>
-/// Set the UV rect for the specified face
-/// </summary>
-/// <param name="face">Face</param>
-/// <param name="faceUVRect">UV Rect</param>
+/**
+ * @brief Set the UV rect for the specified face
+ * @param[in] face Face
+ * @param[in] faceUVRect UV rect
+ */
 void BlockTemplate::SetFaceUVRect(const BlockFaceEnum& face, const glm::vec4& faceUVRect)
 {
 	m_faceUVRects[face] = faceUVRect;
 }
 
-/// <summary>
-/// Gets the UV rect for the specified face
-/// </summary>
-/// <param name="face">Face</param>
-/// <returns>UV rect for the specified face</returns>
+/**
+ * @brief Gets the UV rect for the specified face
+ * @param[in] face Face
+ * @return UV rect for the specified face
+ */
 const glm::vec4& BlockTemplate::GetFaceUVRect(const BlockFaceEnum& face) const
 {
 	return m_faceUVRects.find(face)->second;
 }
 
-/// <summary>
-/// Copy operator
-/// </summary>
-/// <param name="other">Block template to copy from</param>
-/// <returns>Reference to the current instance</returns>
+/**
+ * @brief Copy operator
+ * @param[in] other Block template to copy from
+ * @return Reference to the current instance
+ */
 BlockTemplate& BlockTemplate::operator=(const BlockTemplate& other)
 {
 	m_faceUVRects = other.m_faceUVRects;

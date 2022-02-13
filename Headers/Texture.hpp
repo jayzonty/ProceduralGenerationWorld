@@ -4,48 +4,48 @@
 
 #include <string>
 
-/// <summary>
-/// Texture class
-/// </summary>
+/**
+ * Texture class
+ */
 class Texture
 {
 private:
-	/// <summary>
-	/// GL texture handle
-	/// </summary>
+	/**
+	 * GL texture handle
+	 */
 	GLuint m_textureHandle;
 
-	/// <summary>
-	/// Texture width
-	/// </summary>
+	/**
+	 * Texture width
+	 */
 	int m_width;
 
-	/// <summary>
-	/// Texture height
-	/// </summary>
+	/**
+	 * Texture height
+	 */
 	int m_height;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	Texture();
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~Texture();
 
-	/// <summary>
-	/// Create a texture based on the iamge in the provided file path
-	/// </summary>
-	/// <param name="textureFilePath">Image file path</param>
+	/**
+	 * @brief Create a texture based on the iamge in the provided file path
+	 * @param[in] textureFilePath Image file path
+	 */
 	void CreateFromFile(const std::string& textureFilePath);
 
-	/// <summary>
-	/// Gets the GL texture handle for this texture
-	/// </summary>
-	/// <returns>GL texture handle</returns>
+	/**
+	 * @brief Gets the GL texture handle for this texture
+	 * @return GL texture handle
+	 */
 	GLuint GetHandle() const;
 
 };

@@ -7,47 +7,47 @@
 
 #include "ShaderProgram.hpp"
 
-/// <summary>
-/// Mesh class
-/// </summary>
+/**
+ * Mesh class
+ */
 class Mesh
 {
 private:
 	friend class MeshBuilder;
 
-	/// <summary>
-	/// VBO handle
-	/// </summary>
+	/**
+	 * VBO handle
+	 */
 	GLuint m_vbo;
 
-	/// <summary>
-	/// VAO handle
-	/// </summary>
+	/**
+	 * VAO handle
+	 */
 	GLuint m_vao;
 
-	/// <summary>
-	/// EBO handle
-	/// </summary>
+	/**
+	 * EBO handle
+	 */
 	GLuint m_ebo;
 
-	/// <summary>
-	/// Number of indices
-	/// </summary>
+	/**
+	 * Number of indices
+	 */
 	int m_numIndices;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	Mesh();
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~Mesh();
 
-	/// <summary>
-	/// Draws the mesh
-	/// </summary>
+	/**
+	 * @brief Draws the mesh
+	 */
 	void Draw();
 };

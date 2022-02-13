@@ -6,26 +6,25 @@
 #include <map>
 #include <string>
 
-/// <summary>
-/// Resource manager class
-/// </summary>
+/**
+ * Resource manager class
+ */
 class ResourceManager
 {
 private:
-
-	/// <summary>
-	/// List of shaders identified by their corresponding string keys
-	/// </summary>
+	/**
+	 * List of shaders identified by their corresponding string keys
+	 */
 	std::map<std::string, ShaderProgram*> m_shaders;
 
-	/// <summary>
-	/// List of textures identified by their corresponding string keys
-	/// </summary>
+	/**
+	 * List of textures identified by their corresponding string keys
+	 */
 	std::map<std::string, Texture*> m_textures;
 
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	ResourceManager();
 
 	/* Delete copy constructor */
@@ -35,59 +34,59 @@ private:
 	ResourceManager& operator=(const ResourceManager&) = delete;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * Destructor
+	 */
 	~ResourceManager();
 
-	/// <summary>
-	/// Gets the singleton instance for the resource manager
-	/// </summary>
-	/// <returns>Singleton instance of this clss</returns>
+	/**
+	 * @brief Gets the singleton instance for the resource manager
+	 * @return Singleton instance of this class
+	 */
 	static ResourceManager& GetInstance();
 
-	/// <summary>
-	/// Creates a shader program from the provided paths for the vertex and fragment shader files,
-	/// and stores it as a shader resource identified by the provided string key.
-	/// </summary>
-	/// <param name="vertexShaderFilePath">File path to the vertex shader</param>
-	/// <param name="fragmentShaderFilePath">File path to the fragment shader</param>
-	/// <param name="key">Key identifier for the created shader program</param>
-	/// <returns>Reference to the created shader. Returns nullptr if the shader creation failed.</returns>
+	/**
+	 * @brief Creates a shader program from the provided paths for the vertex and fragment shader files,
+	 * and stores it as a shader resource identified by the provided string key.
+	 * @param[in] vertexShaderFilePath File path to the vertex shader
+	 * @param[in] fragmentShaderFilePath File path to the fragment shader
+	 * @param[in] key Key identifier for the created shader program
+	 * @return Reference to the created shader. Returns nullptr if the shader creation failed
+	 */
 	ShaderProgram* CreateShader(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath, const std::string& key);
 
-	/// <summary>
-	/// Deletes the shader identified by the provided key from the resource manager
-	/// </summary>
-	/// <param name="key">Key identifying the shader to delete</param>
+	/**
+	 * @brief Deletes the shader identified by the provided key from the resource manager
+	 * @param[in] key Key identifying the shader to delete
+	 */
 	void DeleteShader(const std::string& key);
 
-	/// <summary>
-	/// Gets the shader associated with the provided key.
-	/// </summary>
-	/// <param name="key">Key identifying the shader we are trying to get</param>
-	/// <returns>Returns the reference to the shader identified by the provided key. Returns nullptr if it does not exist.</returns>
+	/**
+	 * @brief Gets the shader associated with the provided key.
+	 * @param[in] key Key identifying the shader we are trying to get
+	 * @return Returns the reference to the shader identified by the provided key. Returns nullptr if it does not exist.
+	 */
 	ShaderProgram* GetShader(const std::string& key);
 
-	/// <summary>
-	/// Creates a texture from the provided file path, and stores it
-	/// as a texture resource identified by the provided string key.
-	/// </summary>
-	/// <param name="textureFilePath">File path to the texture file</param>
-	/// <param name="key">Key identifier for the created texture</param>
-	/// <returns>Reference to the created texture. Returns nullptr if the texture creation failed.</returns>
+	/**
+	 * @brief Creates a texture from the provided file path, and stores it
+	 * as a texture resource identified by the provided string key.
+	 * @param[in] textureFilePath File path to the texture file
+	 * @param[in] key Key identifier for the created texture
+	 * @return Reference to the created texture. Returns nullptr if the texture creation failed.
+	 */
 	Texture* CreateTexture(const std::string& textureFilePath, const std::string& key);
 
-	/// <summary>
-	/// Deletes the texture identified by the provided key from the resource manager
-	/// </summary>
-	/// <param name="key">Key idnetifying the texture to delete</param>
+	/**
+	 * @brief Deletes the texture identified by the provided key from the resource manager
+	 * @param[in] key Key identifying the texture to delete
+	 */
 	void DeleteTexture(const std::string& key);
 
-	/// <summary>
-	/// Gets the texture associated with the provided key.
-	/// </summary>
-	/// <param name="key">Key identifying the texture we are trying to get</param>
-	/// <returns>Returns the reference to the texture identified by the provided key. Returns nullptr if it does not exist.</returns>
+	/**
+	 * @brief Gets the texture associated with the provided key.
+	 * @param[in] key Key identifying the texture we are trying to get
+	 * @return Returns the reference to the texture identified by the provided key. Returns nullptr if it does not exist
+	 */
 	Texture* GetTexture(const std::string& key);
 };

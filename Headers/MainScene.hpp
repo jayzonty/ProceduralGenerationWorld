@@ -1,91 +1,79 @@
 #pragma once
 
+#include "BaseScene.hpp"
 #include "Camera.hpp"
-#include "Font.hpp"
-#include "SceneBase.hpp"
-#include "Text.hpp"
 #include "Texture.hpp"
 #include "World.hpp"
 
 #include <glm/glm.hpp>
 
-/// <summary>
-/// Main scene class
-/// </summary>
-class MainScene : public SceneBase
+/**
+ * Main scene class
+ */
+class MainScene : public BaseScene
 {
 private:
-	/// <summary>
-	/// Font used to display debug info
-	/// </summary>
-	Font m_debugInfoTextFont;
-
-	/// <summary>
-	/// Text display for debug text
-	/// </summary>
-	Text m_debugInfoTextDisplay;
-
-	// TODO: Make the crosshair an actual sprite
-	/// <summary>
-	/// Text display for the crosshair
-	/// </summary>
-	Text m_crossHairTextDisplay;
-
-	/// <summary>
-	/// Camera
-	/// </summary>
+	/**
+	 * Camera
+	 */
 	Camera m_camera;
 
-	/// <summary>
-	/// World data
-	/// </summary>
+	/**
+	 * World data
+	 */
 	World* m_world;
 
-	/// <summary>
-	/// Chunk indices of the chunk we were previously in
-	/// </summary>
+	/**
+	 * Chunk indices of the chunk we were previously in
+	 */
 	glm::ivec3 m_prevChunkIndices;
 
-	/// <summary>
-	/// Number of chunks to render in each axis that is visible
-	/// at a time
-	/// </summary>
+	/**
+	 * Number of chunks to render in each axis that is visible
+	 * at a time
+	 */
 	int m_chunkRenderDistance;
 
-	/// <summary>
-	/// Sky color
-	/// </summary>
+	/**
+	 * Sky color
+	 */
 	glm::vec4 m_skyColor;
 
 public:
-	/// <summary>
-	/// Constructor
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 */
 	MainScene();
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~MainScene();
 
-	/// <summary>
-	/// Start scene
-	/// </summary>
-	void Start() override;
+	/**
+     * @brief Initializes the scene.
+     */
+	void Init() override;
 
-	/// <summary>
-	/// Finish scene
-	/// </summary>
-	void Finish() override;
+	/**
+     * @brief Updates the scene.
+     * @param[in] deltaTime Time elapsed since the previous frame
+     */
+	void Update(const float &deltaTime) override;
 
-	/// <summary>
-	/// Updates scene state
-	/// </summary>
-	/// <param name="deltaTime"></param>
-	void Update(float deltaTime) override;
+	/**
+     * @brief Updates the scene with a fixed timestep.
+     * @param[in] timestep Fixed timestep
+     */
+    void FixedUpdate(const float &timestep) override;
 
-	/// <summary>
-	/// Draws the scene
-	/// </summary>
+	/**
+	 * @brief Draws the scene
+	 */
 	void Draw() override;
+
+	/**
+     * @brief Cleans up the resources used by the scene.
+     */
+	void Cleanup() override;
 };

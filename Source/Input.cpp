@@ -1,15 +1,13 @@
 #include "Input.hpp"
 
+#include "Window.hpp"
+#include "WindowManager.hpp"
+
 #include <cmath>
 
-/// <summary>
-/// Static instance for this singleton class
-/// </summary>
-Input* Input::m_instance = nullptr;
-
-/// <summary>
-/// Constructor
-/// </summary>
+/**
+ * @brief Constructor
+ */
 Input::Input()
 	: m_pressedKeys()
 	, m_releasedKeys()
@@ -18,271 +16,292 @@ Input::Input()
 	, m_mousePositionY(0)
 	, m_mouseDeltaX(0)
 	, m_mouseDeltaY(0)
+    , m_mouseScrollX(0)
+    , m_mouseScrollY(0)
 {
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Input::~Input()
 {
 }
 
-/// <summary>
-/// Is the key/button just pressed during this frame?
-/// </summary>
-/// <param name="key">Key to query</param>
-/// <returns>True if the key was just pressed during this frame. False otherwise.</returns>
-bool Input::IsPressed(int key)
+/**
+ * @brief Gets the singleton instance of this class
+ * @return Singleton instance of this class
+ */
+Input& Input::GetInstance()
 {
-	if (nullptr == m_instance)
-	{
-		return false;
-	}
-
-	return (m_instance->m_pressedKeys.find(key) !=
-		m_instance->m_pressedKeys.end());
+    static Input instance;
+    return instance;
 }
 
-/// <summary>
-/// Is the key/button just released in this frame?
-/// </summary>
-/// <param name="key">Key to query</param>
-/// <returns>True if the key was released this frame. False otherwise.</returns>
-bool Input::IsReleased(int key)
+/**
+ * @brief Is the specified key just pressed during this frame?
+ * @param[in] key Key to query
+ * @return True if the key was just pressed during this frame. False otherwise
+ */
+bool Input::IsKeyPressed(Key key)
 {
-	if (nullptr == m_instance)
-	{
-		return false;
-	}
-
-	return (m_instance->m_releasedKeys.find(key) !=
-		m_instance->m_releasedKeys.end());
+	return (GetInstance().m_pressedKeys.find(key) !=
+		GetInstance().m_pressedKeys.end());
 }
 
-/// <summary>
-/// Is the key/button being pressed/held down?
-/// </summary>
-/// <param name="key">Key to query</param>
-/// <returns>True if the key is being held down. False otherwise.</returns>
-bool Input::IsDown(int key)
+/**
+ * @brief Is the specified key just released in this frame?
+ * @param[in] key Key to query
+ * @return True if the key was released this frame. False otherwise.
+ */
+bool Input::IsKeyReleased(Key key)
 {
-	if (nullptr == m_instance)
-	{
-		return false;
-	}
-
-	return (m_instance->m_heldKeys.find(key) !=
-		m_instance->m_heldKeys.end());
+	return (GetInstance().m_releasedKeys.find(key) !=
+		GetInstance().m_releasedKeys.end());
 }
 
-/// <summary>
-/// Gets the mouse cursor's position in the current frame
-/// </summary>
-/// <param name="mouseX">Mouse cursor's x-position</param>
-/// <param name="mouseY">Mouse cursor's y-position</param>
-void Input::GetMousePosition(int* mouseX, int* mouseY)
+/**
+ * @brief Is the specified key being pressed/held down?
+ * @param[in] key Key to query
+ * @return True if the key is being held down. False otherwise.
+ */
+bool Input::IsKeyDown(Key key)
 {
-	if (nullptr == m_instance)
-	{
-		return;
-	}
+	return (GetInstance().m_heldKeys.find(key) !=
+		GetInstance().m_heldKeys.end());
+}
 
+/**
+ * @brief Is the specified mouse button just pressed during this frame?
+ * @param[in] button Mouse button to query
+ * @return True if the mouse button was just pressed during this frame. False otherwise
+ */
+bool Input::IsMouseButtonPressed(Button button)
+{
+	return (GetInstance().m_pressedButtons.find(button) !=
+		GetInstance().m_pressedButtons.end());
+}
+
+/**
+ * @brief Is the specified mouse button just released during this frame?
+ * @param[in] button Mouse button to query
+ * @return True if the mouse button was just released during this frame. False otherwise
+ */
+bool Input::IsMouseButtonReleased(Button button)
+{
+	return (GetInstance().m_releasedButtons.find(button) !=
+		GetInstance().m_releasedButtons.end());
+}
+
+/**
+ * @brief Is the specified mouse button being pressed/held down?
+ * @param[in] button Mouse button to query
+ * @return True if the button is being held down. False otherwise.
+ */
+bool Input::IsMouseButtonDown(Button button)
+{
+	return (GetInstance().m_heldButtons.find(button) !=
+		GetInstance().m_heldButtons.end());
+}
+
+/**
+ * @brief Gets the mouse cursor's position in the current frame
+ * @param[in] mouseX Mouse cursor's x-position
+ * @param[in] mouseY Mouse cursor's y-position
+ */
+void Input::GetMousePosition(int32_t* mouseX, int32_t* mouseY)
+{
 	if (nullptr != mouseX)
 	{
-		*mouseX = m_instance->m_mousePositionX;
+		*mouseX = GetInstance().m_mousePositionX;
 	}
 	if (nullptr != mouseY)
 	{
-		*mouseY = m_instance->m_mousePositionY;
+		// TODO: This feels bad to do, but I'll settle with this for now.
+		Window* window = WindowManager::GetMainWindow();
+		*mouseY = window->GetHeight() - GetInstance().m_mousePositionY;
 	}
 }
 
-/// <summary>
-/// Gets the mouse cursor's x-position in the current frame
-/// </summary>
-/// <returns>Mouse cursor's x-position</returns>
-int Input::GetMouseX()
+/**
+ * @brief Gets the mouse cursor's position in the current frame
+ * @return Mouse cursor position
+ */
+glm::vec2 Input::GetMousePosition()
 {
-	if (nullptr == m_instance)
-	{
-		return 0;
-	}
-
-	return m_instance->m_mousePositionX;
+	// TODO: This feels bad to do, but I'll settle with this for now.
+	Window* window = WindowManager::GetMainWindow();
+	return { GetInstance().m_mousePositionX * 1.0f, window->GetHeight() - GetInstance().m_mousePositionY * 1.0f };
 }
 
-/// <summary>
-/// Gets the mouse cursor's y-position in the current frame
-/// </summary>
-/// <returns>Mouse cursor's y-position</returns>
-int Input::GetMouseY()
+/**
+ * @brief Gets the mouse cursor's x-position in the current frame
+ * @return Mouse cursor's x-position
+ */
+int32_t Input::GetMouseX()
 {
-	if (nullptr == m_instance)
-	{
-		return 0;
-	}
-
-	return m_instance->m_mousePositionY;
+	return GetInstance().m_mousePositionX;
 }
 
-/// <summary>
-/// Gets the change in mouse cursor's position between the
-/// previous frame and the current frame
-/// </summary>
-/// <param name="mouseDeltaX">Pointer to the variable where the change in x-position will be stored</param>
-/// <param name="mouseDeltaY">Pointer to the variable where the change in y-position will be stored</param>
-void Input::GetMouseDelta(int* mouseDeltaX, int* mouseDeltaY)
+/**
+ * @brief Gets the mouse cursor's y-position in the current frame
+ * @return Mouse cursor's y-position
+ */
+int32_t Input::GetMouseY()
 {
-	*mouseDeltaX = m_instance->m_mouseDeltaX;
-	*mouseDeltaY = m_instance->m_mouseDeltaY;
+	return GetInstance().m_mousePositionY;
 }
 
-/// <summary>
-/// Gets the change in mouse cursor's x-position
-/// </summary>
-/// <returns>Amount of change in x-position</returns>
-int Input::GetMouseDeltaX()
+/**
+ * @brief Gets the change in mouse cursor's position between the previous frame and the current frame
+ * @param[in] mouseDeltaX Pointer to the variable where the change in x-position will be stored
+ * @param[in] mouseDeltaY Pointer to the variable where the change in y-position will be stored
+ */
+void Input::GetMouseDelta(int32_t* mouseDeltaX, int32_t* mouseDeltaY)
 {
-	return m_instance->m_mouseDeltaX;
+	*mouseDeltaX = GetInstance().m_mouseDeltaX;
+	*mouseDeltaY = GetInstance().m_mouseDeltaY;
 }
 
-/// <summary>
-/// Gets the change in mouse cursor's y-position
-/// </summary>
-/// <returns>Amount of change in y-position</returns>
-int Input::GetMouseDeltaY()
+/**
+ * @brief Gets the change in mouse cursor's x-position
+ * @return Amount of change in x-position
+ */
+int32_t Input::GetMouseDeltaX()
 {
-	return m_instance->m_mouseDeltaY;
+	return GetInstance().m_mouseDeltaX;
 }
 
-/// <summary>
-/// Initializes the input manager
-/// </summary>
-void Input::Initialize()
+/**
+ * @brief Gets the change in mouse cursor's y-position
+ * @return Amount of change in y-position
+ */
+int32_t Input::GetMouseDeltaY()
 {
-	if (nullptr == m_instance)
-	{
-		m_instance = new Input();
-	}
+	return GetInstance().m_mouseDeltaY;
 }
 
-/// <summary>
-/// Cleans up the resources used by the input manager
-/// </summary>
-void Input::Cleanup()
+/**
+ * @brief Gets the mouse scrolling in the x-axis
+ * @return Mouse scroll in the x-axis
+ */
+int32_t Input::GetMouseScrollX()
 {
-	delete m_instance;
-	m_instance = nullptr;
+    return GetInstance().m_mouseScrollX;
 }
 
-/// <summary>
-/// Prepare the input manager before polling for the new state
-/// </summary>
+/**
+ * @brief Gets the mouse scrolling in the y-axis
+ * @return Mouse scroll in the y-axis
+ */
+int32_t Input::GetMouseScrollY()
+{
+    return GetInstance().m_mouseScrollY;
+}
+
+/**
+ * @brief Prepare the input manager for polling its new state
+ */
 void Input::Prepare()
 {
-	if (nullptr == m_instance)
-	{
-		return;
-	}
+	GetInstance().m_pressedKeys.clear();
+	GetInstance().m_releasedKeys.clear();
 
-	m_instance->m_pressedKeys.clear();
-	m_instance->m_releasedKeys.clear();
+	GetInstance().m_pressedButtons.clear();
+	GetInstance().m_releasedKeys.clear();
 
-	m_instance->m_mouseDeltaX = 0;
-	m_instance->m_mouseDeltaY = 0;
+	GetInstance().m_mouseDeltaX = 0;
+	GetInstance().m_mouseDeltaY = 0;
+
+    GetInstance().m_mouseScrollX = 0;
+    GetInstance().m_mouseScrollY = 0;
 }
 
-/// <summary>
-/// GLFW callback function for when a key event happened
-/// </summary>
-/// <param name="window">Reference to the GLFW window that received the event</param>
-/// <param name="key">Key</param>
-/// <param name="scanCode">Scan code</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
+/**
+ * @brief GLFW callback function for when a key event happened
+ * @param[in] window Reference to the GLFW window that received the event
+ * @param[in] key Key
+ * @param[in] scanCode Scan code
+ * @param[in] action Action
+ * @param[in] mods Modifiers
+ */
 void Input::KeyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods)
 {
-	if (nullptr == m_instance)
-	{
-		return;
-	}
-
 	if (action == GLFW_PRESS)
 	{
-		m_instance->m_pressedKeys.insert(key);
-		m_instance->m_heldKeys.insert(key);
+		GetInstance().m_pressedKeys.insert(static_cast<Key>(key));
+		GetInstance().m_heldKeys.insert(static_cast<Key>(key));
 	}
 	else if (action == GLFW_RELEASE)
 	{
-		m_instance->m_pressedKeys.erase(key);
-		m_instance->m_heldKeys.erase(key);
+		GetInstance().m_pressedKeys.erase(static_cast<Key>(key));
+		GetInstance().m_heldKeys.erase(static_cast<Key>(key));
 
-		m_instance->m_releasedKeys.insert(key);
+		GetInstance().m_releasedKeys.insert(static_cast<Key>(key));
 	}
 }
 
-/// <summary>
-/// GLFW callback function for when a mouse button event happened
-/// </summary>
-/// <param name="window">Reference to the GLFW window that received the event</param>
-/// <param name="button">Mouse button</param>
-/// <param name="action">Action</param>
-/// <param name="mods">Modifiers</param>
+/**
+ * @brief GLFW callback function for when a mouse button event happened
+ * @param[in] window Reference to the GLFW window that received the event
+ * @param[in] button Mouse button
+ * @param[in] action Action
+ * @param[in] mods Modifiers
+ */
 void Input::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (nullptr == m_instance)
-	{
-		return;
-	}
-
 	if (action == GLFW_PRESS)
 	{
-		m_instance->m_pressedKeys.insert(button);
-	}
-	else if (action == GLFW_REPEAT)
-	{
-		m_instance->m_pressedKeys.erase(button);
-		m_instance->m_heldKeys.insert(button);
+		GetInstance().m_pressedButtons.insert(static_cast<Button>(button));
+		GetInstance().m_heldButtons.insert(static_cast<Button>(button));
 	}
 	else if (action == GLFW_RELEASE)
 	{
-		m_instance->m_pressedKeys.erase(button);
-		m_instance->m_heldKeys.erase(button);
-		m_instance->m_releasedKeys.insert(button);
+		GetInstance().m_pressedButtons.erase(static_cast<Button>(button));
+		GetInstance().m_heldButtons.erase(static_cast<Button>(button));
+
+		GetInstance().m_releasedButtons.insert(static_cast<Button>(button));
 	}
 }
 
-/// <summary>
-/// GLFW callback function for when a mouse cursor event happened
-/// </summary>
-/// <param name="window">Reference to the GLFW window that received the event</param>
-/// <param name="xPos">Mouse cursor x-position</param>
-/// <param name="yPos">Mouse cursor y-position</param>
+/**
+ * @brief GLFW callback function for when the mouse scroll wheel was
+ * scrolled
+ * @param[in] window Reference to the GLFW window that received the event
+ * @param[in] xOffset Scroll offset in the x-axis
+ * @param[in] yOffset Scroll offset in the y-axis
+ */
+void Input::MouseScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+    GetInstance().m_mouseScrollX = static_cast<int32_t>(xOffset);
+    GetInstance().m_mouseScrollY = static_cast<int32_t>(yOffset);
+}
+
+/**
+ * @brief GLFW callback function for when a mouse cursor event happened
+ * @param[in] window Reference to the GLFW window that received the event
+ * @param[in] xPos Mouse cursor x-position
+ * @param[in] yPos Mouse cursor y-position
+ */
 void Input::CursorCallback(GLFWwindow* window, double xPos, double yPos)
 {
-	if (nullptr == m_instance)
-	{
-		return;
-	}
-
-	int currentMouseX = static_cast<int>(floor(xPos));
-	int currentMouseY = static_cast<int>(floor(yPos));
+	int32_t currentMouseX = static_cast<int32_t>(floor(xPos));
+	int32_t currentMouseY = static_cast<int32_t>(floor(yPos));
 
 	// At this point, m_mousePositionX and m_mousePositionY contains the
 	// cursor position of the previous frame
-	m_instance->m_mouseDeltaX = currentMouseX - m_instance->m_mousePositionX;
-	m_instance->m_mouseDeltaY = currentMouseY - m_instance->m_mousePositionY;
+	GetInstance().m_mouseDeltaX = currentMouseX - GetInstance().m_mousePositionX;
+	GetInstance().m_mouseDeltaY = currentMouseY - GetInstance().m_mousePositionY;
 
-	m_instance->m_mousePositionX = currentMouseX;
-	m_instance->m_mousePositionY = currentMouseY;
+	GetInstance().m_mousePositionX = currentMouseX;
+	GetInstance().m_mousePositionY = currentMouseY;
 }
 
-/// <summary>
-/// GLFW callback function for when the mouse cursor entered or left the window
-/// </summary>
-/// <param name="window">Reference to the GLFW window that received the event</param>
-/// <param name="entered">Integer indicating whether the cursor entered (1) or left (0)</param>
+/**
+ * @brief GLFW callback function for when the mouse cursor entered or left the window
+ * @param[in] window Reference to the GLFW window that received the event
+ * @param[in] entered Integer indicating whether the cursor entered (1) or left (0)
+ */
 void Input::CursorEnterCallback(GLFWwindow* window, int entered)
 {
 	if (entered)
@@ -290,7 +309,7 @@ void Input::CursorEnterCallback(GLFWwindow* window, int entered)
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
-		m_instance->m_mousePositionX = static_cast<int>(mouseX);
-		m_instance->m_mousePositionY = static_cast<int>(mouseY);
+		GetInstance().m_mousePositionX = static_cast<int32_t>(mouseX);
+		GetInstance().m_mousePositionY = static_cast<int32_t>(mouseY);
 	}
 }

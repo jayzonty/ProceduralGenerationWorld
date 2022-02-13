@@ -4,63 +4,62 @@
 
 #include <glm/glm.hpp>
 
-/// <summary>
-/// Block class
-/// </summary>
+/**
+ * Block class
+ */
 struct Block
 {
 private:
-	/// <summary>
-	/// Block type
-	/// </summary>
+	/**
+	 * Block type
+	 */
 	BlockTypeEnum m_type;
 
-	/// <summary>
-	/// Chunk index of the chunk this block belongs to
-	/// </summary>
+	/**
+	 * Chunk index of the chunk this block belongs to
+	 */
 	glm::ivec3 m_chunkIndex;
 
-	/// <summary>
-	/// Position of this block within the chunk
-	/// </summary>
+	/**
+	 * Position of this block within the chunk
+	 */
 	glm::ivec3 m_positionInChunk;
 
 public:
-
-	/// <summary>
-	/// Constructor
-	/// <param name="chunkIndex">Chunk index of the chunk this block belongs to</param>
-	/// <param name="positionInChunk">Position of this block within the chunk</param>
-	/// </summary>
+	/**
+	 * @brief Constructor
+	 * @param[in] chunkIndex Chunk index of the chunk this block belongs to
+	 * @param[in] positionInChunk Position of this block within the chunk
+	 */
 	Block(const glm::ivec3& chunkIndex, const glm::ivec3& positionInChunk);
 
-	/// <summary>
-	/// Destructor
-	/// </summary>
+	/**
+	 * @brief Destructor
+	 */
 	~Block();
 
-	/// <summary>
-	/// Sets the block type
-	/// </summary>
-	/// <param name="type">New block type</param>
+	/**
+	 * @brief Sets the block type
+	 * @param[in] type New block type
+	 */
 	void SetBlockType(BlockTypeEnum type);
 
-	/// <summary>
-	/// Gets this block's type
-	/// </summary>
-	/// <returns></returns>
+	/**
+	 * @brief Gets this block's type
+	 * @return Block type
+	 */
 	BlockTypeEnum GetBlockType() const;
 
-	/// <summary>
-	/// Gets the position of this block within the chunk
-	/// </summary>
-	/// <returns>Position of this block within the chunk</returns>
+	/**
+	 * @brief Gets the position of this block within the chunk
+	 * @return Position of this block within the chunk
+	 */
 	glm::ivec3 GetPositionInChunk() const;
 
-	/// <summary>
-	/// Gets the position of this block in the world
-	/// </summary>
-	/// <returns>Position of this block in the world</returns>
+	/**
+	 * @brief Gets the position of this block in the world
+	 * @return Position of this block in the world
+	 */
 	glm::ivec3 GetPositionInWorld() const;
 
 };

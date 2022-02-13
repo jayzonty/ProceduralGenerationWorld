@@ -15,11 +15,11 @@
 #include "EntityTemplates/BlockTemplate.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
 
-/// <summary>
-/// Constructor
-/// </summary>
-/// <param name="chunkIndexX">Chunk x-index</param>
-/// <param name="chunkIndexY">Chunk y-index</param>
+/**
+ * @brief Constructor
+ * @param[in] chunkIndexX Chunk x-index
+ * @param[in] chunkIndexZ Chunk z-index
+ */
 Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	: m_mesh()
 	, m_waterMesh()
@@ -30,9 +30,9 @@ Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	m_blocks.resize(size);
 }
 
-/// <summary>
-/// Destructor
-/// </summary>
+/**
+ * @brief Destructor
+ */
 Chunk::~Chunk()
 {
 	for (size_t i = 0; i < m_blocks.size(); ++i)
@@ -42,45 +42,45 @@ Chunk::~Chunk()
 	m_blocks.clear();
 }
 
-/// <summary>
-	/// Gets the x chunk index for this chunk
-	/// </summary>
-	/// <returns></returns>
+/**
+ * @brief Gets the x chunk index for this chunk
+ * @return Chunk x-index
+ */
 int Chunk::GetChunkIndexX() const
 {
 	return m_chunkIndex.x;
 }
 
-/// <summary>
-/// Gets the y chunk index for this chunk
-/// </summary>
-/// <returns>Chunk y-index</returns>
+/**
+ * @brief Gets the y chunk index for this chunk
+ * @return Chunk y-index
+ */
 int Chunk::GetChunkIndexY() const
 {
 	return m_chunkIndex.y;
 }
 
-/// <summary>
-/// Gets the z chunk index for this chunk
-/// </summary>
-/// <returns></returns>
+/**
+ * @brief Gets the z chunk index for this chunk
+ * @return Chunk z-index
+ */
 int Chunk::GetChunkIndexZ() const
 {
 	return m_chunkIndex.z;
 }
 
-/// <summary>
-/// Gets the chunk indices in each axis for this chunk
-/// </summary>
-/// <returns>Chunk indices for each axis</returns>
+/**
+ * @brief Gets the chunk indices in each axis for this chunk
+ * @return Chunk indices for each axis
+ */
 glm::ivec3 Chunk::GetChunkIndices() const
 {
 	return m_chunkIndex;
 }
 
-/// <summary>
-/// Generates the mesh for this chunk
-/// </summary>
+/**
+ * @brief Generates the mesh for this chunk
+ */
 void Chunk::GenerateMesh()
 {
 	float blockSize = Constants::BLOCK_SIZE;
@@ -371,10 +371,10 @@ void Chunk::GenerateMesh()
 	meshBuilder.BuildMesh(m_waterMesh);
 }
 
-/// <summary>
-/// Draw the chunk
-/// <param name="camera">Camera</param>
-/// </summary>
+/**
+ * @brief Draw the chunk
+ * @param[in] camera Camera
+ */
 void Chunk::Draw(const Camera& camera)
 {
 	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
@@ -424,26 +424,26 @@ void Chunk::Draw(const Camera& camera)
 	waterShader->Unuse();
 }
 
-/// <summary>
-/// Gets the block at the specified location
-/// </summary>
-/// <param name="x">X-coordinate</param>
-/// <param name="y">Y-coordinate</param>
-/// <param name="z">Z-coordinate</param>
-/// <returns></returns>
+/**
+ * @brief Gets the block at the specified location
+ * @param[in] x X-coordinate
+ * @param[in] y Y-coordinate
+ * @param[in] z z-coordinate
+ * @return Block data of the block at the specified location
+ */
 Block* Chunk::GetBlockAt(int x, int y, int z)
 {
 	int index = (z * Constants::CHUNK_WIDTH + x) * Constants::CHUNK_HEIGHT + y;
 	return m_blocks[index];
 }
 
-/// <summary>
-/// Sets the block at the specified location with the specified block
-/// </summary>
-/// <param name="x">X-coordinate</param>
-/// <param name="y">Y-coordinate</param>
-/// <param name="z">Z-coordinate</param>
-/// <param name="block">Data for the new block. Can be set to nullptr if it's an air block.</param>
+/**
+ * @brief Sets the block at the specified location with the specified block
+ * @param[in] x X-coordinate
+ * @param[in] y Y-coordinate
+ * @param[in] z z-coordinate
+ * @param[in] block Data for the new block. Can be set to nullptr if it's an air block.
+ */
 void Chunk::SetBlockAt(const int& x, const int& y, const int& z, Block* block)
 {
 	Block* existingBlock = GetBlockAt(x, y, z);
