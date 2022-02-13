@@ -51,7 +51,7 @@ void MainScene::Init()
 	m_skyColor = glm::vec4(0.678f, 0.847f, 0.902f, 1.0f);
 
 	// Initialize the scene shader
-	ResourceManager::GetInstance().CreateShader("main_lighting.vsh", "main_lighting.fsh", "main");
+	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Main.vsh", "Resources/Shaders/Main.fsh", "main");
 	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Water.vsh", "Resources/Shaders/Water.fsh", "water");
 
 	// --- Initialize block templates ---
