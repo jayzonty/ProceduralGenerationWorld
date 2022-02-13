@@ -6,34 +6,37 @@
 #include <vector>
 
 #include "ShaderProgram.hpp"
+#include "Vertex.hpp"
 
 /**
  * Mesh class
  */
-class Mesh
+struct Mesh
 {
-private:
-	friend class MeshBuilder;
-
 	/**
 	 * VBO handle
 	 */
-	GLuint m_vbo;
+	GLuint vbo;
 
 	/**
 	 * VAO handle
 	 */
-	GLuint m_vao;
+	GLuint vao;
 
 	/**
 	 * EBO handle
 	 */
-	GLuint m_ebo;
+	GLuint ebo;
 
 	/**
-	 * Number of indices
+	 * Vertex list
 	 */
-	int m_numIndices;
+	std::vector<Vertex> vertices;
+
+	/**
+	 * Index list
+	 */
+	std::vector<GLuint> indices;
 
 public:
 	/**

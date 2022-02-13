@@ -7,10 +7,11 @@
  * @brief Constructor
  */
 Mesh::Mesh()
-	: m_vbo(0)
-	, m_vao(0)
-	, m_ebo(0)
-	, m_numIndices(0)
+	: vbo(0)
+	, vao(0)
+	, ebo(0)
+	, vertices()
+	, indices()
 {
 }
 
@@ -19,22 +20,22 @@ Mesh::Mesh()
  */
 Mesh::~Mesh()
 {
-	if (m_vbo != 0)
+	if (vbo != 0)
 	{
-		glDeleteBuffers(1, &m_vbo);
-		m_vbo = 0;
+		glDeleteBuffers(1, &vbo);
+		vbo = 0;
 	}
 
-	if (m_ebo != 0)
+	if (ebo != 0)
 	{
-		glDeleteBuffers(1, &m_ebo);
-		m_ebo = 0;
+		glDeleteBuffers(1, &ebo);
+		ebo = 0;
 	}
 
-	if (m_vao != 0)
+	if (vao != 0)
 	{
-		glDeleteVertexArrays(1, &m_vao);
-		m_vao = 0;
+		glDeleteVertexArrays(1, &vao);
+		vao = 0;
 	}
 }
 
@@ -43,7 +44,7 @@ Mesh::~Mesh()
  */
 void Mesh::Draw()
 {
-	glBindVertexArray(m_vao);
+	glBindVertexArray(vao);
 
-	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_numIndices), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
 }

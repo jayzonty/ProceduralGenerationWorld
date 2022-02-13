@@ -28,12 +28,12 @@ set(SOURCES
     Source/Application.cpp
     Source/BaseApplication.cpp
     Source/Block.cpp
+    Source/BlockUtils.cpp
     Source/Camera.cpp
     Source/Chunk.cpp
     Source/Input.cpp
     Source/MainScene.cpp
     Source/Mesh.cpp
-    Source/MeshBuilder.cpp
     Source/ResourceManager.cpp
     Source/ShaderProgram.cpp
     Source/Texture.cpp

@@ -31,6 +31,11 @@
 },
 {
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/BlockUtils.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/BlockUtils.cpp",
+  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/BlockUtils.cpp"
+},
+{
+  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
   "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Camera.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Camera.cpp",
   "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Camera.cpp"
 },
@@ -53,11 +58,6 @@
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
   "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Mesh.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Mesh.cpp",
   "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Mesh.cpp"
-},
-{
-  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
-  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/MeshBuilder.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/MeshBuilder.cpp",
-  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/MeshBuilder.cpp"
 },
 {
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",

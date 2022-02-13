@@ -1,5 +1,7 @@
 #include "Chunk.hpp"
 
+#include <array>
+#include <cstddef>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -7,13 +9,15 @@
 #include <iostream>
 #include <vector>
 
+#include "BlockUtils.hpp"
 #include "Constants.hpp"
-#include "MeshBuilder.hpp"
+#include "Enums/BlockFaceEnum.hpp"
 #include "ResourceManager.hpp"
 
 #include "Enums/BlockTypeEnum.hpp"
 #include "EntityTemplates/BlockTemplate.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
+#include "glm/fwd.hpp"
 
 /**
  * @brief Constructor
@@ -78,18 +82,51 @@ glm::ivec3 Chunk::GetChunkIndices() const
 	return m_chunkIndex;
 }
 
+void AddFaceVerticesToMesh(const BlockFaceEnum &face, const BlockTemplate *blockTemplate, const glm::vec3 &origin, Mesh &mesh)
+{
+	std::array<glm::vec3, 4> offsets = BlockUtils::GetVertexOffsetsFromFace(face);
+
+	glm::vec4 color = BlockUtils::GetColorTintFromFace(face);
+
+	glm::vec4 uvRect = blockTemplate->GetFaceUVRect(face);
+	std::array<glm::vec2, 4> uvs =
+	{
+		glm::vec2 { uvRect.x, uvRect.y },
+		glm::vec2 { uvRect.x + uvRect.z, uvRect.y },
+		glm::vec2 { uvRect.x + uvRect.z, uvRect.y + uvRect.w },
+		glm::vec2 { uvRect.x, uvRect.y + uvRect.w }
+	};
+
+	glm::vec3 normal = BlockUtils::GetNormalFromFace(face);
+
+	GLuint indexStart = mesh.vertices.size();
+	for (size_t i = 0; i < 4; ++i)
+	{
+		mesh.vertices.emplace_back();
+		mesh.vertices.back().position = origin + offsets[i] * Constants::BLOCK_SIZE;
+		mesh.vertices.back().color = color;
+		mesh.vertices.back().uv = uvs[i];
+		mesh.vertices.back().normal = normal;
+	}
+
+	mesh.indices.push_back(indexStart + 0);
+	mesh.indices.push_back(indexStart + 1);
+	mesh.indices.push_back(indexStart + 2);
+	mesh.indices.push_back(indexStart + 2);
+	mesh.indices.push_back(indexStart + 3);
+	mesh.indices.push_back(indexStart + 0);
+}
+
 /**
  * @brief Generates the mesh for this chunk
  */
 void Chunk::GenerateMesh()
 {
+	m_terrainMesh.vertices.clear();
+	m_terrainMesh.indices.clear();
+
 	float blockSize = Constants::BLOCK_SIZE;
 
-	std::vector<glm::vec3> vertexPositions;
-	std::vector<glm::vec4> vertexColors;
-	std::vector<glm::vec2> vertexUVs;
-	std::vector<glm::vec3> vertexNormals;
-	std::vector<GLuint> indices;
 	glm::vec3 origin(m_chunkIndex.x * Constants::CHUNK_WIDTH * blockSize, 0.0f, m_chunkIndex.z * Constants::CHUNK_DEPTH * blockSize * 1.0f);
 	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
 	{
@@ -97,241 +134,85 @@ void Chunk::GenerateMesh()
 		{
 			for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
 			{
+				glm::vec3 blockOrigin(origin.x + x * blockSize, origin.y + y * blockSize, origin.z + z * blockSize);
 				Block* currentBlock = GetBlockAt(x, y, z);
 				if (currentBlock != nullptr && currentBlock->GetBlockType() != BlockTypeEnum::WATER)
 				{
 					const BlockTemplate* blockTemplate = BlockTemplateManager::GetInstance().GetBlockTemplate(currentBlock->GetBlockType());
 
-					glm::vec4 uvRects[] =
-					{
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::TOP),
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::BOTTOM),
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::LEFT),
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::RIGHT),
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::FRONT),
-						blockTemplate->GetFaceUVRect(BlockFaceEnum::BACK),
-					};
-
-					// Vertex order: lower-left, lower-right, upper-right, upper-left
-					
 					// Top face
 					if ((y == Constants::CHUNK_HEIGHT - 1) || ((GetBlockAt(x, y + 1, z) == nullptr) || (GetBlockAt(x, y + 1, z)->GetBlockType() == BlockTypeEnum::WATER)))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
-						
-						float color = 0.75f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[0].x, uvRects[0].y);
-						vertexUVs.emplace_back(uvRects[0].x + uvRects[0].z, uvRects[0].y);
-						vertexUVs.emplace_back(uvRects[0].x + uvRects[0].z, uvRects[0].y + uvRects[0].w);
-						vertexUVs.emplace_back(uvRects[0].x, uvRects[0].y + uvRects[0].w);
-
-						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, 1.0f, 0.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::TOP, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Bottom face
 					if ((y == 0) || (GetBlockAt(x, y - 1, z) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
-						
-						float color = 0.35f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[1].x, uvRects[1].y);
-						vertexUVs.emplace_back(uvRects[1].x + uvRects[1].z, uvRects[1].y);
-						vertexUVs.emplace_back(uvRects[1].x + uvRects[1].z, uvRects[1].y + uvRects[1].w);
-						vertexUVs.emplace_back(uvRects[1].x, uvRects[1].y + uvRects[1].w);
-
-						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
-						vertexNormals.emplace_back(0.0f, -1.0f, 0.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::BOTTOM, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 					
 					// Left face
 					if ((x == Constants::CHUNK_WIDTH - 1) || (GetBlockAt(x + 1, y, z) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						
-						float color = 0.6f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[2].x, uvRects[2].y);
-						vertexUVs.emplace_back(uvRects[2].x + uvRects[2].z, uvRects[2].y);
-						vertexUVs.emplace_back(uvRects[2].x + uvRects[2].z, uvRects[2].y + uvRects[2].w);
-						vertexUVs.emplace_back(uvRects[2].x, uvRects[2].y + uvRects[2].w);
-
-						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(-1.0f, 0.0f, 0.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::LEFT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Right face
 					if ((x == 0) || (GetBlockAt(x - 1, y, z) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
-						
-						float color = 0.6f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[3].x, uvRects[3].y);
-						vertexUVs.emplace_back(uvRects[3].x + uvRects[3].z, uvRects[3].y);
-						vertexUVs.emplace_back(uvRects[3].x + uvRects[3].z, uvRects[3].y + uvRects[3].w);
-						vertexUVs.emplace_back(uvRects[3].x, uvRects[3].y + uvRects[3].w);
-
-						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
-						vertexNormals.emplace_back(1.0f, 0.0f, 0.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::RIGHT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Front face
 					if ((z == 0) || (GetBlockAt(x, y, z - 1) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, z * blockSize));
-						
-						float color = 0.5f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[4].x, uvRects[4].y);
-						vertexUVs.emplace_back(uvRects[4].x + uvRects[4].z, uvRects[4].y);
-						vertexUVs.emplace_back(uvRects[4].x + uvRects[4].z, uvRects[4].y + uvRects[4].w);
-						vertexUVs.emplace_back(uvRects[4].x, uvRects[4].y + uvRects[4].w);
-
-						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, -1.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::FRONT, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 
 					// Back face
 					if ((z == Constants::CHUNK_DEPTH - 1) || (GetBlockAt(x, y, z + 1) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
-
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, y * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, y * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize, (z + 1) * blockSize));
-						
-						float color = 0.5f;
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-						vertexColors.emplace_back(color, color, color, 1.0f);
-
-						vertexUVs.emplace_back(uvRects[5].x, uvRects[5].y);
-						vertexUVs.emplace_back(uvRects[5].x + uvRects[5].z, uvRects[5].y);
-						vertexUVs.emplace_back(uvRects[5].x + uvRects[5].z, uvRects[5].y + uvRects[5].w);
-						vertexUVs.emplace_back(uvRects[5].x, uvRects[5].y + uvRects[5].w);
-
-						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
-						vertexNormals.emplace_back(0.0f, 0.0f, 1.0f);
-
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						AddFaceVerticesToMesh(BlockFaceEnum::BACK, blockTemplate, blockOrigin, m_terrainMesh);
 					}
 				}
 			}
 		}
 	}
 
-	MeshBuilder meshBuilder;
-	meshBuilder.SetVertexPositions(vertexPositions);
-	meshBuilder.SetVertexColors(vertexColors);
-	meshBuilder.SetVertexUVs(vertexUVs);
-	meshBuilder.SetVertexNormals(vertexNormals);
-	meshBuilder.SetIndices(indices);
-	meshBuilder.BuildMesh(m_terrainMesh);
+	if (m_terrainMesh.vao == 0)
+	{
+		glGenVertexArrays(1, &m_terrainMesh.vao);
+	}
+	glBindVertexArray(m_terrainMesh.vao);
 
-	vertexPositions.clear();
-	indices.clear();
+	if (m_terrainMesh.vbo == 0)
+	{
+		glGenBuffers(1, &m_terrainMesh.vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, m_terrainMesh.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_terrainMesh.vertices.size(), m_terrainMesh.vertices.data(), GL_DYNAMIC_DRAW);
+
+	if (m_terrainMesh.ebo == 0)
+	{
+		glGenBuffers(1, &m_terrainMesh.ebo);
+	}
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_terrainMesh.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_terrainMesh.indices.size(), m_terrainMesh.indices.data(), GL_DYNAMIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, color)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+
+	glBindVertexArray(0);
 
 	// Generate water mesh
 	for (int x = 0; x < Constants::CHUNK_WIDTH; ++x)
@@ -345,30 +226,63 @@ void Chunk::GenerateMesh()
 				{
 					if ((y == Constants::CHUNK_HEIGHT - 1) || (GetBlockAt(x, y + 1, z) == nullptr))
 					{
-						GLuint indexStart = static_cast<GLuint>(vertexPositions.size());
+						GLuint indexStart = static_cast<GLuint>(m_waterMesh.vertices.size());
 
 						float yOffset = -0.1f;
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize));
-						vertexPositions.push_back(origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, z * blockSize));
-						vertexPositions.push_back(origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, z * blockSize));
+						m_waterMesh.vertices.emplace_back();
+						m_waterMesh.vertices.back().position = origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize);
+						m_waterMesh.vertices.emplace_back();
+						m_waterMesh.vertices.back().position = origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, (z + 1) * blockSize);
+						m_waterMesh.vertices.emplace_back();
+						m_waterMesh.vertices.back().position = origin + glm::vec3((x + 1) * blockSize, (y + 1) * blockSize + yOffset, z * blockSize);
+						m_waterMesh.vertices.emplace_back();
+						m_waterMesh.vertices.back().position = origin + glm::vec3(x * blockSize, (y + 1) * blockSize + yOffset, z * blockSize);
 
-						indices.push_back(indexStart);
-						indices.push_back(indexStart + 1);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 2);
-						indices.push_back(indexStart + 3);
-						indices.push_back(indexStart);
+						m_waterMesh.indices.push_back(indexStart);
+						m_waterMesh.indices.push_back(indexStart + 1);
+						m_waterMesh.indices.push_back(indexStart + 2);
+						m_waterMesh.indices.push_back(indexStart + 2);
+						m_waterMesh.indices.push_back(indexStart + 3);
+						m_waterMesh.indices.push_back(indexStart);
 					}
 				}
 			}
 		}
 	}
 
-	meshBuilder.Clear();
-	meshBuilder.SetVertexPositions(vertexPositions);
-	meshBuilder.SetIndices(indices);
-	meshBuilder.BuildMesh(m_waterMesh);
+	if (m_waterMesh.vao == 0)
+	{
+		glGenVertexArrays(1, &m_waterMesh.vao);
+	}
+	glBindVertexArray(m_waterMesh.vao);
+
+	if (m_waterMesh.vbo == 0)
+	{
+		glGenBuffers(1, &m_waterMesh.vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, m_waterMesh.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_waterMesh.vertices.size(), m_waterMesh.vertices.data(), GL_DYNAMIC_DRAW);
+
+	if (m_waterMesh.ebo == 0)
+	{
+		glGenBuffers(1, &m_waterMesh.ebo);
+	}
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_waterMesh.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_waterMesh.indices.size(), m_waterMesh.indices.data(), GL_DYNAMIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, color)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+
+	glBindVertexArray(0);
 }
 
 /**
