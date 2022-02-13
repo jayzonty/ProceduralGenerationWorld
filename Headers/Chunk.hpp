@@ -75,16 +75,10 @@ public:
 	void GenerateMesh();
 
 	/**
-	 * @brief Gets the mesh for the terrain
-	 * @return Terrain mesh data
+	 * @brief Draw the chunk
+	 * @param[in] camera Camera
 	 */
-	Mesh* GetTerrainMesh();
-
-	/**
-	 * @brief Gets the mesh for water-type blocks
-	 * @return Mesh data for water-type blocks
-	 */
-	Mesh* GetWaterMesh();
+	void Draw(const Camera& camera);
 
 	/**
 	 * @brief Gets the block at the specified location

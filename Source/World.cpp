@@ -1,11 +1,6 @@
 #include "World.hpp"
 
 #include "Constants.hpp"
-#include "Engine/Graphics/ShaderProgram.hpp"
-#include "Mesh.hpp"
-#include "ResourceManager.hpp"
-
-#include <glm/gtc/type_ptr.hpp>
 
 /**
  * @brief Constructor
@@ -220,71 +215,10 @@ void World::UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const in
  */
 void World::Draw(const Camera& camera)
 {
-	Engine::ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
-	mainShader->Use();
-
-	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
-	mainShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
-	
-	glm::vec4 skyColor = glm::vec4(0.678f, 0.847f, 0.902f, 1.0f);
-	mainShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
-	mainShader->SetUniform1f("fogGradient", 1.5f);
-	mainShader->SetUniform1f("fogDensity", 0.01f);
-
 	for (size_t i = 0; i < m_chunks.size(); ++i)
 	{
-		//m_chunks[i]->Draw(camera);
-		Mesh *terrainMesh = m_chunks[i]->GetTerrainMesh();
-
-		glm::vec3 lightDirection(0.0f, -1.0f, 0.0f);
-
-		glm::vec3 lightAmbient(0.1f, 0.1f, 0.1f);
-		glm::vec3 lightDiffuse(1.0f, 1.0f, 1.0f);
-
-		glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
-		glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
-
-		mainShader->SetUniform3f("light.direction", lightDirection.x, lightDirection.y, lightDirection.z);
-		mainShader->SetUniform3f("light.ambient", lightAmbient.x, lightAmbient.y, lightAmbient.z);
-		mainShader->SetUniform3f("light.diffuse", lightDiffuse.x, lightDiffuse.y, lightDiffuse.z);
-		mainShader->SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
-		mainShader->SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
-
-		Engine::Texture* blocksTexture = ResourceManager::GetInstance().GetTexture("blocks");
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, blocksTexture->texID);
-		mainShader->SetUniform1i("tex", 0);
-
-		terrainMesh->Draw();
+		m_chunks[i]->Draw(camera);
 	}
-	mainShader->Unuse();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	Engine::ShaderProgram* waterShader = ResourceManager::GetInstance().GetShader("water");
-	waterShader->Use();
-
-	waterShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
-	waterShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
-
-	glm::vec4 waterColor(0.0f, 0.0f, 0.75f, 0.5f);
-
-	for (size_t i = 0; i < m_chunks.size(); ++i)
-	{
-		Mesh *waterMesh = m_chunks[i]->GetWaterMesh();
-		
-		waterShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
-		waterShader->SetUniform1f("fogGradient", 1.5f);
-		waterShader->SetUniform1f("fogDensity", 0.01f);
-		waterShader->SetUniform4f("waterColor", waterColor.r, waterColor.g, waterColor.b, waterColor.a);
-
-		waterMesh->Draw();
-	}
-
-	waterShader->Unuse();
-
-	glDisable(GL_BLEND);
 }
 
 /**
