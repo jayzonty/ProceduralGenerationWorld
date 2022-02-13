@@ -6,96 +6,97 @@
 #include "Camera.hpp"
 #include "Mesh.hpp"
 
-/**
- * Chunk class
- */
+/// <summary>
+/// Chunk class
+/// </summary>
 class Chunk
 {
 private:
-	/**
-	 * Chunk mesh
-	 */
+	/// <summary>
+	/// Chunk mesh
+	/// </summary>
 	Mesh m_mesh;
 
-	/**
-	 * Water mesh
-	 */
+	/// <summary>
+	/// Water mesh
+	/// </summary>
 	Mesh m_waterMesh;
 
-	/**
-	 * Block data
-	 */
+	/// <summary>
+	/// Block data
+	/// </summary>
 	std::vector<Block*> m_blocks;
 
-	/**
-	 * Chunk indices in each axis
-	 */
+	/// <summary>
+	/// Chunk indices in each axis
+	/// </summary>
 	glm::ivec3 m_chunkIndex;
 
 public:
-	/**
-	 * @brief Constructor
-	 * @param[in] chunkIndexX Chunk x-index
-	 * @param[in] chunkIndexZ Chunk z-index
-	 */
+
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	/// <param name="chunkIndexX">Chunk x-index</param>
+	/// <param name="chunkIndexZ">Chunk z-index</param>
 	Chunk(const int& chunkIndexX, const int& chunkIndexZ);
 
-	/**
-	 * @brief Destructor
-	 */
+	/// <summary>
+	/// Destructor
+	/// </summary>
 	~Chunk();
 
-	/**
-	 * @brief Gets the x chunk index for this chunk
-	 * @return Chunk x-index
-	 */
+	/// <summary>
+	/// Gets the x chunk index for this chunk
+	/// </summary>
+	/// <returns>Chunk x-index</returns>
 	int GetChunkIndexX() const;
 
-	/**
-	 * @brief Gets the y chunk index for this chunk
-	 * @return Chunk y-index
-	 */
+	/// <summary>
+	/// Gets the y chunk index for this chunk
+	/// </summary>
+	/// <returns>Chunk y-index</returns>
 	int GetChunkIndexY() const;
 
-	/**
-	 * @brief Gets the z chunk index for this chunk
-	 * @return Chunk z-index
-	 */
+	/// <summary>
+	/// Gets the z chunk index for this chunk
+	/// </summary>
+	/// <returns>Chunk z-index</returns>
 	int GetChunkIndexZ() const;
 
-	/**
-	 * @brief Gets the chunk indices in each axis for this chunk
-	 * @return Chunk indices for each axis
-	 */
+	/// <summary>
+	/// Gets the chunk indices in each axis for this chunk
+	/// </summary>
+	/// <returns>Chunk indices for each axis</returns>
 	glm::ivec3 GetChunkIndices() const;
 
-	/**
-	 * @brief Generates the mesh for this chunk
-	 */
+	/// <summary>
+	/// Generates the mesh for this chunk
+	/// </summary>
 	void GenerateMesh();
 
-	/**
-	 * @brief Draw the chunk
-	 * @param[in] camera Camera
-	 */
+	/// <summary>
+	/// Draw the chunk
+	/// <param name="camera">Camera</param>
+	/// </summary>
 	void Draw(const Camera& camera);
 
-	/**
-	 * @brief Gets the block at the specified location
-	 * @param[in] x X-coordinate
-	 * @param[in] y Y-coordinate
-	 * @param[in] z Z-coordinate
-	 * @return Block at the specified location
-	 */
+	/// <summary>
+	/// Gets the block at the specified location
+	/// </summary>
+	/// <param name="x">X-coordinate</param>
+	/// <param name="y">Y-coordinate</param>
+	/// <param name="z">Z-coordinate</param>
+	/// <returns></returns>
 	Block* GetBlockAt(int x, int y, int z);
 
-	/**
-	 * @brief Sets the block at the specified location with the specified block
-	 * @param[in] x X-coordinate
-	 * @param[in] y Y-coordinate
-	 * @param[in] z Z-coordinate
-	 * @param[in] block Data for the new block. Can be set to nullptr if it's an air block.
-	 */
+	/// <summary>
+	/// Sets the block at the specified location with the specified block
+	/// </summary>
+	/// <param name="x">X-coordinate</param>
+	/// <param name="y">Y-coordinate</param>
+	/// <param name="z">Z-coordinate</param>
+	/// <param name="block">Data for the new block. Can be set to nullptr if it's an air block.</param>
 	void SetBlockAt(const int& x, const int& y, const int& z, Block* block);
 
 };

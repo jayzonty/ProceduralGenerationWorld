@@ -1,8 +1,8 @@
 #include "MeshBuilder.hpp"
 
-/**
- * @brief Constructor
- */
+/// <summary>
+/// Constructor
+/// </summary>
 MeshBuilder::MeshBuilder()
 	: m_positions()
 	, m_colors()
@@ -12,16 +12,16 @@ MeshBuilder::MeshBuilder()
 {
 }
 
-/**
- * @brief Destructor
- */
+/// <summary>
+/// Destructor
+/// </summary>
 MeshBuilder::~MeshBuilder()
 {
 }
 
-/**
- * @brief Clear all stored data
- */
+/// <summary>
+/// Clear all stored data
+/// </summary>
 void MeshBuilder::Clear()
 {
 	m_positions.clear();
@@ -31,56 +31,11 @@ void MeshBuilder::Clear()
 	m_indices.clear();
 }
 
-/**
- * @brief Sets list of vertex positions
- * @param[in] positions New list of vertex positions
- */
-void MeshBuilder::SetVertexPositions(const std::vector<glm::vec3>& positions)
-{
-	m_positions = positions;
-}
-
-/**
- * @brief Sets list of vertex colors
- * @param[in] colors New list of vertex colors
- */
-void MeshBuilder::SetVertexColors(const std::vector<glm::vec4>& colors)
-{
-	m_colors = colors;
-}
-
-/**
- * @brief Sets list of vertex UV coordinates
- * @param[in] uvCoordinates New list of vertex UV coordinates
- */
-void MeshBuilder::SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates)
-{
-	m_uvCoordinates = uvCoordinates;
-}
-
-/**
- * @brief Sets list of vertex normal vectors
- * @param[in] normals New list of vertex normal vectors
- */
-void MeshBuilder::SetVertexNormals(const std::vector<glm::vec3>& normals)
-{
-	m_normals = normals;
-}
-
-/**
- * @brief Sets list of vertex indices
- * @param[in] indices New list of vertex indices
- */
-void MeshBuilder::SetIndices(const std::vector<GLuint>& indices)
-{
-	m_indices = indices;
-}
-
-/**
- * @brief Builds the mesh using prior provided information,
- * and stores the result to the provided mesh reference.
- * @param[in] mesh Reference to the mesh where the result will be stored
- */
+/// <summary>
+/// Builds the mesh using prior provided information,
+/// and stores the result to the provided mesh reference.
+/// </summary>
+/// <param name="mesh">Reference to the mesh where the result will be stored</param>
 void MeshBuilder::BuildMesh(Mesh& mesh)
 {
 	if (mesh.m_vao == 0)
@@ -151,4 +106,49 @@ void MeshBuilder::BuildMesh(Mesh& mesh)
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, nx)));
 
 	glBindVertexArray(0);
+}
+
+/// <summary>
+/// Sets list of vertex positions
+/// </summary>
+/// <param name="positions">New list of vertex positions</param>
+void MeshBuilder::SetVertexPositions(const std::vector<glm::vec3>& positions)
+{
+	m_positions = positions;
+}
+
+/// <summary>
+/// Sets list of vertex colors
+/// </summary>
+/// <param name="colors">New list of vertex colors</param>
+void MeshBuilder::SetVertexColors(const std::vector<glm::vec4>& colors)
+{
+	m_colors = colors;
+}
+
+/// <summary>
+/// Sets list of vertex UV coordinates
+/// </summary>
+/// <param name="uvCoordinates">New list of vertex UV coordinates</param>
+void MeshBuilder::SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates)
+{
+	m_uvCoordinates = uvCoordinates;
+}
+
+/// <summary>
+/// Sets list of vertex normal vectors
+/// </summary>
+/// <param name="normals">New list of vertex normal vectors</param>
+void MeshBuilder::SetVertexNormals(const std::vector<glm::vec3>& normals)
+{
+	m_normals = normals;
+}
+
+/// <summary>
+/// Sets list of vertex indices
+/// </summary>
+/// <param name="indices">New list of vertex indices</param>
+void MeshBuilder::SetIndices(const std::vector<GLuint>& indices)
+{
+	m_indices = indices;
 }

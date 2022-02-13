@@ -15,11 +15,11 @@
 #include "EntityTemplates/BlockTemplate.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
 
-/**
- * @brief Constructor
- * @param[in] chunkIndexX Chunk x-index
- * @param[in] chunkIndexZ Chunk z-index
- */
+/// <summary>
+/// Constructor
+/// </summary>
+/// <param name="chunkIndexX">Chunk x-index</param>
+/// <param name="chunkIndexY">Chunk y-index</param>
 Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	: m_mesh()
 	, m_waterMesh()
@@ -30,9 +30,9 @@ Chunk::Chunk(const int& chunkIndexX, const int& chunkIndexZ)
 	m_blocks.resize(size);
 }
 
-/**
- * @brief Destructor
- */
+/// <summary>
+/// Destructor
+/// </summary>
 Chunk::~Chunk()
 {
 	for (size_t i = 0; i < m_blocks.size(); ++i)
@@ -42,45 +42,45 @@ Chunk::~Chunk()
 	m_blocks.clear();
 }
 
-/**
- * @brief Gets the x chunk index for this chunk
- * @return Chunk x-index
- */
+/// <summary>
+	/// Gets the x chunk index for this chunk
+	/// </summary>
+	/// <returns></returns>
 int Chunk::GetChunkIndexX() const
 {
 	return m_chunkIndex.x;
 }
 
-/**
- * @brief Gets the y chunk index for this chunk
- * @return Chunk y-index
- */
+/// <summary>
+/// Gets the y chunk index for this chunk
+/// </summary>
+/// <returns>Chunk y-index</returns>
 int Chunk::GetChunkIndexY() const
 {
 	return m_chunkIndex.y;
 }
 
-/**
- * @brief Gets the z chunk index for this chunk
- * @return Chunk z-index
- */
+/// <summary>
+/// Gets the z chunk index for this chunk
+/// </summary>
+/// <returns></returns>
 int Chunk::GetChunkIndexZ() const
 {
 	return m_chunkIndex.z;
 }
 
-/**
- * @brief Gets the chunk indices in each axis for this chunk
- * @return Chunk indices for each axis
- */
+/// <summary>
+/// Gets the chunk indices in each axis for this chunk
+/// </summary>
+/// <returns>Chunk indices for each axis</returns>
 glm::ivec3 Chunk::GetChunkIndices() const
 {
 	return m_chunkIndex;
 }
 
-/**
- * @brief Generates the mesh for this chunk
- */
+/// <summary>
+/// Generates the mesh for this chunk
+/// </summary>
 void Chunk::GenerateMesh()
 {
 	float blockSize = Constants::BLOCK_SIZE;
@@ -371,13 +371,13 @@ void Chunk::GenerateMesh()
 	meshBuilder.BuildMesh(m_waterMesh);
 }
 
-/**
- * @brief Draw the chunk
- * @param[in] camera Camera
- */
+/// <summary>
+/// Draw the chunk
+/// <param name="camera">Camera</param>
+/// </summary>
 void Chunk::Draw(const Camera& camera)
 {
-	Engine::ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
+	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
 	mainShader->Use();
 
 	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
@@ -402,9 +402,9 @@ void Chunk::Draw(const Camera& camera)
 	mainShader->SetUniform1f("fogGradient", 1.5f);
 	mainShader->SetUniform1f("fogDensity", 0.01f);
 
-	Engine::Texture* blocksTexture = ResourceManager::GetInstance().GetTexture("blocks");
+	Texture* blocksTexture = ResourceManager::GetInstance().GetTexture("blocks");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, blocksTexture->texID);
+	glBindTexture(GL_TEXTURE_2D, blocksTexture->GetHandle());
 	mainShader->SetUniform1i("tex", 0);
 
 	m_mesh.Draw();
@@ -412,7 +412,7 @@ void Chunk::Draw(const Camera& camera)
 	mainShader->Unuse();
 
 	glm::vec4 waterColor(0.0f, 0.0f, 0.75f, 1.0f);
-	Engine::ShaderProgram* waterShader = ResourceManager::GetInstance().GetShader("water");
+	ShaderProgram* waterShader = ResourceManager::GetInstance().GetShader("water");
 	waterShader->Use();
 	waterShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(camera.GetProjectionMatrix()));
 	waterShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(camera.GetViewMatrix()));
@@ -424,26 +424,26 @@ void Chunk::Draw(const Camera& camera)
 	waterShader->Unuse();
 }
 
-/**
- * @brief Gets the block at the specified location
- * @param[in] x X-coordinate
- * @param[in] y Y-coordinate
- * @param[in] z Z-coordinate
- * @return Block at the specified location
- */
+/// <summary>
+/// Gets the block at the specified location
+/// </summary>
+/// <param name="x">X-coordinate</param>
+/// <param name="y">Y-coordinate</param>
+/// <param name="z">Z-coordinate</param>
+/// <returns></returns>
 Block* Chunk::GetBlockAt(int x, int y, int z)
 {
 	int index = (z * Constants::CHUNK_WIDTH + x) * Constants::CHUNK_HEIGHT + y;
 	return m_blocks[index];
 }
 
-/**
- * @brief Sets the block at the specified location with the specified block
- * @param[in] x X-coordinate
- * @param[in] y Y-coordinate
- * @param[in] z Z-coordinate
- * @param[in] block Data for the new block. Can be set to nullptr if it's an air block.
- */
+/// <summary>
+/// Sets the block at the specified location with the specified block
+/// </summary>
+/// <param name="x">X-coordinate</param>
+/// <param name="y">Y-coordinate</param>
+/// <param name="z">Z-coordinate</param>
+/// <param name="block">Data for the new block. Can be set to nullptr if it's an air block.</param>
 void Chunk::SetBlockAt(const int& x, const int& y, const int& z, Block* block)
 {
 	Block* existingBlock = GetBlockAt(x, y, z);

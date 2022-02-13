@@ -5,114 +5,114 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-/**
- * Class for handling building of a mesh
- * and uploading to the GPU
- */
+/// <summary>
+/// Class for handling building of a mesh
+/// and uploading to the GPU
+/// </summary>
 class MeshBuilder
 {
 private:
-	/**
-	 * Struct containing vertex data
-	 */
+	/// <summary>
+	/// Struct containing vertex data
+	/// </summary>
 	struct Vertex
 	{
-		/**
-		 * Position
-		 */
+		/// <summary>
+		/// Position
+		/// </summary>
 		GLfloat x, y, z;
 
-		/**
-		 * Color
-		 */
+		/// <summary>
+		/// Color
+		/// </summary>
 		GLfloat r, g, b, a;
 
-		/**
-		 * Texture coordinates
-		 */
+		/// <summary>
+		/// Texture coordinates
+		/// </summary>
 		GLfloat u, v;
 
-		/**
-		 * Normal
-		 */
+		/// <summary>
+		/// Normal
+		/// </summary>
 		GLfloat nx, ny, nz;
 	};
 
-	/**
-	 * List of vertex positions
-	 */
+	/// <summary>
+	/// List of vertex positions
+	/// </summary>
 	std::vector<glm::vec3> m_positions;
 
-	/**
-	 * List of vertex colors
-	 */
+	/// <summary>
+	/// List of vertex colors
+	/// </summary>
 	std::vector<glm::vec4> m_colors;
 
-	/**
-	 * List of UV coordinates
-	 */
+	/// <summary>
+	/// List of UV coordinates
+	/// </summary>
 	std::vector<glm::vec2> m_uvCoordinates;
 
-	/**
-	 * List of vertex normals
-	 */
+	/// <summary>
+	/// List of vertex normals
+	/// </summary>
 	std::vector<glm::vec3> m_normals;
 
-	/**
-	 * List of indices
-	 */
+	/// <summary>
+	/// List of indices
+	/// </summary>
 	std::vector<GLuint> m_indices;
 
 public:
-	/**
-	 * @brief Constructor
-	 */
+	/// <summary>
+	/// Constructor
+	/// </summary>
 	MeshBuilder();
 
-	/**
-	 * @brief Destructor
-	 */
+	/// <summary>
+	/// Destructor
+	/// </summary>
 	~MeshBuilder();
 
-	/**
-	 * @brief Clear all stored data
-	 */
+	/// <summary>
+	/// Clear all stored data
+	/// </summary>
 	void Clear();
 
-	/**
-	 * @brief Sets list of vertex positions
-	 * @param[in] positions New list of vertex positions
-	 */
+	/// <summary>
+	/// Sets list of vertex positions
+	/// </summary>
+	/// <param name="positions">New list of vertex positions</param>
 	void SetVertexPositions(const std::vector<glm::vec3>& positions);
 
-	/**
-	 * @brief Sets list of vertex colors
-	 * @param[in] colors New list of vertex colors
-	 */
+	/// <summary>
+	/// Sets list of vertex colors
+	/// </summary>
+	/// <param name="colors">New list of vertex colors</param>
 	void SetVertexColors(const std::vector<glm::vec4>& colors);
 
-	/**
-	 * @brief Sets list of vertex UV coordinates
-	 * @param[in] uvCoordinates New list of vertex UV coordinates
-	 */
+	/// <summary>
+	/// Sets list of vertex UV coordinates
+	/// </summary>
+	/// <param name="uvCoordinates">New list of vertex UV coordinates</param>
 	void SetVertexUVs(const std::vector<glm::vec2>& uvCoordinates);
 
-	/**
-	 * @brief Sets list of vertex normal vectors
-	 * @param[in] normals New list of vertex normal vectors
-	 */
+	/// <summary>
+	/// Sets list of vertex normal vectors
+	/// </summary>
+	/// <param name="normals">New list of vertex normal vectors</param>
 	void SetVertexNormals(const std::vector<glm::vec3>& normals);
 
-	/**
-	 * @brief Sets list of vertex indices
-	 * @param[in] indices New list of vertex indices
-	 */
+	/// <summary>
+	/// Sets list of vertex indices
+	/// </summary>
+	/// <param name="indices">New list of vertex indices</param>
 	void SetIndices(const std::vector<GLuint>& indices);
 
-	/**
-	 * @brief Builds the mesh using prior provided information,
-	 * and stores the result to the provided mesh reference.
-	 * @param[in] mesh Reference to the mesh where the result will be stored
-	 */
+	/// <summary>
+	/// Builds the mesh using prior provided information,
+	/// and stores the result to the provided mesh reference.
+	/// </summary>
+	/// <param name="mesh">Reference to the mesh where the result will be stored</param>
 	void BuildMesh(Mesh& mesh);
 };

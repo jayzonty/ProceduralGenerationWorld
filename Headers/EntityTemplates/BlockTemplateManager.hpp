@@ -1,25 +1,22 @@
 #pragma once
 
-#include "Enums/BlockTypeEnum.hpp"
+#include <Enums/BlockTypeEnum.hpp>
 
 #include "BlockTemplate.hpp"
 
 #include <map>
 
-/**
- * Manager class for block templates
- */
 class BlockTemplateManager
 {
 private:
-	/**
-	 * Mapping of block type and its corresponding block template
-	 */
+	/// <summary>
+	/// Mapping of block type and its corresponding block template
+	/// </summary>
 	std::map<BlockTypeEnum, BlockTemplate> m_templates;
 
-	/**
-	 * @brief Constructor
-	 */
+	/// <summary>
+	/// Constructor
+	/// </summary>
 	BlockTemplateManager();
 
 	/* Delete copy constructor */
@@ -29,27 +26,28 @@ private:
 	BlockTemplateManager& operator=(const BlockTemplateManager&) = delete;
 
 public:
-	/**
-	 * @brief Destructor
-	 */
+	/// <summary>
+	/// Destructor
+	/// </summary>
 	~BlockTemplateManager();
 
-	/**
-	 * @brief Gets the singleton instance for the BlockTemplateManager
-	 * @return Singleton instance of this class
-	 */
+	/// <summary>
+	/// Gets the singleton instance for the BlockTemplateManager
+	/// </summary>
+	/// <returns>Singleton instance of this class</returns>
 	static BlockTemplateManager& GetInstance();
 
-	/**
-	 * @brief Add the block template for the specified block type
-	 * @param[in] blockType Block type
-	 * @param[in] blockTemplate Block template
-	 */
+	/// <summary>
+	/// Add the block template for the specified block type
+	/// </summary>
+	/// <param name="blockType">Block type</param>
+	/// <param name="blockTemplate">Block template</param>
 	void AddBlockTemplate(const BlockTypeEnum& blockType, const BlockTemplate& blockTemplate);
 
-	/**
-	 * @brief Gets the block template for the specified block type
-	 * @return Block template for the specified block type. Returns nullptr if the block type does not have a template
-	 */
+	/// <summary>
+	/// Gets the block template for the specified block type
+	/// </summary>
+	/// <returns>Block template for the specified block type. Returns nullptr if the block type does not have a template</returns>
 	const BlockTemplate* GetBlockTemplate(const BlockTypeEnum& blockType);
+
 };

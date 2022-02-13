@@ -1,8 +1,8 @@
 #pragma once
 
-/**
- * Block face enum
- */
+/// <summary>
+/// Block face enum
+/// </summary>
 enum class BlockFaceEnum
 {
 	TOP,	// Top face

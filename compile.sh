@@ -1,9 +1,12 @@
 #!/bin/sh
 
-# Create build directory if it doesn't exist yet
-if [ ! -d ./build ]; then
-    mkdir build
+# Delete build directory
+if [ -d ./build ]; then
+    rm -r ./build
 fi
+
+# Recreate build directory
+mkdir build
 
 # CMake
 cmake -B ./build .
