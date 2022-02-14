@@ -1,4 +1,5 @@
 #include "Texture.hpp"
+#include "Image.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -31,18 +32,26 @@ Texture::~Texture()
  */
 void Texture::CreateFromFile(const std::string& textureFilePath)
 {
+	Image image = Image::LoadFromFile(textureFilePath);
+	CreateFromImage(image);
+}
+
+/**
+ * @brief Creates a texture from the specified image data
+ * @param[in] image Image data
+ */
+void Texture::CreateFromImage(const Image &image)
+{
+	m_width = image.width;
+	m_height = image.height;
+
 	if (m_textureHandle == 0)
 	{
 		glGenTextures(1, &m_textureHandle);
 	}
 
-	stbi_set_flip_vertically_on_load(true);
-
-	int numChannels;
-	unsigned char* data = stbi_load(textureFilePath.c_str(), &m_width, &m_height, &numChannels, 0);
-
 	GLenum imageDataFormat = GL_RGB;
-	if (numChannels == 4)
+	if (image.numChannels == 4)
 	{
 		imageDataFormat = GL_RGBA;
 	}
@@ -55,7 +64,18 @@ void Texture::CreateFromFile(const std::string& textureFilePath)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, imageDataFormat, m_width, m_height, 0, imageDataFormat, GL_UNSIGNED_BYTE, data);
+	glTexImage2D
+	(
+		GL_TEXTURE_2D, 
+		0, 
+		imageDataFormat, 
+		image.width,
+		image.height,
+		0,
+		imageDataFormat,
+		GL_UNSIGNED_BYTE, 
+		image.data.data()
+	);
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);

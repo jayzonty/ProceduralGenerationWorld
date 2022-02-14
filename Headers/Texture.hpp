@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Image.hpp"
+
 #include <glad/glad.h>
 
 #include <string>
@@ -41,6 +43,12 @@ public:
 	 * @param[in] textureFilePath Image file path
 	 */
 	void CreateFromFile(const std::string& textureFilePath);
+
+	/**
+	 * @brief Creates a texture from the specified image data
+	 * @param[in] image Image data
+	 */
+	void CreateFromImage(const Image &image);
 
 	/**
 	 * @brief Gets the GL texture handle for this texture
