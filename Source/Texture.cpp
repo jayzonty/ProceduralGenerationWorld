@@ -55,6 +55,7 @@ void Texture::CreateFromImage(const Image &image)
 	{
 		imageDataFormat = GL_RGBA;
 	}
+	m_imageFormat = imageDataFormat;
 
 	glBindTexture(GL_TEXTURE_2D, m_textureHandle);
 
@@ -79,6 +80,33 @@ void Texture::CreateFromImage(const Image &image)
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+/**
+ * @brief Updates the texture data from the specified image data
+ * @param[in] image Image data
+ */
+void Texture::UpdateFromImageData(const Image &image)
+{
+	if ((m_width == image.width) && (m_height == image.height))
+	{
+		glBindTexture(GL_TEXTURE_2D, m_textureHandle);
+
+		glTexSubImage2D
+		(
+			GL_TEXTURE_2D,
+			0,
+			0,
+			0,
+			image.width,
+			image.height,
+			m_imageFormat,
+			GL_UNSIGNED_BYTE,
+			image.data.data()
+		);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 /**

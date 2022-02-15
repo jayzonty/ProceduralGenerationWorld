@@ -2,6 +2,7 @@
 
 #include "BaseApplication.hpp"
 #include "Scenes/MainScene.hpp"
+#include "Scenes/SandboxScene.hpp"
 
 /**
  * Class for the OpenForBusiness application
@@ -13,6 +14,11 @@ private:
      * Main scene
      */
     MainScene *m_mainScene;
+
+    /**
+     * Sandbox scene
+     */
+    SandboxScene *m_sandboxScene;
 
 public:
     /**

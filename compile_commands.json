@@ -21,6 +21,16 @@
 },
 {
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Scenes/SandboxScene.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Scenes/SandboxScene.cpp",
+  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Scenes/SandboxScene.cpp"
+},
+{
+  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Utils/NoiseUtils.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Utils/NoiseUtils.cpp",
+  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Utils/NoiseUtils.cpp"
+},
+{
+  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
   "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Application.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Application.cpp",
   "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Application.cpp"
 },

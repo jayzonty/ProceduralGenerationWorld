@@ -9,6 +9,11 @@ namespace Constants
 	const uint32_t MAIN_SCENE_ID = 0;
 
 	/**
+	 * Scene ID for the sandbox scene
+	 */
+	const uint32_t SANDBOX_SCENE_ID = 1;
+
+	/**
 	 * Chunk width
 	 */
 	const int CHUNK_WIDTH = 16;

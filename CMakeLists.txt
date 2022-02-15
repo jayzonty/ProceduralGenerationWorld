@@ -26,6 +26,9 @@ set(SOURCES
     Source/EntityTemplates/BlockTemplateManager.cpp
 
     Source/Scenes/MainScene.cpp
+    Source/Scenes/SandboxScene.cpp
+
+    Source/Utils/NoiseUtils.cpp
 
     Source/Application.cpp
     Source/BaseApplication.cpp
