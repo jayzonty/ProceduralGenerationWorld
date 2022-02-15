@@ -3,6 +3,7 @@
 #include "BaseScene.hpp"
 #include "Camera.hpp"
 #include "Image.hpp"
+#include "SceneManager.hpp"
 #include "Texture.hpp"
 #include "UIRenderer.hpp"
 #include "World.hpp"
@@ -59,8 +60,9 @@ private:
 public:
 	/**
 	 * @brief Constructor
+	 * @param[in] sceneManager Scene manager
 	 */
-	MainScene();
+	MainScene(SceneManager *sceneManager);
 
 	/**
 	 * @brief Destructor

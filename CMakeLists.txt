@@ -36,6 +36,7 @@ set(SOURCES
     Source/MainScene.cpp
     Source/Mesh.cpp
     Source/ResourceManager.cpp
+    Source/SceneManager.cpp
     Source/ShaderProgram.cpp
     Source/Texture.cpp
     Source/UIRenderer.cpp

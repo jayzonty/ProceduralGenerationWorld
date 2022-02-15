@@ -1,20 +1,33 @@
 #pragma once
 
+#include "SceneManager.hpp"
+
 /**
  * Base class for a game scene
  */
 class BaseScene
 {
+private:
+    /**
+     * Reference to the scene manager
+     */
+    SceneManager *m_sceneManager;
+
 public:
     /**
      * @brief Constructor
      */
-    BaseScene() = default;
+    BaseScene(SceneManager *sceneManager)
+        : m_sceneManager(sceneManager)
+    {
+    }
 
     /**
      * @brief Destructor
      */
-    virtual ~BaseScene() = default;
+    virtual ~BaseScene()
+    {
+    }
 
     /**
      * @brief Initializes the scene.
@@ -42,4 +55,14 @@ public:
      * @brief Cleans up the resources used by the scene.
      */
     virtual void Cleanup() = 0;
+
+protected:
+    /**
+     * @brief Gets the scene manager
+     * return Scene manager
+     */
+    SceneManager* GetSceneManager()
+    {
+        return m_sceneManager;
+    }
 };

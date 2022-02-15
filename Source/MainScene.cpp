@@ -5,6 +5,7 @@
 #include "FastNoiseLite/FastNoiseLite.h"
 #include "Input.hpp"
 #include "ResourceManager.hpp"
+#include "SceneManager.hpp"
 #include "ShaderProgram.hpp"
 
 #include "Enums/BlockTypeEnum.hpp"
@@ -23,8 +24,8 @@
 /**
  * @brief Constructor
  */
-MainScene::MainScene()
-	: BaseScene()
+MainScene::MainScene(SceneManager *sceneManager)
+	: BaseScene(sceneManager)
 	, m_camera()
 	, m_world(nullptr)
 	, m_prevChunkIndices()

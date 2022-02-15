@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "BaseScene.hpp"
+#include "SceneManager.hpp"
 #include "Window.hpp"
 
 class BaseApplication
@@ -14,9 +15,9 @@ private:
     bool m_isRunning;
 
     /**
-     * Current scene
+     * Scene manager
      */
-    BaseScene* m_activeScene;
+    SceneManager m_sceneManager;
 
 public:
     /**
@@ -31,9 +32,14 @@ public:
 
     /**
      * @brief Runs the application.
-     * @param[in] initialScene Initial scene
      */
-    void Run(BaseScene* initialScene);
+    void Run();
+
+    /**
+     * @brief Gets the scene manager for this application
+     * @return Reference to the scene manager
+     */
+    SceneManager* GetSceneManager();
 
 protected:
     /**

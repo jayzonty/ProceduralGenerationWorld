@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseApplication.hpp"
+#include "MainScene.hpp"
 
 /**
  * Class for the OpenForBusiness application
@@ -8,6 +9,10 @@
 class Application : public BaseApplication
 {
 private:
+    /**
+     * Main scene
+     */
+    MainScene *m_mainScene;
 
 public:
     /**

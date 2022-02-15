@@ -1,6 +1,7 @@
 #include "BaseApplication.hpp"
 
 #include "Input.hpp"
+#include "SceneManager.hpp"
 #include "WindowManager.hpp"
 
 #include <GLFW/glfw3.h>
@@ -12,7 +13,7 @@
  */
 BaseApplication::BaseApplication()
     : m_isRunning(false)
-    , m_activeScene(nullptr)
+    , m_sceneManager()
 {
 }
 
@@ -25,9 +26,8 @@ BaseApplication::~BaseApplication()
 
 /**
  * @brief Runs the application.
- * @param[in] initialScene Initial scene
  */
-void BaseApplication::Run(BaseScene* initialScene)
+void BaseApplication::Run()
 {
     // If the application is somehow running when this
     // function is called, don't allow to "re-run".
@@ -37,12 +37,6 @@ void BaseApplication::Run(BaseScene* initialScene)
     }
     m_isRunning = true;
 
-    if (initialScene == nullptr)
-    {
-        std::cout << "[Application] Initial scene is null! Exiting." << std::endl;
-    }
-    m_activeScene = initialScene;
-
     if (!Init())
     {
         std::cout << "[Application] Failed to initialize application!" << std::endl;
@@ -50,7 +44,7 @@ void BaseApplication::Run(BaseScene* initialScene)
     }
     OnInit();
 
-    m_activeScene->Init();
+    m_sceneManager.GetActiveScene()->Init();
 
     double prevTime = glfwGetTime();
 
@@ -66,10 +60,10 @@ void BaseApplication::Run(BaseScene* initialScene)
         float deltaTime = static_cast<float>(currentTime - prevTime);
         prevTime = currentTime;
 
-        m_activeScene->Update(deltaTime);
-        m_activeScene->FixedUpdate(0.0f);
+        m_sceneManager.GetActiveScene()->Update(deltaTime);
+        m_sceneManager.GetActiveScene()->FixedUpdate(0.0f);
 
-        m_activeScene->Draw();
+        m_sceneManager.GetActiveScene()->Draw();
 
         mainWindow->SwapBuffers();
 
@@ -77,8 +71,18 @@ void BaseApplication::Run(BaseScene* initialScene)
         mainWindow->PollEvents();
     }
 
+    m_sceneManager.GetActiveScene()->Cleanup();
     OnCleanup();
     Cleanup();
+}
+
+/**
+ * @brief Gets the scene manager for this application
+ * @return Reference to the scene manager
+ */
+SceneManager* BaseApplication::GetSceneManager()
+{
+    return &m_sceneManager;
 }
 
 /**
@@ -136,12 +140,6 @@ bool BaseApplication::Init()
  */
 void BaseApplication::Cleanup()
 {
-    if (m_activeScene != nullptr)
-    {
-        m_activeScene->Cleanup();
-        m_activeScene = nullptr;
-    }
-
     Window* mainWindow = WindowManager::GetMainWindow();
     mainWindow->Cleanup();
     glfwTerminate();

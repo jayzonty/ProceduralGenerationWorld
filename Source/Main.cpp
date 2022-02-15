@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "MainScene.hpp"
+#include "SceneManager.hpp"
 
 /// <summary>
 /// Main function.
@@ -10,12 +11,8 @@
 int main()
 {
 	{
-		MainScene *mainScene = new MainScene();
-
 		Application application;
-		application.Run(mainScene);
-
-		delete mainScene;
+		application.Run();
 	}
 
 	return 0;

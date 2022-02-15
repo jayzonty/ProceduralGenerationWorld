@@ -1,6 +1,8 @@
 #include "Application.hpp"
 
 #include "BaseApplication.hpp"
+#include "Constants.hpp"
+#include "MainScene.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
 
@@ -9,6 +11,7 @@
  */
 Application::Application()
     : BaseApplication()
+    , m_mainScene(nullptr)
 {
 }
 
@@ -26,6 +29,10 @@ void Application::OnInit()
 {
     Window *mainWindow = WindowManager::GetMainWindow();
     mainWindow->SetTitle("Voxel World");
+
+    m_mainScene = new MainScene(GetSceneManager());
+    GetSceneManager()->RegisterScene(Constants::MAIN_SCENE_ID, m_mainScene);
+    GetSceneManager()->SwitchToScene(Constants::MAIN_SCENE_ID);
 }
 
 /**
@@ -33,4 +40,6 @@ void Application::OnInit()
  */
 void Application::OnCleanup()
 {
+    delete m_mainScene;
+    m_mainScene = nullptr;
 }

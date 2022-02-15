@@ -1,7 +1,13 @@
 #pragma once
 
+#include <cstdint>
 namespace Constants
 {
+	/**
+	 * Scene ID for the main scene
+	 */
+	const uint32_t MAIN_SCENE_ID = 0;
+
 	/**
 	 * Chunk width
 	 */
