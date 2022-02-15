@@ -38,6 +38,7 @@ set(SOURCES
     Source/ResourceManager.cpp
     Source/ShaderProgram.cpp
     Source/Texture.cpp
+    Source/UIRenderer.cpp
     Source/Window.cpp
     Source/WindowManager.cpp
     Source/World.cpp

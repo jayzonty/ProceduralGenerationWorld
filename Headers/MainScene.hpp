@@ -2,7 +2,9 @@
 
 #include "BaseScene.hpp"
 #include "Camera.hpp"
+#include "Image.hpp"
 #include "Texture.hpp"
+#include "UIRenderer.hpp"
 #include "World.hpp"
 
 #include <glm/glm.hpp>
@@ -38,6 +40,21 @@ private:
 	 * Sky color
 	 */
 	glm::vec4 m_skyColor;
+
+	/**
+	 * UI Renderer
+	 */
+	UIRenderer m_uiRenderer;
+
+	/**
+	 * Noise image
+	 */
+	Image m_noiseImage;
+
+	/**
+	 * Texture for visualizing noise map
+	 */
+	Texture m_noiseTexture;
 
 public:
 	/**

@@ -107,7 +107,7 @@ void Image::SetData(const uint32_t &x, const uint32_t &y, const unsigned char &c
         data[index + 1] = c1;
         for (uint32_t i = 2; i < numChannels; ++i)
         {
-            data[index + i] = c1;
+            data[index + i] = c2;
         }
     }
 }
@@ -131,7 +131,7 @@ void Image::SetData(const uint32_t &x, const uint32_t &y, const unsigned char &c
         data[index + 2] = c2;
         for (uint32_t i = 3; i < numChannels; ++i)
         {
-            data[index + i] = c1;
+            data[index + i] = c3;
         }
     }
 }

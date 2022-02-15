@@ -2,12 +2,16 @@
 
 #include "BaseScene.hpp"
 #include "Constants.hpp"
+#include "FastNoiseLite/FastNoiseLite.h"
 #include "Input.hpp"
 #include "ResourceManager.hpp"
 #include "ShaderProgram.hpp"
 
 #include "Enums/BlockTypeEnum.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
+#include "Window.hpp"
+#include "WindowManager.hpp"
+#include "glm/fwd.hpp"
 
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,6 +30,9 @@ MainScene::MainScene()
 	, m_prevChunkIndices()
 	, m_chunkRenderDistance(8)
 	, m_skyColor()
+	, m_uiRenderer()
+	, m_noiseImage(256, 256, 3)
+	, m_noiseTexture()
 {
 }
 
@@ -99,6 +106,33 @@ void MainScene::Init()
 
 	// Generate initial chunks
 	m_world->LoadChunksWithinArea(m_prevChunkIndices, m_chunkRenderDistance);
+
+	m_uiRenderer.Initialize(1000);
+
+	FastNoiseLite noise;
+	for (size_t x = 0; x < m_noiseImage.width; ++x)
+	{
+		for (size_t y = 0; y < m_noiseImage.height; ++y)
+		{
+			float noiseValue = noise.GetNoise(x * 5.0f, y * 5.0f);
+
+			unsigned char red = 0, green = 0, blue = 0;
+			if (noiseValue < 0.0f)
+			{
+				red = 0; green = 0; blue = 255;
+			}
+			else if (noiseValue < 0.1f)
+			{
+				red = 194; green = 178; blue = 128;
+			}
+			else
+			{
+				red = 0; green = 255; blue = 0;
+			}
+			m_noiseImage.SetData(x, y, red, green, blue);
+		}
+	}
+	m_noiseTexture.CreateFromImage(m_noiseImage);
 }
 
 /**
@@ -209,6 +243,14 @@ void MainScene::Draw()
 	}
 
 	ResourceManager::GetInstance().GetShader("main")->Unuse();
+
+	Window *mainWindow = WindowManager::GetMainWindow();
+	glm::mat4 uiCameraMatrix = glm::ortho(0.0f, mainWindow->GetWidth() * 1.0f, 0.0f, mainWindow->GetHeight() * 1.0f);
+
+	m_uiRenderer.Begin();
+	m_uiRenderer.DrawQuad({ 10.0f, 10.0f }, { 256.0f, 256.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0, 0, m_noiseTexture.GetHandle(), { 0.0f, 0.0f, 1.0f, 1.0f });
+	m_uiRenderer.End();
+	m_uiRenderer.Render(uiCameraMatrix);
 }
 
 /**
@@ -216,6 +258,8 @@ void MainScene::Draw()
  */
 void MainScene::Cleanup()
 {
+	m_uiRenderer.Cleanup();
+
 	if (m_world != nullptr)
 	{
 		delete m_world;
