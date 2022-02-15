@@ -1,6 +1,6 @@
 #include "SceneManager.hpp"
 
-#include "BaseScene.hpp"
+#include "Scenes/BaseScene.hpp"
 
 /**
  * @brief Constructor

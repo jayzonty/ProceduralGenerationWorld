@@ -25,6 +25,8 @@ set(SOURCES
     Source/EntityTemplates/BlockTemplate.cpp
     Source/EntityTemplates/BlockTemplateManager.cpp
 
+    Source/Scenes/MainScene.cpp
+
     Source/Application.cpp
     Source/BaseApplication.cpp
     Source/Block.cpp
@@ -33,7 +35,6 @@ set(SOURCES
     Source/Chunk.cpp
     Source/Image.cpp
     Source/Input.cpp
-    Source/MainScene.cpp
     Source/Mesh.cpp
     Source/ResourceManager.cpp
     Source/SceneManager.cpp

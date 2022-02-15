@@ -2,7 +2,7 @@
 
 #include "BaseApplication.hpp"
 #include "Constants.hpp"
-#include "MainScene.hpp"
+#include "Scenes/MainScene.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
 

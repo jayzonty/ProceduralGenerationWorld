@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseApplication.hpp"
-#include "MainScene.hpp"
+#include "Scenes/MainScene.hpp"
 
 /**
  * Class for the OpenForBusiness application

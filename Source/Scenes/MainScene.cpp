@@ -1,6 +1,6 @@
-#include "MainScene.hpp"
+#include "Scenes/MainScene.hpp"
 
-#include "BaseScene.hpp"
+#include "Scenes/BaseScene.hpp"
 #include "Constants.hpp"
 #include "FastNoiseLite/FastNoiseLite.h"
 #include "Input.hpp"

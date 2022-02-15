@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "BaseScene.hpp"
+#include "Scenes/BaseScene.hpp"
 #include "SceneManager.hpp"
 #include "Window.hpp"
 

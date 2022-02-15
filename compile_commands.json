@@ -16,6 +16,11 @@
 },
 {
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
+  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Scenes/MainScene.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Scenes/MainScene.cpp",
+  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Scenes/MainScene.cpp"
+},
+{
+  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
   "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Application.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Application.cpp",
   "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Application.cpp"
 },
@@ -53,11 +58,6 @@
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
   "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/Input.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Input.cpp",
   "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/Input.cpp"
-},
-{
-  "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
-  "command": "/usr/bin/c++  -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Deps/Include -I/usr/include/freetype2 -I/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Headers -std=gnu++11 -o CMakeFiles/ProceduralGenerationWorld.dir/Source/MainScene.cpp.o -c /home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/MainScene.cpp",
-  "file": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/Source/MainScene.cpp"
 },
 {
   "directory": "/home/jayzon/Documents/Projects/ProceduralGenerationWorld/build",
