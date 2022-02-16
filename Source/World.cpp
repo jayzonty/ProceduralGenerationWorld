@@ -3,8 +3,11 @@
 #include "Constants.hpp"
 #include "Mesh.hpp"
 #include "ResourceManager.hpp"
+#include "Utils/NoiseUtils.hpp"
 
+#include <cstdint>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 /**
  * @brief Constructor
@@ -12,7 +15,16 @@
 World::World()
 	: m_chunks()
 	, m_noiseEngine()
+	, m_worldGenParams()
 {
+	m_worldGenParams.worldSize = 1024;
+	m_worldGenParams.worldMaxHeight = 30;
+
+	m_worldGenParams.seed = 0;
+	m_worldGenParams.noiseNumOctaves = 1;
+	m_worldGenParams.noiseScale = 1.0f;
+	m_worldGenParams.noisePersistence = 1.0f;
+	m_worldGenParams.noiseLacunarity = 2.0f;
 }
 
 /**
@@ -25,6 +37,15 @@ World::~World()
 		delete m_chunks[i];
 	}
 	m_chunks.clear();
+}
+
+/**
+ * @brief Sets the parameters for the world generation
+ * @param[in] params Struct containing the parameters for the world generation
+ */
+void World::SetWorldGenParams(const WorldGenParams &params)
+{
+	m_worldGenParams = params;
 }
 
 /**
@@ -97,6 +118,15 @@ glm::ivec3 World::WorldPositionToChunkIndex(const glm::vec3& worldPosition)
  */
 Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 {
+	int32_t worldCenterX = m_worldGenParams.worldSize / 2;
+	int32_t worldCenterZ = m_worldGenParams.worldSize / 2;
+
+	int32_t fallOff = 64;
+	int32_t outerRadius = m_worldGenParams.worldSize / 2;
+	int32_t innerRadius = std::max(outerRadius - fallOff, 0);
+	int32_t squareOuterRadius = outerRadius * outerRadius;
+	int32_t squareInnerRadius = innerRadius * innerRadius;
+
 	Chunk* chunk = GetChunkAt(chunkIndexX, chunkIndexZ);
 	if (chunk == nullptr)
 	{
@@ -105,23 +135,39 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 		{
 			for (int z = 0; z < Constants::CHUNK_DEPTH; ++z)
 			{
-				float frequency1 = 0.5f;
-				float frequency2 = 0.25f;
-				float frequency3 = 0.1f;
+				int32_t blockX = chunkIndexX * Constants::CHUNK_WIDTH + x;
+				int32_t blockZ = chunkIndexZ * Constants::CHUNK_DEPTH + z;
+				int32_t squareDistance = (blockX - worldCenterX) * (blockX - worldCenterX) + (blockZ - worldCenterZ) * (blockZ - worldCenterZ);
 
-				int blockX = chunkIndexX * Constants::CHUNK_WIDTH + x;
-				int blockZ = chunkIndexZ * Constants::CHUNK_DEPTH + z;
+				float heightFactor = 1.0f;
+				if (squareDistance < squareInnerRadius)
+				{
+					heightFactor = 1.0f;
+				}
+				else if (squareInnerRadius <= squareDistance && squareDistance <= squareOuterRadius)
+				{
+					heightFactor = (squareDistance - squareInnerRadius) * 1.0f / (squareOuterRadius - squareInnerRadius);
+					heightFactor = 1.0f - heightFactor;
+				}
+				else
+				{
+					heightFactor = 0.0f;
+				}
 
-				float octave1 = m_noiseEngine.GetNoise(blockX * frequency1, blockZ * frequency1);
-				octave1 = (octave1 + 1.0f) / 2.0f;
-				float octave2 = 0.5f * m_noiseEngine.GetNoise(blockX * frequency2, blockZ * frequency2);
-				octave2 = (octave2 + 1.0f) / 2.0f;
-				float octave3 = 0.25f * m_noiseEngine.GetNoise(blockX * frequency3, blockZ * frequency3);
-				octave3 = (octave3 + 1.0f) / 2.0f;
+				float height = NoiseUtils::GetOctaveNoise
+				(
+					m_noiseEngine, 
+					blockX * 1.0f,
+					blockZ * 1.0f,
+					m_worldGenParams.noiseNumOctaves,
+					m_worldGenParams.noiseScale,
+					m_worldGenParams.noisePersistence,
+					m_worldGenParams.noiseLacunarity
+				);
+				height = (height + 1.0f) / 2.0f;
+				height *= heightFactor;
 
-				float height = octave1 + octave2 + octave3;
-				height = glm::pow(height, 1.55f);	// For introducing valleys
-				height = height * 10.0f;
+				height = height * m_worldGenParams.worldMaxHeight;
 
 				int ceilHeight = static_cast<int>(glm::ceil(height));
 				for (int y = 0; y < ceilHeight; ++y)
@@ -131,7 +177,7 @@ Chunk* World::GenerateChunkAt(const int& chunkIndexX, const int& chunkIndexZ)
 					{
 						block->SetBlockType(BlockTypeEnum::STONE);
 					}
-					else if ((y > 8) && (y < 12))
+					else if ((y > 8) && (y < 14))
 					{
 						block->SetBlockType(BlockTypeEnum::SAND);
 					}

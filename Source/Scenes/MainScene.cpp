@@ -12,6 +12,7 @@
 #include "EntityTemplates/BlockTemplateManager.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
+#include "WorldGenParams.hpp"
 #include "glm/fwd.hpp"
 
 #include <glad/glad.h>
@@ -98,12 +99,23 @@ void MainScene::Init()
 	// Create blocks texture
 	ResourceManager::GetInstance().CreateTexture("Resources/Textures/Blocks.png", "blocks");
 
-	// Setup camera
-	m_camera.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
-	m_camera.SetAspectRatio(800.0f / 600.0f);
-
 	// Create world data
 	m_world = new World();
+
+	WorldGenParams worldGenParams;
+	worldGenParams.worldSize = 1024;
+	worldGenParams.worldMaxHeight = 30;
+
+	worldGenParams.seed = 0;
+	worldGenParams.noiseNumOctaves = 1;
+	worldGenParams.noiseScale = 1.0f;
+	worldGenParams.noisePersistence = 1.0f;
+	worldGenParams.noiseLacunarity = 2.0f;
+	m_world->SetWorldGenParams(worldGenParams);
+
+	// Setup camera
+	m_camera.SetPosition({worldGenParams.worldSize / 2.0f, worldGenParams.worldMaxHeight + 1.0f, worldGenParams.worldSize / 2.0f});
+	m_camera.SetAspectRatio(800.0f / 600.0f);
 
 	// Generate initial chunks
 	m_world->LoadChunksWithinArea(m_prevChunkIndices, m_chunkRenderDistance);

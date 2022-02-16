@@ -38,7 +38,7 @@ void Application::OnInit()
     GetSceneManager()->RegisterScene(Constants::MAIN_SCENE_ID, m_mainScene);
     GetSceneManager()->RegisterScene(Constants::SANDBOX_SCENE_ID, m_sandboxScene);
 
-    GetSceneManager()->SwitchToScene(Constants::SANDBOX_SCENE_ID);
+    GetSceneManager()->SwitchToScene(Constants::MAIN_SCENE_ID);
 }
 
 /**

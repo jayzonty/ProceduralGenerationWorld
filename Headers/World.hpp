@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 #include "Chunk.hpp"
 #include "Ray.hpp"
+#include "WorldGenParams.hpp"
 
 #include <FastNoiseLite/FastNoiseLite.h>
 
@@ -24,6 +25,11 @@ private:
 	 */
 	FastNoiseLite m_noiseEngine;
 
+	/**
+	 * World generation parameters
+	 */
+	WorldGenParams m_worldGenParams;
+
 public:
 	/**
 	 * @brief Constructor
@@ -34,6 +40,12 @@ public:
 	 * @brief Destructor
 	 */
 	~World();
+
+	/**
+	 * @brief Sets the parameters for the world generation
+	 * @param[in] params Struct containing the parameters for the world generation
+	 */
+	void SetWorldGenParams(const WorldGenParams &params);
 
 	/**
 	 * @brief Get chunk at the provided location indices
