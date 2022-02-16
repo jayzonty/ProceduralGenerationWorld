@@ -10,11 +10,14 @@
 
 #include "Enums/BlockTypeEnum.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
+#include "Utils/MathUtils.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
 #include "WorldGenParams.hpp"
 #include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 
+#include <cstdint>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -31,7 +34,8 @@ MainScene::MainScene(SceneManager *sceneManager)
 	, m_world(nullptr)
 	, m_prevChunkIndices()
 	, m_chunkRenderDistance(8)
-	, m_skyColor()
+	, m_currentTime(0)
+	, m_timeTickTimer(0.0f)
 	, m_uiRenderer()
 	, m_noiseImage(256, 256, 3)
 	, m_noiseTexture()
@@ -55,9 +59,6 @@ void MainScene::Init()
 
 	// Enable face culling
 	glEnable(GL_CULL_FACE);
-
-	// Set sky color
-	m_skyColor = glm::vec4(0.678f, 0.847f, 0.902f, 1.0f);
 
 	// Initialize the scene shader
 	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Main.vsh", "Resources/Shaders/Main.fsh", "main");
@@ -146,6 +147,9 @@ void MainScene::Init()
 		}
 	}
 	m_noiseTexture.CreateFromImage(m_noiseImage);
+
+	m_currentTime = 0;
+	m_timeTickTimer = Constants::TIME_TICK_DURATION;
 }
 
 /**
@@ -154,6 +158,16 @@ void MainScene::Init()
  */
 void MainScene::Update(const float &deltaTime)
 {
+	m_timeTickTimer -= deltaTime;
+	if (deltaTime > 0.0f)
+	{
+		while (m_timeTickTimer <= 0.0f)
+		{
+			m_currentTime = (m_currentTime + 1) % Constants::TOTAL_TIME_TICKS;
+			m_timeTickTimer += Constants::TIME_TICK_DURATION;
+		}
+	}
+
 	int cursorXDelta, cursorYDelta;
 	Input::GetMouseDelta(&cursorXDelta, &cursorYDelta);
 
@@ -228,10 +242,112 @@ void MainScene::FixedUpdate(const float &timestep)
  */
 void MainScene::Draw()
 {
-	glClearColor(m_skyColor.r, m_skyColor.g, m_skyColor.b, m_skyColor.a);
+	float sunLightStrength = 1.0f;
+	float moonLightStrength = 0.0f;
+	glm::vec4 skyColor(0.0f);
+	if (m_currentTime < Constants::DUSK_START_TIME)
+	{
+		skyColor = Constants::DAY_SKY_COLOR;
+		sunLightStrength = 1.0f; moonLightStrength = 0.0f;
+	}
+	else if (m_currentTime < Constants::NIGHT_START_TIME)
+	{
+		const uint32_t duskDuration = Constants::NIGHT_START_TIME - Constants::DUSK_START_TIME;
+
+		// t goes from 0 -> 1
+		float t = (m_currentTime - Constants::DUSK_START_TIME) * 1.0f / duskDuration;
+		skyColor = MathUtils::Lerp(Constants::DAY_SKY_COLOR, Constants::NIGHT_SKY_COLOR, t);
+
+		sunLightStrength = MathUtils::Lerp(1.0f, 0.0f, t);
+		moonLightStrength = MathUtils::Lerp(0.0f, 1.0f, t);
+	}
+	else if (m_currentTime < Constants::DAWN_START_TIME)
+	{
+		skyColor = Constants::NIGHT_SKY_COLOR;
+		sunLightStrength = 0.0f; moonLightStrength = 1.0f;
+	}
+	else
+	{
+		const uint32_t dawnDuration = Constants::TOTAL_TIME_TICKS - Constants::DAWN_START_TIME;
+
+		// t goes from 1 -> 0
+		float t = (Constants::TOTAL_TIME_TICKS - m_currentTime) * 1.0f / dawnDuration;
+		skyColor = MathUtils::Lerp(Constants::DAY_SKY_COLOR, Constants::NIGHT_SKY_COLOR, t);
+
+		sunLightStrength = MathUtils::Lerp(1.0f, 0.0f, t);
+		moonLightStrength = MathUtils::Lerp(0.0f, 1.0f, t);
+	}
+
+	glClearColor(skyColor.r, skyColor.g, skyColor.b, skyColor.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_world->Draw(m_camera);
+	// Draw terrain
+	ShaderProgram* mainShader = ResourceManager::GetInstance().GetShader("main");
+	mainShader->Use();
+
+	mainShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
+	mainShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
+
+	glm::vec3 sunLightDirection(0.0f);
+	float timeProgress = m_currentTime * 1.0f / Constants::TOTAL_TIME_TICKS;
+	sunLightDirection.x = glm::cos(glm::radians(timeProgress * 360.0f));
+	sunLightDirection.y = -glm::sin(glm::radians(timeProgress * 360.0f));
+	sunLightDirection = glm::normalize(sunLightDirection);
+
+	glm::vec3 moonLightDirection = -sunLightDirection;
+
+	glm::vec3 sunLightAmbient(0.05f, 0.05f, 0.05f);
+	sunLightAmbient *= sunLightStrength;
+	glm::vec3 sunLightDiffuse(1.0f, 1.0f, 1.0f);
+	sunLightDiffuse *= sunLightStrength;
+	glm::vec3 moonLightAmbient(0.05f, 0.05f, 0.05f);
+	moonLightAmbient *= moonLightStrength;
+	glm::vec3 moonLightDiffuse(0.25f, 0.25f, 0.25f);
+	moonLightDiffuse *= moonLightStrength;
+
+	glm::vec3 materialAmbient(1.0f, 1.0f, 1.0f);
+	glm::vec3 materialDiffuse(1.0f, 1.0f, 1.0f);
+
+	mainShader->SetUniform3f("lights[0].direction", sunLightDirection.x, sunLightDirection.y, sunLightDirection.z);
+	mainShader->SetUniform3f("lights[0].ambient", sunLightAmbient.x, sunLightAmbient.y, sunLightAmbient.z);
+	mainShader->SetUniform3f("lights[0].diffuse", sunLightDiffuse.x, sunLightDiffuse.y, sunLightDiffuse.z);
+	mainShader->SetUniform3f("lights[1].direction", moonLightDirection.x, moonLightDirection.y, moonLightDirection.z);
+	mainShader->SetUniform3f("lights[1].ambient", moonLightAmbient.x, moonLightAmbient.y, moonLightAmbient.z);
+	mainShader->SetUniform3f("lights[1].diffuse", moonLightDiffuse.x, moonLightDiffuse.y, moonLightDiffuse.z);
+
+	mainShader->SetUniform3f("material.ambient", materialAmbient.x, materialAmbient.y, materialAmbient.z);
+	mainShader->SetUniform3f("material.diffuse", materialDiffuse.x, materialDiffuse.y, materialDiffuse.z);
+
+	mainShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+	mainShader->SetUniform1f("fogGradient", 1.5f);
+	mainShader->SetUniform1f("fogDensity", 0.01f);
+
+	Texture* blocksTexture = ResourceManager::GetInstance().GetTexture("blocks");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, blocksTexture->GetHandle());
+	mainShader->SetUniform1i("tex", 0);
+
+	m_world->DrawTerrainMeshes();
+
+	// Draw water mesh
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glm::vec4 waterColor(0.0f, 0.0f, 0.45f, 0.35f);
+	ShaderProgram* waterShader = ResourceManager::GetInstance().GetShader("water");
+	waterShader->Use();
+	waterShader->SetUniformMatrix4fv("projMatrix", false, glm::value_ptr(m_camera.GetProjectionMatrix()));
+	waterShader->SetUniformMatrix4fv("viewMatrix", false, glm::value_ptr(m_camera.GetViewMatrix()));
+	waterShader->SetUniform4f("skyColor", skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+	waterShader->SetUniform1f("fogGradient", 1.5f);
+	waterShader->SetUniform1f("fogDensity", 0.01f);
+	waterShader->SetUniform4f("waterColor", waterColor.r, waterColor.g, waterColor.b, waterColor.a);
+
+	m_world->DrawWaterMeshes();
+	
+	waterShader->Unuse();
+
+	glDisable(GL_BLEND);
 
 	int currentChunkX = static_cast<int>(glm::floor(m_camera.GetPosition().x / Constants::BLOCK_SIZE / Constants::CHUNK_WIDTH));
 	int currentChunkZ = static_cast<int>(glm::floor(m_camera.GetPosition().z / Constants::BLOCK_SIZE / Constants::CHUNK_DEPTH));

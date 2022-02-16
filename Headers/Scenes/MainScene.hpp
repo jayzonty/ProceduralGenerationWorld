@@ -8,6 +8,7 @@
 #include "UIRenderer.hpp"
 #include "World.hpp"
 
+#include <cstdint>
 #include <glm/glm.hpp>
 
 /**
@@ -38,9 +39,14 @@ private:
 	int m_chunkRenderDistance;
 
 	/**
-	 * Sky color
+	 * Current time
 	 */
-	glm::vec4 m_skyColor;
+	uint32_t m_currentTime;
+
+	/**
+	 * Timer until the next time tick
+	 */
+	float m_timeTickTimer;
 
 	/**
 	 * UI Renderer

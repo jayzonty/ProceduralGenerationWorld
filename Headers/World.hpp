@@ -101,10 +101,14 @@ public:
 	void UnloadChunksOutsideArea(const glm::ivec3& centerChunkIndex, const int& radius);
 
 	/**
-	 * @brief Draws the world
-	 * @param camera Camera
+	 * @brief Draws the terrain meshes
 	 */
-	void Draw(const Camera& camera);
+	void DrawTerrainMeshes();
+
+	/**
+	 * @brief Draws the water meshes
+	 */
+	void DrawWaterMeshes();
 
 	/**
 	 * @brief Casts a ray and gets the first non-air block hit

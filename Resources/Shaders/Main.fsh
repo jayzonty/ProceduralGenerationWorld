@@ -1,6 +1,6 @@
 #version 330
 
-struct Light
+struct DirectionalLight
 {
 	vec3 direction;
 	
@@ -24,7 +24,8 @@ in float visibility;
 
 uniform sampler2D tex;
 
-uniform Light light;
+// Sunlight (0) and moonlight (1)
+uniform DirectionalLight lights[2];
 uniform Material material;
 
 uniform vec4 skyColor;
@@ -33,11 +34,19 @@ out vec4 fragColor;
 
 void main()
 {
-	vec3 ambient = light.ambient * material.ambient;
-	
-	vec3 directionToLight = -light.direction;
-	float diffuseFactor = max(dot(outNormal, directionToLight), 0);
-	vec3 diffuse = light.diffuse * (material.diffuse * diffuseFactor);
+	vec3 ambient = vec3(0.0);
+	vec3 diffuse = vec3(0.0);
+
+	for (int i = 0; i < 2; ++i)
+	{
+		ambient += lights[i].ambient * material.ambient;
+
+		vec3 directionToLight = -lights[i].direction;
+		float diffuseFactor = max(dot(outNormal, directionToLight), 0);
+		diffuse += lights[i].diffuse * (material.diffuse * diffuseFactor);
+	}
+
+	ambient /= 2;
 	
 	vec4 finalColor = outColor * texture(tex, outUV);
 	finalColor = vec4(ambient + diffuse * finalColor.rgb, finalColor.a);

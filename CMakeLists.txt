@@ -28,6 +28,7 @@ set(SOURCES
     Source/Scenes/MainScene.cpp
     Source/Scenes/SandboxScene.cpp
 
+    Source/Utils/MathUtils.cpp
     Source/Utils/NoiseUtils.cpp
 
     Source/Application.cpp
