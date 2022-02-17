@@ -56,6 +56,16 @@ public:
 	void CreateFromImage(const Image &image);
 
 	/**
+	 * @brief Creates an empty texture
+	 * @param[in] width Width
+	 * @param[in] height Height
+	 * @param[in] imageFormat Image format (number of color components in the texture)
+	 * @param[in] pixelFormat Pixel data format
+	 * @param[in] dataType Pixel data type
+	 */
+	void CreateEmpty(const int &width, const int &height, const GLenum &imageFormat, const GLenum &pixelFormat, const GLenum &dataType);
+
+	/**
 	 * @brief Updates the texture data from the specified image data
 	 * @param[in] image Image data
 	 */

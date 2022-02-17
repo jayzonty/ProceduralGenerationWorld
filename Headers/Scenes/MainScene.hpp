@@ -3,14 +3,13 @@
 #include "BaseScene.hpp"
 #include "BatchRenderer.hpp"
 #include "Camera.hpp"
-#include "Image.hpp"
 #include "SceneManager.hpp"
-#include "Texture.hpp"
 #include "UIRenderer.hpp"
 #include "World.hpp"
 
-#include <cstdint>
 #include <glm/glm.hpp>
+
+#include <cstdint>
 
 /**
  * Main scene class
@@ -58,16 +57,6 @@ private:
 	 * Batch renderer
 	 */
 	BatchRenderer m_batchRenderer;
-
-	/**
-	 * Noise image
-	 */
-	Image m_noiseImage;
-
-	/**
-	 * Texture for visualizing noise map
-	 */
-	Texture m_noiseTexture;
 
 	/**
 	 * Sun mesh

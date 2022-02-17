@@ -83,6 +83,50 @@ void Texture::CreateFromImage(const Image &image)
 }
 
 /**
+ * @brief Creates an empty texture
+ * @param[in] width Width
+ * @param[in] height Height
+ * @param[in] imageFormat Image format (number of color components in the texture)
+ * @param[in] pixelFormat Pixel data format
+ * @param[in] dataType Pixel data type
+ */
+void Texture::CreateEmpty(const int &width, const int &height, const GLenum &imageFormat, const GLenum &pixelFormat, const GLenum &dataType)
+{
+	m_width = width;
+	m_height = height;
+	m_imageFormat = imageFormat;
+
+	if (m_textureHandle == 0)
+	{
+		glGenTextures(1, &m_textureHandle);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, m_textureHandle);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexImage2D
+	(
+		GL_TEXTURE_2D, 
+		0, 
+		imageFormat, 
+		width,
+		height,
+		0,
+		pixelFormat,
+		dataType, 
+		nullptr
+	);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+/**
  * @brief Updates the texture data from the specified image data
  * @param[in] image Image data
  */

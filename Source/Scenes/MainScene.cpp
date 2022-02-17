@@ -2,7 +2,6 @@
 
 #include "Scenes/BaseScene.hpp"
 #include "Constants.hpp"
-#include "FastNoiseLite/FastNoiseLite.h"
 #include "Input.hpp"
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
@@ -11,18 +10,15 @@
 #include "Enums/BlockTypeEnum.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
 #include "Utils/MathUtils.hpp"
-#include "Utils/NoiseUtils.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
 #include "WorldGenParams.hpp"
-#include "glm/fwd.hpp"
-#include "glm/geometric.hpp"
 
-#include <cmath>
-#include <cstdint>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <cmath>
+#include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -40,8 +36,6 @@ MainScene::MainScene(SceneManager *sceneManager)
 	, m_timeTickTimer(0.0f)
 	, m_uiRenderer()
 	, m_batchRenderer()
-	, m_noiseImage(256, 256, 3)
-	, m_noiseTexture()
 	, m_sunMesh()
 	, m_moonMesh()
 {
@@ -132,24 +126,7 @@ void MainScene::Init()
 	m_uiRenderer.Initialize(1000);
 	m_batchRenderer.Initialize(10000, 100000);
 
-	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	for (size_t x = 0; x < m_noiseImage.width; ++x)
-	{
-		for (size_t y = 0; y < m_noiseImage.height; ++y)
-		{
-			float noiseValue = NoiseUtils::GetOctaveNoise(noise, x, y, 2, 1.2f, 2.0f, 1.0f);
-			noiseValue = (noiseValue + 1.0f) / 2.0f;
-
-			unsigned char red = 0, green = 0, blue = 0;
-			red = green = blue = static_cast<unsigned char>(noiseValue * 255);
-			
-			m_noiseImage.SetData(x, y, red, green, blue);
-		}
-	}
-	m_noiseTexture.CreateFromImage(m_noiseImage);
-
-	m_currentTime = Constants::NIGHT_START_TIME;
+	m_currentTime = 0;
 	m_timeTickTimer = Constants::TIME_TICK_DURATION;
 
 	m_sunMesh.vertices.emplace_back();
@@ -276,6 +253,8 @@ void MainScene::FixedUpdate(const float &timestep)
  */
 void MainScene::Draw()
 {
+	glEnable(GL_DEPTH_TEST);
+
 	float sunLightStrength = 1.0f;
 	float moonLightStrength = 0.0f;
 	glm::vec4 skyColor(0.0f);

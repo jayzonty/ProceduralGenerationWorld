@@ -38,6 +38,7 @@ set(SOURCES
     Source/BlockUtils.cpp
     Source/Camera.cpp
     Source/Chunk.cpp
+    Source/Framebuffer.cpp
     Source/Image.cpp
     Source/Input.cpp
     Source/Mesh.cpp
