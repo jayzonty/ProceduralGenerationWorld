@@ -59,15 +59,25 @@ namespace Constants
 	/**
 	 * Time when dusk starts
 	 */
-	const uint32_t DUSK_START_TIME = 600;
+	const uint32_t DUSK_START_TIME = 660;
 
 	/**
 	 * Time when night time starts
 	 */
-	const uint32_t NIGHT_START_TIME = 720;
+	const uint32_t NIGHT_START_TIME = 900;
 
 	/**
 	 * Time when dawn starts
 	 */
-	const uint32_t DAWN_START_TIME = 1320;
+	const uint32_t DAWN_START_TIME = 1260;
+
+	/**
+	 * Sun color
+	 */
+	const glm::vec4 SUN_COLOR = glm::vec4(254.0f / 255.0f, 252.0f / 255.0f, 215.0f / 255.0f, 1.0f);
+
+	/**
+	 * Moon color
+	 */
+	const glm::vec4 MOON_COLOR = glm::vec4(200.0f / 255.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f);
 }

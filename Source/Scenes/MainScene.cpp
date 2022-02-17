@@ -11,12 +11,14 @@
 #include "Enums/BlockTypeEnum.hpp"
 #include "EntityTemplates/BlockTemplateManager.hpp"
 #include "Utils/MathUtils.hpp"
+#include "Utils/NoiseUtils.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
 #include "WorldGenParams.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
 
+#include <cmath>
 #include <cstdint>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -37,8 +39,11 @@ MainScene::MainScene(SceneManager *sceneManager)
 	, m_currentTime(0)
 	, m_timeTickTimer(0.0f)
 	, m_uiRenderer()
+	, m_batchRenderer()
 	, m_noiseImage(256, 256, 3)
 	, m_noiseTexture()
+	, m_sunMesh()
+	, m_moonMesh()
 {
 }
 
@@ -62,6 +67,7 @@ void MainScene::Init()
 
 	// Initialize the scene shader
 	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Main.vsh", "Resources/Shaders/Main.fsh", "main");
+	ResourceManager::GetInstance().CreateShader("Resources/Shaders/SunMoon.vsh", "Resources/Shaders/SunMoon.fsh", "sun_moon");
 	ResourceManager::GetInstance().CreateShader("Resources/Shaders/Water.vsh", "Resources/Shaders/Water.fsh", "water");
 
 	// --- Initialize block templates ---
@@ -99,6 +105,8 @@ void MainScene::Init()
 
 	// Create blocks texture
 	ResourceManager::GetInstance().CreateTexture("Resources/Textures/Blocks.png", "blocks");
+	// Create moon texture
+	ResourceManager::GetInstance().CreateTexture("Resources/Textures/Moon.png", "moon");
 
 	// Create world data
 	m_world = new World();
@@ -122,34 +130,60 @@ void MainScene::Init()
 	m_world->LoadChunksWithinArea(m_prevChunkIndices, m_chunkRenderDistance);
 
 	m_uiRenderer.Initialize(1000);
+	m_batchRenderer.Initialize(10000, 100000);
 
 	FastNoiseLite noise;
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	for (size_t x = 0; x < m_noiseImage.width; ++x)
 	{
 		for (size_t y = 0; y < m_noiseImage.height; ++y)
 		{
-			float noiseValue = noise.GetNoise(x * 5.0f, y * 5.0f);
+			float noiseValue = NoiseUtils::GetOctaveNoise(noise, x, y, 2, 1.2f, 2.0f, 1.0f);
+			noiseValue = (noiseValue + 1.0f) / 2.0f;
 
 			unsigned char red = 0, green = 0, blue = 0;
-			if (noiseValue < 0.0f)
-			{
-				red = 0; green = 0; blue = 255;
-			}
-			else if (noiseValue < 0.1f)
-			{
-				red = 194; green = 178; blue = 128;
-			}
-			else
-			{
-				red = 0; green = 255; blue = 0;
-			}
+			red = green = blue = static_cast<unsigned char>(noiseValue * 255);
+			
 			m_noiseImage.SetData(x, y, red, green, blue);
 		}
 	}
 	m_noiseTexture.CreateFromImage(m_noiseImage);
 
-	m_currentTime = 0;
+	m_currentTime = Constants::NIGHT_START_TIME;
 	m_timeTickTimer = Constants::TIME_TICK_DURATION;
+
+	m_sunMesh.vertices.emplace_back();
+	m_sunMesh.vertices.back().position = { -1.0f, -1.0f,  0.0f };
+	m_sunMesh.vertices.back().normal = { 0.0f, 0.0f, 1.0f };
+	m_sunMesh.vertices.back().color = Constants::SUN_COLOR;
+	m_sunMesh.vertices.back().uv = { 0.0f, 0.0f };
+	m_sunMesh.vertices.emplace_back();
+	m_sunMesh.vertices.back().position = {  1.0f, -1.0f, 0.0f };
+	m_sunMesh.vertices.back().normal = { 0.0f, 0.0f, 1.0f };
+	m_sunMesh.vertices.back().color = Constants::SUN_COLOR;
+	m_sunMesh.vertices.back().uv = { 1.0f, 0.0f };
+	m_sunMesh.vertices.emplace_back();
+	m_sunMesh.vertices.back().position = {  1.0f,  1.0f, 0.0f };
+	m_sunMesh.vertices.back().normal = { 0.0f, 0.0f, 1.0f };
+	m_sunMesh.vertices.back().color = Constants::SUN_COLOR;
+	m_sunMesh.vertices.back().uv = { 1.0f, 1.0f };
+	m_sunMesh.vertices.emplace_back();
+	m_sunMesh.vertices.back().position = { -1.0f,  1.0f,  0.0f };
+	m_sunMesh.vertices.back().normal = { 0.0f, 0.0f, 1.0f };
+	m_sunMesh.vertices.back().color = Constants::SUN_COLOR;
+	m_sunMesh.vertices.back().uv = { 0.0f, 1.0f };
+	m_sunMesh.indices.push_back(0);
+	m_sunMesh.indices.push_back(1);
+	m_sunMesh.indices.push_back(2);
+	m_sunMesh.indices.push_back(2);
+	m_sunMesh.indices.push_back(3);
+	m_sunMesh.indices.push_back(0);
+
+	m_moonMesh = m_sunMesh;
+	m_moonMesh.vertices[0].color = Constants::MOON_COLOR;
+	m_moonMesh.vertices[1].color = Constants::MOON_COLOR;
+	m_moonMesh.vertices[2].color = Constants::MOON_COLOR;
+	m_moonMesh.vertices[3].color = Constants::MOON_COLOR;
 }
 
 /**
@@ -347,10 +381,10 @@ void MainScene::Draw()
 	
 	waterShader->Unuse();
 
-	glDisable(GL_BLEND);
-
 	int currentChunkX = static_cast<int>(glm::floor(m_camera.GetPosition().x / Constants::BLOCK_SIZE / Constants::CHUNK_WIDTH));
 	int currentChunkZ = static_cast<int>(glm::floor(m_camera.GetPosition().z / Constants::BLOCK_SIZE / Constants::CHUNK_DEPTH));
+
+	std::cout << "Looking at direction: " << m_camera.GetForwardVector().x << "," << m_camera.GetForwardVector().y << "," << m_camera.GetForwardVector().z << std::endl;
 
 	std::stringstream displayStringStream;
 	displayStringStream << "Chunk: " << currentChunkX << "  " << currentChunkZ << std::endl;
@@ -376,10 +410,50 @@ void MainScene::Draw()
 	Window *mainWindow = WindowManager::GetMainWindow();
 	glm::mat4 uiCameraMatrix = glm::ortho(0.0f, mainWindow->GetWidth() * 1.0f, 0.0f, mainWindow->GetHeight() * 1.0f);
 
-	m_uiRenderer.Begin();
+	// Draw sun
+	m_batchRenderer.Begin();
+	m_batchRenderer.AddMesh(m_sunMesh);
+	m_batchRenderer.End();
+
+	glm::mat4 transform(1.0f);
+	transform = glm::translate(transform, -sunLightDirection);
+	transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	transform = glm::rotate(transform, glm::radians(timeProgress * 360.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	transform = glm::scale(transform, glm::vec3(0.25f, 0.25f, 0.25f));
+	transform = m_camera.GetProjectionMatrix() * glm::mat4(glm::mat3(m_camera.GetViewMatrix())) * transform;
+
+	ShaderProgram* sunMoonShader = ResourceManager::GetInstance().GetShader("sun_moon");
+	sunMoonShader->Use();
+	sunMoonShader->SetUniformMatrix4fv("mvpMatrix", false, glm::value_ptr(transform));
+	sunMoonShader->SetUniform1f("innerRadius", 0.6f);
+	sunMoonShader->SetUniform1f("visibility", 1.0f);
+	glDepthFunc(GL_LEQUAL);
+	m_batchRenderer.Render();
+
+	// Draw moon
+	m_batchRenderer.Begin();
+	m_batchRenderer.AddMesh(m_moonMesh, glm::mat4(1.0f), 0, 0, ResourceManager::GetInstance().GetTexture("moon")->GetHandle());
+	m_batchRenderer.End();
+
+	transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, -moonLightDirection);
+	transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	transform = glm::rotate(transform, glm::radians(timeProgress * 360.0f + 180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	transform = glm::scale(transform, glm::vec3(0.15f, 0.15f, 0.15f));
+	transform = m_camera.GetProjectionMatrix() * glm::mat4(glm::mat3(m_camera.GetViewMatrix())) * transform;
+	sunMoonShader->SetUniformMatrix4fv("mvpMatrix", false, glm::value_ptr(transform));
+	sunMoonShader->SetUniform1f("innerRadius", 0.8f);
+	sunMoonShader->SetUniform1f("visibility", moonLightStrength);
+	m_batchRenderer.Render();
+	glDepthFunc(GL_LESS);
+
+	sunMoonShader->Unuse();
+
+	/*m_uiRenderer.Begin();
 	m_uiRenderer.DrawQuad({ 10.0f, 10.0f }, { 256.0f, 256.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0, 0, m_noiseTexture.GetHandle(), { 0.0f, 0.0f, 1.0f, 1.0f });
 	m_uiRenderer.End();
-	m_uiRenderer.Render(uiCameraMatrix);
+	m_uiRenderer.Render(uiCameraMatrix);*/
+	glDisable(GL_BLEND);
 }
 
 /**

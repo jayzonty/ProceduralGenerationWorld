@@ -33,6 +33,7 @@ set(SOURCES
 
     Source/Application.cpp
     Source/BaseApplication.cpp
+    Source/BatchRenderer.cpp
     Source/Block.cpp
     Source/BlockUtils.cpp
     Source/Camera.cpp

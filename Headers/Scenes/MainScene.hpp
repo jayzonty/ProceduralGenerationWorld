@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseScene.hpp"
+#include "BatchRenderer.hpp"
 #include "Camera.hpp"
 #include "Image.hpp"
 #include "SceneManager.hpp"
@@ -54,6 +55,11 @@ private:
 	UIRenderer m_uiRenderer;
 
 	/**
+	 * Batch renderer
+	 */
+	BatchRenderer m_batchRenderer;
+
+	/**
 	 * Noise image
 	 */
 	Image m_noiseImage;
@@ -62,6 +68,16 @@ private:
 	 * Texture for visualizing noise map
 	 */
 	Texture m_noiseTexture;
+
+	/**
+	 * Sun mesh
+	 */
+	Mesh m_sunMesh;
+
+	/**
+	 * Moon mesh
+	 */
+	Mesh m_moonMesh;
 
 public:
 	/**

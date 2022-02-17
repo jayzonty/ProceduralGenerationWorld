@@ -44,8 +44,6 @@ void BaseApplication::Run()
     }
     OnInit();
 
-    m_sceneManager.GetActiveScene()->Init();
-
     double prevTime = glfwGetTime();
 
     Window* mainWindow = WindowManager::GetMainWindow();
