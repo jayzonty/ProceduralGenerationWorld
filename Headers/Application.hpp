@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseApplication.hpp"
-#include "Scenes/MainScene.hpp"
+//#include "Scenes/MainScene.hpp"
 #include "Scenes/SandboxScene.hpp"
 
 /**
@@ -13,7 +13,7 @@ private:
     /**
      * Main scene
      */
-    MainScene *m_mainScene;
+    //MainScene *m_mainScene;
 
     /**
      * Sandbox scene

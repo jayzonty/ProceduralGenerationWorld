@@ -2,7 +2,7 @@
 
 #include "BaseApplication.hpp"
 #include "Constants.hpp"
-#include "Scenes/MainScene.hpp"
+//#include "Scenes/MainScene.hpp"
 #include "Scenes/SandboxScene.hpp"
 #include "Window.hpp"
 #include "WindowManager.hpp"
@@ -12,7 +12,7 @@
  */
 Application::Application()
     : BaseApplication()
-    , m_mainScene(nullptr)
+    //, m_mainScene(nullptr)
     , m_sandboxScene(nullptr)
 {
 }
@@ -32,13 +32,13 @@ void Application::OnInit()
     Window *mainWindow = WindowManager::GetMainWindow();
     mainWindow->SetTitle("Voxel World");
 
-    m_mainScene = new MainScene(GetSceneManager());
+    //m_mainScene = new MainScene(GetSceneManager());
     m_sandboxScene = new SandboxScene(GetSceneManager());
 
-    GetSceneManager()->RegisterScene(Constants::MAIN_SCENE_ID, m_mainScene);
+    //GetSceneManager()->RegisterScene(Constants::MAIN_SCENE_ID, m_mainScene);
     GetSceneManager()->RegisterScene(Constants::SANDBOX_SCENE_ID, m_sandboxScene);
 
-    GetSceneManager()->SwitchToScene(Constants::MAIN_SCENE_ID);
+    GetSceneManager()->SwitchToScene(Constants::SANDBOX_SCENE_ID);
 }
 
 /**
@@ -46,8 +46,8 @@ void Application::OnInit()
  */
 void Application::OnCleanup()
 {
-    delete m_mainScene;
-    m_mainScene = nullptr;
+    //delete m_mainScene;
+    //m_mainScene = nullptr;
 
     delete m_sandboxScene;
     m_sandboxScene = nullptr;
