@@ -1,7 +1,6 @@
-#include "Graphics/Vulkan/VulkanImage.hpp"
+#include "Vulkan/VulkanImage.hpp"
 
-#include "Graphics/Vulkan/VulkanContext.hpp"
-#include <vulkan/vulkan_core.h>
+#include "Vulkan/VulkanContext.hpp"
 
 #include <iostream>
 

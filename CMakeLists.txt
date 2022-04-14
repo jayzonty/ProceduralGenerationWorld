@@ -31,6 +31,7 @@ set(SOURCES
 
     Source/Vulkan/VulkanBuffer.cpp
     Source/Vulkan/VulkanContext.cpp
+    Source/Vulkan/VulkanImage.cpp
     Source/Vulkan/VulkanImageView.cpp
 
     Source/Application.cpp

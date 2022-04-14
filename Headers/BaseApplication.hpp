@@ -6,6 +6,7 @@
 #include "Window.hpp"
 
 #include "Vulkan/VulkanBuffer.hpp"
+#include "Vulkan/VulkanImage.hpp"
 #include "Vulkan/VulkanImageView.hpp"
 
 #include <vulkan/vulkan.hpp>
@@ -119,6 +120,16 @@ private:
      */
     VulkanBuffer m_testVertexBuffer;
 
+    /**
+     * Image for the depth buffer
+     */
+    VulkanImage m_vkDepthBufferImage;
+
+    /**
+     * Image view for the depth buffer image
+     */
+    VulkanImageView m_vkDepthBufferImageView;
+
 public:
     /**
      * @brief Constructor
@@ -176,6 +187,12 @@ private:
      * @return Returns true if the initialization was successful. Returns false otherwise.
      */
     bool InitRenderPass();
+
+    /**
+     * @brief Initializes the resources needed for the depth/stencil buffer attachment.
+     * @return Returns true if the initialization was successful. Returns false otherwise.
+     */
+    bool InitDepthStencilImage();
 
     /**
      * @brief Initializes the Vulkan framebuffers.

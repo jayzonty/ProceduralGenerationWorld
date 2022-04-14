@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iostream>
+#include <vulkan/vulkan_core.h>
 
 /**
  * @brief Constructor
@@ -50,20 +51,26 @@ void BaseApplication::Run()
     }
     OnInit();
 
-    std::array<Vertex, 3> vertices;
+    std::array<Vertex, 6> vertices;
     vertices[0].position = { -0.5f,  0.5f,  0.0f };
-    vertices[0].color = { 1.0f, 0.0f, 0.0f };
+    vertices[0].color = { 0.0f, 1.0f, 0.0f };
     vertices[1].position = {  0.5f,  0.5f,  0.0f };
     vertices[1].color = { 0.0f, 1.0f, 0.0f };
-    vertices[2].position = {  0.0f,  -0.5f,  0.0f };
-    vertices[2].color = { 0.0f, 0.0f, 1.0f };
+    vertices[2].position = {  0.0f,  -0.5f, 0.0f };
+    vertices[2].color = { 0.0f, 1.0f, 0.0f };
+    vertices[3].position = {  0.0f,  0.5f,  1.0f };
+    vertices[3].color = { 0.0f, 0.0f, 1.0f };
+    vertices[4].position = {  1.0f,  0.5f,  1.0f };
+    vertices[4].color = { 0.0f, 0.0f, 1.0f };
+    vertices[5].position = {  0.5f, -0.5f,  1.0f };
+    vertices[5].color = { 0.0f, 0.0f, 1.0f };
 
-    if (!m_testVertexBuffer.Create(sizeof(Vertex) * 3, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
+    if (!m_testVertexBuffer.Create(sizeof(Vertex) * vertices.size(), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
     {
         std::cerr << "Failed to create vertex buffer!" << std::endl;
     }
-    void *data = m_testVertexBuffer.MapMemory(0, sizeof(Vertex) * 3);
-    memcpy(data, vertices.data(), sizeof(Vertex) * 3);
+    void *data = m_testVertexBuffer.MapMemory(0, sizeof(Vertex) * vertices.size());
+    memcpy(data, vertices.data(), sizeof(Vertex) * vertices.size());
     m_testVertexBuffer.UnmapMemory();
 
     double prevTime = glfwGetTime();
@@ -138,9 +145,10 @@ void BaseApplication::Run()
         renderPassBeginInfo.framebuffer = m_frameDataList[currentFrame].framebuffer;
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
         renderPassBeginInfo.renderArea.extent = m_vkSwapchainImageExtent;
-        std::array<VkClearValue, 1> clearValues;
+        std::array<VkClearValue, 2> clearValues;
         clearValues[0].color = { 1.0f, 0.0f, 0.0f, 1.0f };
-        renderPassBeginInfo.clearValueCount = 1;
+        clearValues[1].depthStencil = { 1.0f, 0 };
+        renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
         renderPassBeginInfo.pClearValues = clearValues.data();
         vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -166,6 +174,7 @@ void BaseApplication::Run()
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, &offset);
 
         vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+        vkCmdDraw(commandBuffer, 3, 1, 3, 0);
 
         vkCmdEndRenderPass(commandBuffer);
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
@@ -290,6 +299,10 @@ bool BaseApplication::Init()
     {
         std::cerr << "[BaseApplication] Failed to initialize Vulkan renderpass!" << std::endl;
     }
+    if (!InitDepthStencilImage())
+    {
+        std::cerr << "[BaseApplication] Failed to initialize Vulkan depth/stencil image!" << std::endl;
+    }
     if (!InitFramebuffers())
     {
         std::cerr << "[BaseApplication] Failed to initialize Vulkan framebuffers!" << std::endl;
@@ -354,6 +367,9 @@ void BaseApplication::Cleanup()
     m_vkPipeline = VK_NULL_HANDLE;
     vkDestroyPipelineLayout(VulkanContext::GetLogicalDevice(), m_vkPipelineLayout, nullptr);
     m_vkPipelineLayout = VK_NULL_HANDLE;
+
+    m_vkDepthBufferImageView.Cleanup();
+    m_vkDepthBufferImage.Cleanup();
 
     for (size_t i = 0; i < m_frameDataList.size(); i++)
     {
@@ -577,32 +593,75 @@ bool BaseApplication::InitRenderPass()
     subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS; // Rendering subpass (not compute subpass)
     subpassDescription.colorAttachmentCount = 1;
     subpassDescription.pColorAttachments = &colorAttachmentReference;
-    subpassDescription.pDepthStencilAttachment = nullptr;//&depthAttachmentReference;
+    subpassDescription.pDepthStencilAttachment = &depthAttachmentReference;
 
     // TODO: Research more about subpass dependencies to understand what the following lines do
     VkSubpassDependency subpassDependency = {};
     subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-    subpassDependency.dstSubpass = 0;
-    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;// | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;// | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+    subpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     subpassDependency.srcAccessMask = 0;
-    subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;// | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+    subpassDependency.dstSubpass = 0;
+    subpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    std::array<VkAttachmentDescription, 1> attachments = { colorAttachment };//, depthAttachment};
+    VkSubpassDependency depthDependency = {};
+    depthDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    depthDependency.srcStageMask = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+    depthDependency.srcAccessMask = 0;
+    depthDependency.dstSubpass = 0;
+    depthDependency.dstStageMask = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+    depthDependency.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+    std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+    std::array<VkSubpassDependency, 2> dependencies = { subpassDependency, depthDependency };
     VkRenderPassCreateInfo renderPassCreateInfo = {};
     renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassCreateInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
     renderPassCreateInfo.pAttachments = attachments.data();
     renderPassCreateInfo.subpassCount = 1;
     renderPassCreateInfo.pSubpasses = &subpassDescription;
-    renderPassCreateInfo.dependencyCount = 1;
-    renderPassCreateInfo.pDependencies = &subpassDependency;
+    renderPassCreateInfo.dependencyCount = static_cast<uint32_t>(dependencies.size());
+    renderPassCreateInfo.pDependencies = dependencies.data();
 
     if (vkCreateRenderPass(VulkanContext::GetLogicalDevice(), &renderPassCreateInfo, nullptr, &m_vkRenderPass) != VK_SUCCESS)
     {
         std::cout << "Failed to create render pass!" << std::endl;
         return false;
     }
+
+    return true;
+}
+
+/**
+ * @brief Initializes the resources needed for the depth/stencil buffer attachment.
+ * @return Returns true if the initialization was successful. Returns false otherwise.
+ */
+bool BaseApplication::InitDepthStencilImage()
+{
+    // TODO: We can use the VK_FORMAT_D32_SFLOAT format for the depth buffer, but we can add more
+    // flexibility by querying which format is supported.
+    // If somehow we will need the stencil buffer in the future, we'll have to use another format
+    // VK_FORMAT_D32_SFLOAT_S8_UINT or VK_FORMAT_D24_UNORM_S8_UINT.
+    if (!m_vkDepthBufferImage.Create(
+            m_vkSwapchainImageExtent.width, 
+            m_vkSwapchainImageExtent.height, 
+            VK_FORMAT_D32_SFLOAT, 
+            VK_IMAGE_TILING_OPTIMAL, 
+            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
+    {
+        std::cout << "Failed to create Vulkan image for the depth buffer!" << std::endl;
+        return false;
+    }
+
+    if (!m_vkDepthBufferImageView.Create(m_vkDepthBufferImage.GetHandle(), VK_FORMAT_D32_SFLOAT, VK_IMAGE_ASPECT_DEPTH_BIT))
+    {
+        std::cout << "Failed to create Vulkan image view for the depth buffer!" << std::endl;
+        return false;
+    }
+
+    // TODO: Can transition image layout of the depth buffer image if we so choose,
+    // but we'll already handle this in the render pass.
 
     return true;
 }
@@ -615,10 +674,10 @@ bool BaseApplication::InitFramebuffers()
 {
     for (size_t i = 0; i < m_frameDataList.size(); ++i)
     {
-        std::array<VkImageView, 1> attachments =
+        std::array<VkImageView, 2> attachments =
         {
             m_frameDataList[i].imageView.GetHandle(),
-            //m_vkDepthBufferImageView.GetHandle()
+            m_vkDepthBufferImageView.GetHandle()
         };
 
         VkFramebufferCreateInfo framebufferCreateInfo = {};
@@ -746,9 +805,9 @@ bool BaseApplication::InitGraphicsPipeline()
     // Depth and stencil testing
     VkPipelineDepthStencilStateCreateInfo depthStencilInfo = {};
     depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    depthStencilInfo.depthTestEnable = VK_FALSE; // Enable depth testing
-    depthStencilInfo.depthWriteEnable = VK_FALSE; // New depth of fragments that pass the depth test should be written
-    depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS; // Fragments with lesser depth pass the depth test
+    depthStencilInfo.depthTestEnable = VK_TRUE; // Enable depth testing
+    depthStencilInfo.depthWriteEnable = VK_TRUE; // New depth of fragments that pass the depth test should be written
+    depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL; // Fragments with lesser depth pass the depth test
     // For depth bound test
     depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
     depthStencilInfo.minDepthBounds = 0.0f;
