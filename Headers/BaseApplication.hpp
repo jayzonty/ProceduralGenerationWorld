@@ -219,15 +219,6 @@ private:
     bool InitGraphicsPipeline();
 
     /**
-     * @brief Create a shader module from the provided shader file path.
-     * @param[in] shaderFilePath Shader file path
-     * @param[in] device Logical device
-     * @param[out] outShaderModule Shader module
-     * @return Returns true if the shader module creation was successful. Returns false otherwise.
-     */
-    bool CreateShaderModule(const std::string& shaderFilePath, VkDevice device, VkShaderModule& outShaderModule);
-
-    /**
      * @brief Initializes the Vulkan synchronization tools.
      * @return Returns true if the initialization was successful. Returns false otherwise.
      */

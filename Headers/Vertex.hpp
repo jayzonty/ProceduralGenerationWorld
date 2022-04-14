@@ -31,36 +31,51 @@ struct Vertex
      */
     glm::vec3 normal;
 
-    static VkVertexInputBindingDescription GetBindingDescription()
+    /**
+     * @brief Gets the list of binding descriptions for this vertex
+     * @return List of binding descriptions for this vertex
+     */
+    static std::vector<VkVertexInputBindingDescription> GetBindingDescriptions()
     {
-        VkVertexInputBindingDescription bindingDescription;
-        bindingDescription.binding = 0;
-        bindingDescription.stride = sizeof(Vertex);
-        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+        std::vector<VkVertexInputBindingDescription> ret = {};
 
-        return bindingDescription;
+        ret.emplace_back();
+        ret.back().binding = 0;
+        ret.back().stride = sizeof(Vertex);
+        ret.back().inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+        return ret;
     }
 
-    static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions()
+    /**
+     * @brief Gets the list of attribute descriptions for this vertex
+     * @return List of attribute descriptions for this vertex
+     */
+    static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions()
     {
-        std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
+        std::vector<VkVertexInputAttributeDescription> ret = {};
 
         // Position
-        attributeDescriptions[0].binding = 0;
-        attributeDescriptions[0].location = 0;
-        attributeDescriptions[0].offset = offsetof(Vertex, position);
-        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // Three 32-bit signed floats
+        ret.emplace_back();
+        ret.back().binding = 0;
+        ret.back().location = 0;
+        ret.back().offset = offsetof(Vertex, position);
+        ret.back().format = VK_FORMAT_R32G32B32_SFLOAT; // Three 32-bit signed floats
 
-        attributeDescriptions[1].binding = 0;
-        attributeDescriptions[1].location = 1;
-        attributeDescriptions[1].offset = offsetof(Vertex, color);
-        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; // Three 32-bit signed floats
+        // Color
+        ret.emplace_back();
+        ret.back().binding = 0;
+        ret.back().location = 1;
+        ret.back().offset = offsetof(Vertex, color);
+        ret.back().format = VK_FORMAT_R32G32B32_SFLOAT; // Three 32-bit signed floats
 
-        attributeDescriptions[2].binding = 0;
-        attributeDescriptions[2].location = 2;
-        attributeDescriptions[2].offset = offsetof(Vertex, uv);
-        attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT; // Two 32-bit signed floats
+        // UV
+        ret.emplace_back();
+        ret.back().binding = 0;
+        ret.back().location = 2;
+        ret.back().offset = offsetof(Vertex, uv);
+        ret.back().format = VK_FORMAT_R32G32_SFLOAT; // Two 32-bit signed floats
 
-        return attributeDescriptions;
+        return ret;
     }
 };

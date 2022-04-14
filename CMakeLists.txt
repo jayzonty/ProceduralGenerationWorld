@@ -29,6 +29,7 @@ set(SOURCES
     #Source/Utils/MathUtils.cpp
     #Source/Utils/NoiseUtils.cpp
 
+    Source/Vulkan/GraphicsPipelineBuilder.cpp
     Source/Vulkan/VulkanBuffer.cpp
     Source/Vulkan/VulkanContext.cpp
     Source/Vulkan/VulkanImage.cpp
